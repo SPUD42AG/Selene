@@ -204,7 +204,7 @@ public final class Constants {
         
         //The values set here are placeholders for sim
         public static final Rotation2d kMinAngle = Rotation2d.fromRotations(0);
-        public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(360);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(1);
 
         public static final SlotConfigs kPIDConfigs = new SlotConfigs()
             .withKP(0.0)
