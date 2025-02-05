@@ -1,7 +1,8 @@
 package com.spartronics4915.frc2025.subsystems;
 
-
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -14,6 +15,8 @@ import com.spartronics4915.frc2025.Constants;
 import com.spartronics4915.frc2025.Constants.ClimberConstants;
 import com.spartronics4915.frc2025.Constants.ClimberConstants.ClimberState;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -28,6 +31,8 @@ public class ClimberSubsystem extends SubsystemBase {
     private RelativeEncoder mClimberEncoder;
     private TrapezoidProfile mClimberProfile;
 
+
+    private ArmFeedforward mFFCalculator;
     private Rotation2d mCurrentSetPoint = Rotation2d.fromRotations(0);
     private State mCurrentState;
     
@@ -52,6 +57,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
                 mClimberEncoder = mClimberMotor.getEncoder();
         
+        mFFCalculator = new ArmFeedforward(ClimberConstants.kS,ClimberConstants.kG,ClimberConstants.kV,ClimberConstants.kS);
+
         initClimberProfile();
         
         initClosedLoopController();
@@ -78,6 +85,22 @@ public class ClimberSubsystem extends SubsystemBase {
     private void setMechanismAngle(Rotation2d angle){
         mClimberEncoder.setPosition(angleToRaw(angle));
         resetMechanism();
+    }
+
+    @Override
+    public void periodic() {
+        
+        //need set points as a imput
+        mCurrentSetPoint = Rotation2d.fromRotations(
+            MathUtil.clamp(mCurrentSetPoint.getRotations(), ClimberConstants.kMinAngle.getRotations(), ClimberConstants.kMaxAngle.getRotations()));
+
+        mCurrentState = mClimberProfile.calculate(ClimberConstants.kDt, mCurrentState, new State((angleToRaw(mCurrentSetPoint)), 0.0));
+
+        mClosedLoopController.setReference(mCurrentState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, mFFCalculator.calculate(mCurrentState.position, mCurrentState.velocity));
+        
+        
+
+
     }
 
     public void setSetpoint(Rotation2d newSetpoint){

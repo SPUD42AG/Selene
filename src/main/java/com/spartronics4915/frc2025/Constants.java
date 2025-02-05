@@ -4,23 +4,22 @@
 
 package com.spartronics4915.frc2025;
 
-import static com.spartronics4915.frc2025.util.Structures.*;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.spartronics4915.frc2025.util.Structures.LimelightConstants;
+import com.spartronics4915.frc2025.util.Structures.PIDFConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
-
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilogram;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -58,6 +57,20 @@ public final class Constants {
         public static double kP = 0.0;
         public static double kI = 0.0;
         public static double kD = 0.0;
+
+        //ff  
+            //place holder values
+            public static final Rotation2d kMinAngle = Rotation2d.fromRotations(300);
+            public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(120);
+
+            public static final double kDt = 0.02;
+
+            public static final double kS = 0.0;
+            public static final double kG = 0.0;
+            public static final double kV = 0.0;
+            public static final double kA = 0.0;
+
+
 
         public static final Constraints kConstraints = new Constraints(1.0, 1.0);
 
