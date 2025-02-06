@@ -53,8 +53,8 @@ public final class Constants {
 
         public static final int motorID = 1;
         
-        public static final double liftedAngle = 0.5;
-        public static final double stowAngle = 0.5;
+        public static final double liftedAngle = 0.75;
+        public static final double stowAngle = 0.25;
 
         public static final double kP = 0.0;
         public static final double kI = 0.0;
@@ -62,8 +62,8 @@ public final class Constants {
 
         //ff  
             //place holder values
-            public static final Rotation2d kMinAngle = Rotation2d.fromRotations(300);
-            public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(120);
+            public static final Rotation2d kMinAngle = Rotation2d.fromRotations(0);
+            public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(1);
 
             public static final double kDt = 0.02;
 
@@ -91,7 +91,7 @@ public final class Constants {
         }
 
 
-        
+
     }
 
     public static final class Drive {

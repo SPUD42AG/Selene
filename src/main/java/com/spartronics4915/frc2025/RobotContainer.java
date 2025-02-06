@@ -14,6 +14,7 @@ import com.spartronics4915.frc2025.commands.autos.DriveToReefPoint;
 import com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers;
 import com.spartronics4915.frc2025.commands.drive.RotationIndependentControlCommand;
 import com.spartronics4915.frc2025.commands.drive.SwerveTeleopCommand;
+import com.spartronics4915.frc2025.subsystems.ClimberSubsystem;
 import com.spartronics4915.frc2025.subsystems.MotorSimulationSubsystem;
 import com.spartronics4915.frc2025.subsystems.OdometrySubsystem;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
@@ -73,6 +74,8 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
 
+    public final ClimberSubsystem climberSubsystem;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -80,6 +83,8 @@ public class RobotContainer {
 
         mechanismSim = new MotorSimulationSubsystem();
         ModeSwitchHandler.EnableModeSwitchHandler(swerveSubsystem); //TODO add any subsystems that extend ModeSwitchInterface
+
+        climberSubsystem = new ClimberSubsystem();
 
         if (RobotBase.isSimulation()) {
             visionSubsystem = new SimVisionSubsystem(swerveSubsystem);
@@ -118,7 +123,9 @@ public class RobotContainer {
     private void configureBindings() {
 
         swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(driverController, swerveSubsystem));
-
+        
+        operatorController.leftTrigger().onTrue(climberSubsystem.presetCommand(Constants.ClimberConstants.ClimberState.STOW));
+        operatorController.leftBumper().onTrue(climberSubsystem.presetCommand(Constants.ClimberConstants.ClimberState.LIFTED));
 
         //switch field and robot relative
         driverController.a().onTrue(Commands.defer(() -> {return Commands.runOnce(

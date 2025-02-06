@@ -40,7 +40,7 @@ public class ClimberSubsystem extends SubsystemBase {
     
     public ClimberSubsystem () {                
         
-        mClimberMotor = new SparkMax(1, MotorType.kBrushless); // motor id is here
+        mClimberMotor = new SparkMax(Constants.ClimberConstants.motorID, MotorType.kBrushless);
             config = new SparkMaxConfig();
 
                 config
