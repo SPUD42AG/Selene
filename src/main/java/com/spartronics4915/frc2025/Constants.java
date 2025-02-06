@@ -168,8 +168,9 @@ public final class Constants {
         public enum ArmSubsystemState {
 
             INTAKE(Rotation2d.fromDegrees(0)),
-            SCORE(Rotation2d.fromDegrees(0)),
-            STOW(Rotation2d.fromDegrees(0));
+            SCORE(Rotation2d.fromDegrees(30)),
+            EH(Rotation2d.fromDegrees(90)),
+            STOW(Rotation2d.fromDegrees(180));
 
             public Rotation2d angle;
 
@@ -182,32 +183,23 @@ public final class Constants {
         public static final int kArmMotorID = 13;
         public static final int kPositionConversionFactor = 1;
         public static final int kVelocityConversionFactor = 1;
-
-        public static final class kArmPIDConstants {
-            public static final double kP = 0.001;
-            public static final double kI = 0;
-            public static final double kD = 0;
-        }
         
         public static final double kDt = 0.02;
 
         public static final Constraints kConstraints = new Constraints(1.0, 1.0);
         public static final int kPeriodMs = 0;
 
-        public static final double kMaxAngleScore = 0.0;
-        public static final double kMaxAngleIntake = 0.0;
-
         public static final double kS = 0.0;
         public static final double kG = 0.0;
-        public static final double kV = 0.0;
+        public static final double kV = 0.02;
         public static final double kA = 0.0;
         
         //The values set here are placeholders for sim
-        public static final Rotation2d kMinAngle = Rotation2d.fromRotations(-1);
-        public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(1);
+        public static final Rotation2d kMinAngle = Rotation2d.fromRotations(-3);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(3);
 
         public static final SlotConfigs kPIDConfigs = new SlotConfigs()
-            .withKP(0.0)
+            .withKP(1)
             .withKI(0.0)
             .withKD(0.0);
     }

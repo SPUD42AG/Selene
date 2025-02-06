@@ -1,9 +1,14 @@
 package com.spartronics4915.frc2025.subsystems.coral;
 
+
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.spartronics4915.frc2025.Constants.ArmConstants;
 import com.spartronics4915.frc2025.Constants.ArmConstants.ArmSubsystemState;
+import com.spartronics4915.frc2025.util.ModeSwitchHandler;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler.ModeSwitchInterface;
 
 import edu.wpi.first.math.MathUtil;
@@ -44,7 +49,9 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
         
         initArmProfile();
 
-        resetMechanism();
+        setMechanismAngle(Rotation2d.kZero);
+    
+        ModeSwitchHandler.EnableModeSwitchHandler(this);
     }
 
     private void initArmMotor() {
@@ -55,12 +62,12 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
 
     public void resetMechanism(){
         var position = getPosition();
-        mCurrentSetPoint = (position);
+        mCurrentSetPoint = position;
         mCurrentState = new State(angleToRaw(position), 0.0);
     }
 
     private Rotation2d convertRaw(double rotation) {
-        Rotation2d angle = Rotation2d.fromDegrees(rotation);
+        Rotation2d angle = Rotation2d.fromRotations(rotation);
         return angle;
     }
 
@@ -70,7 +77,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
     }
 
     private Rotation2d getPosition() {
-        var position = mArmMotor.getRotorPosition().getValueAsDouble();
+        var position = mArmMotor.getRotorPosition().getValue().in(Rotations);
 
         return convertRaw(position);
     }
@@ -82,14 +89,18 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
 
     @Override
     public void periodic() {
-        
+
         //need set points as a imput
         mCurrentSetPoint = Rotation2d.fromRotations(
-            MathUtil.clamp(mCurrentSetPoint.getRotations(), ArmConstants.kMinAngle.getRotations(), ArmConstants.kMaxAngle.getRotations()));
+            MathUtil.clamp(
+                mCurrentSetPoint.getRotations(), 
+                ArmConstants.kMinAngle.getRotations(), 
+                ArmConstants.kMaxAngle.getRotations()
+        ));
 
         mCurrentState = mArmProfile.calculate(ArmConstants.kDt, mCurrentState, new State((angleToRaw(mCurrentSetPoint)), 0.0));
 
-        final PositionVoltage m_request = new PositionVoltage(mCurrentState.position).withSlot(0).withFeedForward(mFFCalculator.calculate(mCurrentState.position, mCurrentState.velocity));
+        final PositionVoltage m_request = new PositionVoltage(mCurrentState.position).withFeedForward(mFFCalculator.calculate(mCurrentState.position, mCurrentState.velocity));
         
         mArmMotor.setControl(m_request);
 
@@ -97,7 +108,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
     }
 
     private void updateUserOuputs() {
-        appliedOutPub.accept(mArmMotor.getBridgeOutput().getValueAsDouble());
+        appliedOutPub.accept(mArmMotor.getMotorVoltage().getValue().in(Volts));
         positionPub.accept(getPosition());
         desiredStatePub.accept(convertRaw(mCurrentState.position));
         setpointpub.accept(mCurrentSetPoint);
