@@ -1,5 +1,8 @@
 package com.spartronics4915.frc2025.subsystems.bling2;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
@@ -37,6 +40,9 @@ public abstract class BlingSegment {
     }
     public static final BlingLEDPattern rainbow(int length) {
         return new BlingLEDPattern(LEDPattern.rainbow(255,255), length);
+    }
+    public static final BlingLEDPattern scrollingRainbow(int length, float speed) {
+        return new BlingLEDPattern(LEDPattern.rainbow(255, 255).scrollAtAbsoluteSpeed(MetersPerSecond.of(speed), Meters.of(1)), length);
     }
 
 }

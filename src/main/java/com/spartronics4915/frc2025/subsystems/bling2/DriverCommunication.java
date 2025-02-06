@@ -1,5 +1,9 @@
 package com.spartronics4915.frc2025.subsystems.bling2;
 
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.util.function.Supplier;
 
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
@@ -7,6 +11,8 @@ import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.LinearVelocityUnit;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -33,7 +39,9 @@ public class DriverCommunication extends BlingSegment {
         PROCESSOR(
             new Translation2d[] {new Translation2d(6, .5)}, 
             new Translation2d[] {new Translation2d(11.5, 7.5)}, 
-            null
+            () -> {
+                return LEDPattern.rainbow(255, 255).scrollAtAbsoluteSpeed(MetersPerSecond.of(40), Meters.of(1));
+            }
         ),
         BARGE(
             new Translation2d[] {new Translation2d(9, 6)}, 
