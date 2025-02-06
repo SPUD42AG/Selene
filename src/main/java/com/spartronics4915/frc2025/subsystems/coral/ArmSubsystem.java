@@ -66,7 +66,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
         mCurrentState = new State(angleToRaw(position), 0.0);
     }
 
-    private Rotation2d convertRaw(double rotation) {
+    private Rotation2d rawToAngle(double rotation) {
         Rotation2d angle = Rotation2d.fromRotations(rotation);
         return angle;
     }
@@ -79,7 +79,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
     private Rotation2d getPosition() {
         var position = mArmMotor.getRotorPosition().getValue().in(Rotations);
 
-        return convertRaw(position);
+        return rawToAngle(position);
     }
 
     private void initArmProfile() {
@@ -110,7 +110,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
     private void updateUserOuputs() {
         appliedOutPub.accept(mArmMotor.getMotorVoltage().getValue().in(Volts));
         positionPub.accept(getPosition());
-        desiredStatePub.accept(convertRaw(mCurrentState.position));
+        desiredStatePub.accept(rawToAngle(mCurrentState.position));
         setpointpub.accept(mCurrentSetPoint);
     }
     
