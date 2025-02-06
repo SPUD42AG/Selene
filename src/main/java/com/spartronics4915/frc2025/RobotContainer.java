@@ -7,7 +7,9 @@ package com.spartronics4915.frc2025;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.spartronics4915.frc2025.Constants.Drive;
+import com.spartronics4915.frc2025.Constants.IntakeConstants;
 import com.spartronics4915.frc2025.Constants.OI;
+import com.spartronics4915.frc2025.Constants.IntakeConstants.IntakeSpeed;
 import com.spartronics4915.frc2025.commands.Autos;
 import com.spartronics4915.frc2025.commands.ElementLocator;
 import com.spartronics4915.frc2025.commands.autos.DriveToReefPoint;
@@ -159,6 +161,16 @@ public class RobotContainer {
         );
 
         swerveSubsystem.setDefaultCommand(swerveTeleopCommand);
+
+        debugController.a().onTrue(Commands.runOnce(() -> {
+            intake.intakeMotors(IntakeSpeed.IN);
+        }));
+        debugController.b().onTrue(Commands.runOnce(() -> {
+            intake.intakeMotors(IntakeSpeed.NEURTRAL);
+        }));
+        debugController.x().onTrue(Commands.runOnce(() -> {
+            intake.intakeMotors(IntakeSpeed.OUT);
+        }));
     }
 
     /**

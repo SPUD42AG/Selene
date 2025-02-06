@@ -24,8 +24,9 @@ import au.grapplerobotics.ConfigurationFailedException;
 import edu.wpi.first.wpilibj.TimedRobot;
 import au.grapplerobotics.CanBridge;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IntakeSubsystem {
+public class IntakeSubsystem extends SubsystemBase {
     
     private SparkMax mMotor1;
     private SparkClosedLoopController closedLoopController;
@@ -65,5 +66,10 @@ public class IntakeSubsystem {
 
     public void intakeMotors (IntakeSpeed preset) {
         setSpeed(preset.intakeSpeed);
+    }
+
+    @Override
+    public periodic() {
+        detect();
     }
 }
