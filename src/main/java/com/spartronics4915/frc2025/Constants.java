@@ -51,12 +51,14 @@ public final class Constants {
 
     public static final class ClimberConstants{
 
-        public static double liftedAngle = 0.5;
-        public static double stowAngle = 0.5;
+        public static final int motorID = 1;
+        
+        public static final double liftedAngle = 0.5;
+        public static final double stowAngle = 0.5;
 
-        public static double kP = 0.0;
-        public static double kI = 0.0;
-        public static double kD = 0.0;
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
 
         //ff  
             //place holder values
@@ -76,19 +78,20 @@ public final class Constants {
 
         public enum ClimberState {
         
-        LIFTED(Rotation2d.fromDegrees(Constants.ClimberConstants.liftedAngle)),
-        STOW(Rotation2d.fromDegrees(Constants.ClimberConstants.stowAngle)),;
+            LIFTED(Rotation2d.fromDegrees(Constants.ClimberConstants.liftedAngle)),
+            STOW(Rotation2d.fromDegrees(Constants.ClimberConstants.stowAngle)),;
         
-        public final Rotation2d angle;
+            public final Rotation2d angle;
 
-        private ClimberState(Rotation2d angle) {
-            this.angle = angle;
+            private ClimberState(Rotation2d angle) {
+                this.angle = angle;
             
+            }
+
         }
 
-        
 
-    }
+        
     }
 
     public static final class Drive {

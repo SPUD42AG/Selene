@@ -38,9 +38,9 @@ public class ClimberSubsystem extends SubsystemBase {
     
     private SparkClosedLoopController mClosedLoopController;
     
-    public ClimberSubsystem () {                 //-need fill in motor Ids
+    public ClimberSubsystem () {                
         
-        mClimberMotor = new SparkMax(1, MotorType.kBrushless);
+        mClimberMotor = new SparkMax(1, MotorType.kBrushless); // motor id is here
             config = new SparkMaxConfig();
 
                 config
@@ -77,8 +77,8 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void resetMechanism(){
-        var position = getPosition();
-        mCurrentSetPoint = (position);
+        Rotation2d position = getPosition();
+        mCurrentSetPoint = position;
         mCurrentState = new State(angleToRaw(position), 0.0);
     }
 
@@ -90,7 +90,7 @@ public class ClimberSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         
-        //need set points as a imput
+        //need set points as a input
         mCurrentSetPoint = Rotation2d.fromRotations(
             MathUtil.clamp(mCurrentSetPoint.getRotations(), ClimberConstants.kMinAngle.getRotations(), ClimberConstants.kMaxAngle.getRotations()));
 
@@ -113,7 +113,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void incrementAngle(Rotation2d delta){
         mCurrentSetPoint = mCurrentSetPoint.plus(delta);
-
     }
 
     private Rotation2d getPosition() {
