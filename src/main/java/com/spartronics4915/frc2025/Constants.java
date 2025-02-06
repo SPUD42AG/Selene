@@ -51,7 +51,7 @@ public final class Constants {
 
     public static final class ClimberConstants{
 
-        public static final int motorID = 1;
+        public static final int motorID = 36;
         
         public static final double liftedAngle = 0.75;
         public static final double stowAngle = 0.25;
