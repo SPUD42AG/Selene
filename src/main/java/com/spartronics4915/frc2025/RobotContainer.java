@@ -23,6 +23,7 @@ import com.spartronics4915.frc2025.subsystems.Bling.BlingSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.SimVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler;
+import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 
 import static com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers.shouldFlip;
 
@@ -58,6 +59,8 @@ public class RobotContainer {
 
     private static final CommandXboxController debugController = new CommandXboxController(OI.kDebugControllerPort);
 
+    private ElevatorSubsystem elevatorSubsystem;
+
     private final ElementLocator elementLocator = new ElementLocator();
     private final VisionDeviceSubystem visionSubsystem;
     private final OdometrySubsystem odometrySubsystem;
@@ -79,6 +82,7 @@ public class RobotContainer {
     public RobotContainer() {
 
         mechanismSim = new MotorSimulationSubsystem();
+        elevatorSubsystem = new ElevatorSubsystem();
         ModeSwitchHandler.EnableModeSwitchHandler(swerveSubsystem); //TODO add any subsystems that extend ModeSwitchInterface
 
         if (RobotBase.isSimulation()) {

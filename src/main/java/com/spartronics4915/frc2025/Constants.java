@@ -193,12 +193,16 @@ public final class Constants {
         public static final Constraints constraints = new Constraints(0, 0);
 
         public static final double minHeight = 0;
-        public static final double maxHeight = 0;
+        
+        // This is a dummy number for now.
+        public static final double maxHeight = 100;
 
-        public static final double kS = 0.0;
-        public static final double kG = 0.0;
-        public static final double kV = 0.0;
-        public static final double kA = 0.0;
+        // Not using elevator feedforward constants for now, so just commenting them out.
+        
+        // public static final double kS = 0.0;
+        // public static final double kG = 0.0;
+        // public static final double kV = 0.0;
+        // public static final double kA = 0.0;
 
         public static final class motorPIDConstants {
             public static final double kP = 0;

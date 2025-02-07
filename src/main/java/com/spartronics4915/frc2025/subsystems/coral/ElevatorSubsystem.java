@@ -22,6 +22,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterface{
 
@@ -80,11 +81,16 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
         followerConfig.follow(motor);
         follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        FFCalculator = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
+        // If you are setting constants to zero, please explicitly set them to zero in the code.
+        // It makes it *MUCH* easier to debug if you can quickly see which features and constants are being used.
+
+        FFCalculator = new ElevatorFeedforward(0,0,0,0);
         elevatorProfile = new TrapezoidProfile(ElevatorConstants.constraints);
         elevatorClosedLoopController = motor.getClosedLoopController();
 
         resetMechanism();
+
+        SmartDashboard.putNumber("ElevatorPosition", currentSetPoint);
     }
 
     public void resetMechanism() {
@@ -103,6 +109,14 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
 
     @Override
     public void periodic() {
+
+
+        double dashboardValue = SmartDashboard.getNumber("ElevatorPosition", currentSetPoint);
+
+        if(Math.abs(dashboardValue - currentSetPoint) > 1e-3) {
+            setSetPoint(dashboardValue);
+        }
+
         currentSetPoint = MathUtil.clamp(currentSetPoint, ElevatorConstants.minHeight, ElevatorConstants.maxHeight);
 
         currentState = elevatorProfile.calculate(ElevatorConstants.dt, currentState, new State(currentSetPoint, 0));
