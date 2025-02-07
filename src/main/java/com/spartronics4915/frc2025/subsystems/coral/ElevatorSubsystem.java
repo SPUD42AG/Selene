@@ -90,7 +90,8 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
 
         resetMechanism();
 
-        SmartDashboard.putNumber("ElevatorPosition", currentSetPoint);
+        SmartDashboard.putNumber("ElevatorSetpoint", currentSetPoint);
+        SmartDashboard.putNumber("ElevatorPosition", getPosition());
     }
 
     public void resetMechanism() {
@@ -112,6 +113,7 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
 
 
         double dashboardValue = SmartDashboard.getNumber("ElevatorPosition", currentSetPoint);
+        SmartDashboard.putNumber("ElevatorPosition", getPosition());
 
         if(Math.abs(dashboardValue - currentSetPoint) > 1e-3) {
             setSetPoint(dashboardValue);
