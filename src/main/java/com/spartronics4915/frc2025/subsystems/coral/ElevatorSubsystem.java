@@ -56,7 +56,7 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
             .velocityConversionFactor(ElevatorConstants.motorVelocityConversionFactor);
         motorConfig
             .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(ElevatorConstants.motorPIDConstants.kP, ElevatorConstants.motorPIDConstants.kI, ElevatorConstants.motorPIDConstants.kD);
+            .pid(ElevatorConstants.motorPIDConstants.kP, 0, ElevatorConstants.motorPIDConstants.kD);
             
         
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -76,7 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
             .velocityConversionFactor(ElevatorConstants.followerVelocityConversionFactor);
         followerConfig
             .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(ElevatorConstants.followerPIDConstants.kP, ElevatorConstants.followerPIDConstants.kI, ElevatorConstants.followerPIDConstants.kD);
+            .pid(ElevatorConstants.followerPIDConstants.kP, 0, ElevatorConstants.followerPIDConstants.kD);
 
         followerConfig.follow(motor);
         follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
