@@ -69,7 +69,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     @Override
-    public periodic() {
+    public void periodic() {
         detect();
     }
 }

@@ -55,9 +55,6 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int kMotorID = 20;
 
-        public static final int mPIDController = 0;
-        public static final int kPIDConstants = 0;
-
         public static final int kLaserCANID = 0;
         public static final int laserCANDistance = 100;
 
@@ -71,12 +68,12 @@ public final class Constants {
 
         public static final ClosedLoopConfig kCLConfig = new ClosedLoopConfig()
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.0, 0.0, 0.0);
+            .pid(0.5, 0.0, 0.0);
 
         public enum IntakeSpeed {
-            IN (0.0),
-            NEURTRAL (0.0),
-            OUT (-0.0);
+            IN (0.5),
+            NEURTRAL (0.5),
+            OUT (-0.5);
 
             public final double intakeSpeed;
             
