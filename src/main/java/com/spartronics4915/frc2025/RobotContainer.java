@@ -65,6 +65,7 @@ public class RobotContainer {
 
     // ******** Simulation entries
     public final MotorSimulationSubsystem mechanismSim;
+    public final ClimberSubsystem climberSubsystem;
     // ********
 
     public final SwerveTeleopCommand swerveTeleopCommand = new SwerveTeleopCommand(driverController, swerveSubsystem);
@@ -74,7 +75,7 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
 
-    public final ClimberSubsystem climberSubsystem;
+    
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
