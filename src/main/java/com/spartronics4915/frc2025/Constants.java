@@ -54,15 +54,14 @@ import com.spartronics4915.frc2025.Constants.IntakeConstants.IntakeSpeed;
 public final class Constants {
 
     public static final class IntakeConstants {
-        public static final int kMotorID = 1;
+        public static final int kMotorID = 2;
 
-        public static final int kLaserCANID = 0;
-        public static final int laserCANDistance = 100;
+        public static final int kLaserCANID = 10;
+        public static final int laserCANDistance = 110;
 
         public static final int smartCurrentLimit = 18;
         public static final int secondaryCurrentLimit = 20;
 
-                    
         public static final EncoderConfig kEncoderConfig = new EncoderConfig()
             .positionConversionFactor(1/4.0)
             .velocityConversionFactor(1/4.0);
@@ -79,9 +78,8 @@ public final class Constants {
             .smartCurrentLimit(smartCurrentLimit)
             .secondaryCurrentLimit(secondaryCurrentLimit);
 
-
         public enum IntakeSpeed {
-            IN (1000),
+            IN (500),
             NEUTRAL (0),
             OUT (-1000);
 
