@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilogram;
@@ -50,30 +51,34 @@ import com.pathplanner.lib.config.RobotConfig;
 public final class Constants {
 
     public static final class IntakeConstants {
-        public static final int kMotorID = 20;
+        public static final int kMotorID = 2;
 
-        public static final int mPIDController = 0;
-        public static final int kPIDConstants = 0;
+        public static final int kLaserCANID = 10;
+        public static final int laserCANDistance = 110;
 
-        public static final int kLaserCANID = 0;
-        public static final int laserCANDistance = 100;
+        public static final int smartCurrentLimit = 18;
+        public static final int secondaryCurrentLimit = 20;
 
-        public static final SparkBaseConfig kMotorConfig = new SparkMaxConfig()
-            .inverted(true)
-            .idleMode(IdleMode.kBrake);
-            
         public static final EncoderConfig kEncoderConfig = new EncoderConfig()
-            .positionConversionFactor(1000)
-            .velocityConversionFactor(1000);
+            .positionConversionFactor(1/4.0)
+            .velocityConversionFactor(1/4.0);
 
         public static final ClosedLoopConfig kCLConfig = new ClosedLoopConfig()
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.0, 0.0, 0.0);
+            .pid(0.0006, 0, 0.0);
+
+        public static final SparkBaseConfig kMotorConfig = new SparkMaxConfig()
+            .inverted(false)
+            .idleMode(IdleMode.kCoast)
+            .apply(kCLConfig)
+            .apply(kEncoderConfig)
+            .smartCurrentLimit(smartCurrentLimit)
+            .secondaryCurrentLimit(secondaryCurrentLimit);
 
         public enum IntakeSpeed {
-            IN (0.0),
-            NEURTRAL (0.0),
-            OUT (-0.0);
+            IN (500),
+            NEUTRAL (0),
+            OUT (-1000);
 
             public final double intakeSpeed;
             
