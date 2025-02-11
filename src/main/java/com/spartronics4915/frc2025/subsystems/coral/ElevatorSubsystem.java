@@ -62,7 +62,6 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
             .pid(ElevatorConstants.motorPIDConstants.kP, ElevatorConstants.motorPIDConstants.kI, ElevatorConstants.motorPIDConstants.kD);
             
         
-        motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Follower motor init
         follower = new SparkMax(ElevatorConstants.elevatorFollowerID, MotorType.kBrushless);
@@ -81,7 +80,8 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
         //     .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         //     .pid(ElevatorConstants.followerPIDConstants.kP, ElevatorConstants.followerPIDConstants.kI, ElevatorConstants.followerPIDConstants.kD);
 
-        followerConfig.follow(ElevatorConstants.elevatorMotorID, false);
+        followerConfig.follow(ElevatorConstants.elevatorMotorID, true);
+        motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         FFCalculator = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
