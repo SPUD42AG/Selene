@@ -17,12 +17,16 @@ import com.spartronics4915.frc2025.util.ModeSwitchHandler.ModeSwitchInterface;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
+@Logged
 public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterface{
 
     private SparkMax motor;
@@ -41,12 +45,12 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
         // Main elevator motor init
         motor = new SparkMax(ElevatorConstants.elevatorMotorID, MotorType.kBrushless);
 
-        RelativeEncoder motorEncoder = motor.getEncoder();
+        motorEncoder = motor.getEncoder();
 
         motorConfig = new SparkMaxConfig();
 
         motorConfig
-            .inverted(ElevatorConstants.motorInverted)
+            // .inverted(ElevatorConstants.motorInverted)
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(ElevatorConstants.motorSmartCurrentLimit)
             .secondaryCurrentLimit(ElevatorConstants.motorSecondaryCurrentLimit);
@@ -65,49 +69,71 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
 
         SparkMaxConfig followerConfig = new SparkMaxConfig();
 
-        followerConfig
-            .inverted(ElevatorConstants.followerInverted)
-            .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(ElevatorConstants.followerSmartCurrentLimit)
-            .secondaryCurrentLimit(ElevatorConstants.followerSecondaryCurrentLimit);
-        followerConfig.encoder
-            .positionConversionFactor(ElevatorConstants.followerPositionConversionFactor)
-            .velocityConversionFactor(ElevatorConstants.followerVelocityConversionFactor);
-        followerConfig
-            .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(ElevatorConstants.followerPIDConstants.kP, ElevatorConstants.followerPIDConstants.kI, ElevatorConstants.followerPIDConstants.kD);
+        // followerConfig
+            // .inverted(ElevatorConstants.followerInverted)
+        //     .idleMode(IdleMode.kBrake)
+        //     .smartCurrentLimit(ElevatorConstants.followerSmartCurrentLimit)
+        //     .secondaryCurrentLimit(ElevatorConstants.followerSecondaryCurrentLimit);
+        // followerConfig.encoder
+        //     .positionConversionFactor(ElevatorConstants.followerPositionConversionFactor)
+        //     .velocityConversionFactor(ElevatorConstants.followerVelocityConversionFactor);
+        // followerConfig
+        //     .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        //     .pid(ElevatorConstants.followerPIDConstants.kP, ElevatorConstants.followerPIDConstants.kI, ElevatorConstants.followerPIDConstants.kD);
 
-        followerConfig.follow(motor);
+        followerConfig.follow(ElevatorConstants.elevatorMotorID, false);
         follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         FFCalculator = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
         elevatorProfile = new TrapezoidProfile(ElevatorConstants.constraints);
         elevatorClosedLoopController = motor.getClosedLoopController();
 
-        resetMechanism();
+        setMechanismPosition(0.0);
     }
 
     public void resetMechanism() {
-        double position = getPosition();
+        resetMechanism(getPosition());
+    }
+
+    public void resetMechanism(double position) {
         currentSetPoint = position;
         currentState = new State(position, 0);
     }
 
     private double getPosition() {
-        return motor.getEncoder().getPosition();
+        return motorEncoder.getPosition();
     }
 
     private double getVelocity() {
-        return motor.getEncoder().getVelocity();
+        return motorEncoder.getVelocity();
     }
+
+    private final DoublePublisher setpointPub = NetworkTableInstance.getDefault().getTable("loggingElev").getDoubleTopic("setpoint").publish();
+    private final DoublePublisher appliedOutPub = NetworkTableInstance.getDefault().getTable("loggingElev").getDoubleTopic("appliedOut").publish();
+    private final DoublePublisher appliedOutFollowPub = NetworkTableInstance.getDefault().getTable("loggingElev").getDoubleTopic("appliedOutFollow").publish();
+
+    private final DoublePublisher currStatePub = NetworkTableInstance.getDefault().getTable("loggingElev").getDoubleTopic("currState").publish();
+    private final DoublePublisher PositionPub = NetworkTableInstance.getDefault().getTable("loggingElev").getDoubleTopic("Position").publish();
+
 
     @Override
     public void periodic() {
-        currentSetPoint = MathUtil.clamp(currentSetPoint, ElevatorConstants.minHeight, ElevatorConstants.maxHeight);
+
+        currentSetPoint = MathUtil.clamp(
+            currentSetPoint, 
+            ElevatorConstants.minHeight, 
+            ElevatorConstants.maxHeight
+        );
 
         currentState = elevatorProfile.calculate(ElevatorConstants.dt, currentState, new State(currentSetPoint, 0));
 
         elevatorClosedLoopController.setReference(currentState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, FFCalculator.calculate(currentState.velocity));
+
+        setpointPub.accept(currentSetPoint);
+        appliedOutPub.accept(motor.getAppliedOutput());
+        currStatePub.accept(currentState.position);
+        PositionPub.accept(getPosition());
+        appliedOutFollowPub.accept(follower.getAppliedOutput());
     }
 
     public void moveToPosition(ElevatorSubsystemState value) {
@@ -120,7 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
 
     private void setMechanismPosition(double position){
         motorEncoder.setPosition(position);
-        resetMechanism();
+        resetMechanism(position);
     }
 
     public void incrementAngle(double delta){
