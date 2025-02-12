@@ -51,9 +51,9 @@ import com.ctre.phoenix6.configs.SlotConfigs;
 public final class Constants {
 
     public static final class IntakeConstants {
-        public static final int kMotorID = 2;
+        public static final int kMotorID = 12;
 
-        public static final int kLaserCANID = 10;
+        public static final int kLaserCANID = 21;
         public static final int laserCANDistance = 110;
 
         public static final int smartCurrentLimit = 18;
@@ -106,7 +106,7 @@ public final class Constants {
 
     public static final class ClimberConstants{
 
-        public static final int motorID = 36;
+        public static final int motorID = 13;
         
         public static final double liftedAngle = 0.75;
         public static final double stowAngle = 0.25;
@@ -276,7 +276,7 @@ public final class Constants {
 
         }
         
-        public static final int kArmMotorID = 13;
+        public static final int kArmMotorID = 11;
         public static final int kPositionConversionFactor = 1;
         public static final int kVelocityConversionFactor = 1;
         
@@ -316,8 +316,8 @@ public final class Constants {
             }
         }
 
-        public static final int elevatorMotorID = 2;
-        public static final int elevatorFollowerID = 3;
+        public static final int elevatorMotorID = 9; //left motor
+        public static final int elevatorFollowerID = 10; //right motor
         public static final boolean motorInverted = true;
         public static final boolean followerInverted = true;
         public static final double motorPositionConversionFactor = 1/20.0;
