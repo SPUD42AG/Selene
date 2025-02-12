@@ -27,6 +27,7 @@ import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSegment;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.SimVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler;
@@ -65,6 +66,8 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(Drive.SwerveDirectories.PROGRAMMER_CHASSIS);
 
+    ElevatorSubsystem ElevatorSubsystem = new ElevatorSubsystem();
+
     private static final CommandXboxController driverController = new CommandXboxController(OI.kDriverControllerPort);
 
     private static final CommandXboxController operatorController = new CommandXboxController(
@@ -99,7 +102,7 @@ public class RobotContainer {
     public RobotContainer() {
 
         mechanismSim = new MotorSimulationSubsystem();
-        ModeSwitchHandler.EnableModeSwitchHandler(swerveSubsystem); //TODO add any subsystems that extend ModeSwitchInterface
+        ModeSwitchHandler.EnableModeSwitchHandler(ElevatorSubsystem); //TODO add any subsystems that extend ModeSwitchInterface
 
         if (RobotBase.isSimulation()) {
             visionSubsystem = new SimVisionSubsystem(swerveSubsystem);
