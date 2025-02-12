@@ -18,7 +18,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
-
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilogram;
@@ -32,9 +31,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.ctre.phoenix6.configs.SlotConfigs;
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -106,30 +102,47 @@ public final class Constants {
 
     public static final class ClimberConstants{
 
-        public static double liftedAngle = 0.5;
-        public static double stowAngle = 0.5;
+        public static final int motorID = 36;
+        
+        public static final double liftedAngle = 0.75;
+        public static final double stowAngle = 0.25;
 
-        public static double kP = 0.0;
-        public static double kI = 0.0;
-        public static double kD = 0.0;
+        public static final double kP = 0.01;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
+        //ff  
+            //place holder values
+            public static final Rotation2d kMinAngle = Rotation2d.fromRotations(0);
+            public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(1);
+
+            public static final double kDt = 0.02;
+
+            public static final double kS = 0.0;
+            public static final double kG = 0.0;
+            public static final double kV = 0.0;
+            public static final double kA = 0.0;
+
+
 
         public static final Constraints kConstraints = new Constraints(1.0, 1.0);
 
         public enum ClimberState {
         
-        LIFTED(Rotation2d.fromDegrees(Constants.ClimberConstants.liftedAngle)),
-        STOW(Rotation2d.fromDegrees(Constants.ClimberConstants.stowAngle)),;
+            LIFTED(Rotation2d.fromDegrees(Constants.ClimberConstants.liftedAngle)),
+            STOW(Rotation2d.fromDegrees(Constants.ClimberConstants.stowAngle)),;
         
-        public final Rotation2d angle;
+            public final Rotation2d angle;
 
-        private ClimberState(Rotation2d angle) {
-            this.angle = angle;
+            private ClimberState(Rotation2d angle) {
+                this.angle = angle;
             
+            }
+
         }
 
-        
 
-    }
+
     }
 
     public static final class Drive {
