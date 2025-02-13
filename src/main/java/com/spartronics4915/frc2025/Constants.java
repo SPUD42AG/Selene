@@ -157,17 +157,17 @@ public final class Constants {
                     KilogramSquareMeters.of(1.9387211145),
                     new ModuleConfig(
                         Inches.of(3.75/2.0),
-                        MetersPerSecond.of(5),
+                        MetersPerSecond.of(4),
                         1.00, //CHECKUP guess
                         DCMotor.getNEO(1),
                         6.75,
                         Amps.of(40),
                         1
                     ),
-                    new Translation2d(Inches.of(12.25), Inches.of(12.3125)),
-                    new Translation2d(Inches.of(12.25), Inches.of(-12.3125)),
-                    new Translation2d(Inches.of(-12.25), Inches.of(12.3125)),
-                    new Translation2d(Inches.of(-12.25), Inches.of(-12.3125))
+                    new Translation2d(Inches.of(12.625), Inches.of(12.5625)),
+                    new Translation2d(Inches.of(12.125), Inches.of(-12.5)),
+                    new Translation2d(Inches.of(-12), Inches.of(12.5)),
+                    new Translation2d(Inches.of(-12.125), Inches.of(-12.4375))
                 ));
 
                 public RobotConfig config;
