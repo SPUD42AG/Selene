@@ -165,9 +165,9 @@ public final class Constants {
         public enum ElevatorSubsystemState {
 
             STOW(0),
-            L1(0.25),
-            L3(0.5),
-            L4(1);
+            L1(0.1),
+            L3(0.2),
+            L4(0.3);
 
             public double meter;
 
@@ -178,12 +178,10 @@ public final class Constants {
 
         public static final int elevatorMotorID = 2;
         public static final int elevatorFollowerID = 3;
-        public static final boolean motorInverted = true;
+        public static final boolean motorInverted = false;
         public static final boolean followerInverted = true;
-        public static final double motorPositionConversionFactor = 1/20.0;
-        public static final double motorVelocityConversionFactor = 1/20.0;
-        public static final double followerPositionConversionFactor = 1/20.0;
-        public static final double followerVelocityConversionFactor = 1/20.0;
+        public static final double motorPositionConversionFactor = (1/20.0) * 0.14044 * 2;
+        public static final double motorVelocityConversionFactor = (1/20.0) * 0.14044 * 2;
         public static final int motorSmartCurrentLimit = 13;
         public static final int motorSecondaryCurrentLimit = 15;
         public static final int followerSmartCurrentLimit = 13;
@@ -194,7 +192,7 @@ public final class Constants {
         public static final Constraints constraints = new Constraints(1.0, 1.0);
 
         public static final double minHeight = 0;
-        public static final double maxHeight = 10;
+        public static final double maxHeight = 0.5;
 
         public static final double kS = 0.0;
         public static final double kG = 0.0;
@@ -202,12 +200,6 @@ public final class Constants {
         public static final double kA = 0.0;
 
         public static final class motorPIDConstants {
-            public static final double kP = 0.25;
-            public static final double kI = 0;
-            public static final double kD = 0;
-        }
-
-        public static final class followerPIDConstants {
             public static final double kP = 0.25;
             public static final double kI = 0;
             public static final double kD = 0;
