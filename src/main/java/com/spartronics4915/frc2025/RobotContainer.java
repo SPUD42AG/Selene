@@ -20,6 +20,7 @@ import com.spartronics4915.frc2025.commands.autos.AlignToReef.ReefSide;
 import com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers;
 import com.spartronics4915.frc2025.commands.drive.RotationIndependentControlCommand;
 import com.spartronics4915.frc2025.commands.drive.SwerveTeleopCommand;
+import com.spartronics4915.frc2025.subsystems.ClimberSubsystem;
 import com.spartronics4915.frc2025.subsystems.MotorSimulationSubsystem;
 import com.spartronics4915.frc2025.subsystems.OdometrySubsystem;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
@@ -27,6 +28,8 @@ import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSegment;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.SimVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler;
@@ -71,31 +74,33 @@ public class RobotContainer {
     private static final CommandXboxController driverController = new CommandXboxController(OI.kDriverControllerPort);
 
     private static final CommandXboxController operatorController = new CommandXboxController(
-            OI.kOperatorControllerPort);
-
+        OI.kOperatorControllerPort);
+        
     private static final CommandXboxController debugController = new CommandXboxController(OI.kDebugControllerPort);
 
     private static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
     private final ElementLocator elementLocator = new ElementLocator();
     private final VisionDeviceSubystem visionSubsystem;
     private final OdometrySubsystem odometrySubsystem;
-
+        
     // ******** Simulation entries
     public final MotorSimulationSubsystem mechanismSim;
     // ********
+    
+    public final IntakeSubsystem intakeSubsystem;
+    public final ArmSubsystem armSubsystem;
+    public final ElevatorSubsystem elevatorSubsystem;
+    public final ClimberSubsystem climberSubsystem;
 
     public final SwerveTeleopCommand swerveTeleopCommand = new SwerveTeleopCommand(driverController, swerveSubsystem);
     // Replace with CommandPS4Controller or CommandJoystick if needed
-
+    
     public final BlingSubsystem blingSubsystem = new BlingSubsystem(0, BlingSegment.solid(Color.kYellow, 21), BlingSegment.solid(Color.kBlue, 21));
-
+    
     private final AlignToReef alignmentCommandFactory = new AlignToReef(swerveSubsystem, fieldLayout);
 
     @NotLogged
     private final SendableChooser<Command> autoChooser;
-
-    private final IntakeSubsystem intake = new IntakeSubsystem();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -103,7 +108,17 @@ public class RobotContainer {
     public RobotContainer() {
 
         mechanismSim = new MotorSimulationSubsystem();
-        ModeSwitchHandler.EnableModeSwitchHandler(swerveSubsystem); //TODO add any subsystems that extend ModeSwitchInterface
+
+        intakeSubsystem = new IntakeSubsystem();
+        armSubsystem = new ArmSubsystem();
+        elevatorSubsystem = new ElevatorSubsystem();
+        climberSubsystem = new ClimberSubsystem();
+
+        ModeSwitchHandler.EnableModeSwitchHandler(
+            intakeSubsystem,
+            armSubsystem,
+            elevatorSubsystem
+        ); //TODO add any subsystems that extend ModeSwitchInterface
 
         if (RobotBase.isSimulation()) {
             visionSubsystem = new SimVisionSubsystem(swerveSubsystem);
@@ -142,7 +157,9 @@ public class RobotContainer {
     private void configureBindings() {
 
         swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(driverController, swerveSubsystem));
-
+        
+        operatorController.leftTrigger().onTrue(climberSubsystem.presetCommand(Constants.ClimberConstants.ClimberState.STOW));
+        operatorController.leftBumper().onTrue(climberSubsystem.presetCommand(Constants.ClimberConstants.ClimberState.LIFTED));
 
         //switch field and robot relative
         driverController.a().toggleOnTrue(Commands.startEnd(() -> {swerveTeleopCommand.setFieldRelative(!OI.kStartFieldRel);}, () -> {swerveTeleopCommand.setFieldRelative(OI.kStartFieldRel);}));

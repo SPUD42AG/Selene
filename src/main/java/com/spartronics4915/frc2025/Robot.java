@@ -4,6 +4,7 @@
 
 package com.spartronics4915.frc2025;
 
+import au.grapplerobotics.CanBridge;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.logging.errors.ErrorHandler;
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+        CanBridge.runTCP();
         Epilogue.configure(config -> {
             if (isSimulation()) {
                 config.errorHandler = ErrorHandler.crashOnError();
