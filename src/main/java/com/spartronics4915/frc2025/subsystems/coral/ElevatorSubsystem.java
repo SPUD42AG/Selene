@@ -48,7 +48,7 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
         motorConfig = new SparkMaxConfig();
 
         motorConfig
-            // .inverted(ElevatorConstants.motorInverted)
+            .inverted(ElevatorConstants.motorInverted)
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(ElevatorConstants.motorSmartCurrentLimit)
             .secondaryCurrentLimit(ElevatorConstants.motorSecondaryCurrentLimit);
@@ -57,28 +57,19 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
             .velocityConversionFactor(ElevatorConstants.motorVelocityConversionFactor);
         motorConfig
             .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(ElevatorConstants.motorPIDConstants.kP, ElevatorConstants.motorPIDConstants.kI, ElevatorConstants.motorPIDConstants.kD);
-            
-        
+            .pid(ElevatorConstants.motorPIDConstants.kP, ElevatorConstants.motorPIDConstants.kI, ElevatorConstants.motorPIDConstants.kD); 
 
         // Follower motor init
         follower = new SparkMax(ElevatorConstants.elevatorFollowerID, MotorType.kBrushless);
 
         SparkMaxConfig followerConfig = new SparkMaxConfig();
 
-        // followerConfig
-            // .inverted(ElevatorConstants.followerInverted)
-        //     .idleMode(IdleMode.kBrake)
-        //     .smartCurrentLimit(ElevatorConstants.followerSmartCurrentLimit)
-        //     .secondaryCurrentLimit(ElevatorConstants.followerSecondaryCurrentLimit);
-        // followerConfig.encoder
-        //     .positionConversionFactor(ElevatorConstants.followerPositionConversionFactor)
-        //     .velocityConversionFactor(ElevatorConstants.followerVelocityConversionFactor);
-        // followerConfig
-        //     .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        //     .pid(ElevatorConstants.followerPIDConstants.kP, ElevatorConstants.followerPIDConstants.kI, ElevatorConstants.followerPIDConstants.kD);
+        followerConfig
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(ElevatorConstants.followerSmartCurrentLimit)
+            .secondaryCurrentLimit(ElevatorConstants.followerSecondaryCurrentLimit);
 
-        followerConfig.follow(ElevatorConstants.elevatorMotorID, true);
+        followerConfig.follow(ElevatorConstants.elevatorMotorID, ElevatorConstants.followerInverted);
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
