@@ -18,11 +18,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
+
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilogram;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
@@ -140,8 +144,8 @@ public final class Constants {
         public static final double kChassisRadius = Math.hypot(
                 kTrackWidth / 2, kWheelbase / 2);
 
-        public static final double kMaxSpeed = 5;
-        public static final double kMaxAngularSpeed = kMaxSpeed * Math.PI / kChassisRadius;
+        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(5);
+        public static final AngularVelocity kMaxAngularSpeed = RadiansPerSecond.of(kMaxSpeed.in(MetersPerSecond) * Math.PI / kChassisRadius);
 
         public static final class AutoConstants {
             public static final PIDConstants kTranslationPID = new PIDConstants(5.0,0,0);
@@ -153,17 +157,17 @@ public final class Constants {
                     KilogramSquareMeters.of(1.9387211145),
                     new ModuleConfig(
                         Inches.of(3.75/2.0),
-                        MetersPerSecond.of(5),
+                        MetersPerSecond.of(4),
                         1.00, //CHECKUP guess
                         DCMotor.getNEO(1),
                         6.75,
                         Amps.of(40),
                         1
                     ),
-                    new Translation2d(Inches.of(12.25), Inches.of(12.3125)),
-                    new Translation2d(Inches.of(12.25), Inches.of(-12.3125)),
-                    new Translation2d(Inches.of(-12.25), Inches.of(12.3125)),
-                    new Translation2d(Inches.of(-12.25), Inches.of(-12.3125))
+                    new Translation2d(Inches.of(12.625), Inches.of(12.5625)),
+                    new Translation2d(Inches.of(12.125), Inches.of(-12.5)),
+                    new Translation2d(Inches.of(-12), Inches.of(12.5)),
+                    new Translation2d(Inches.of(-12.125), Inches.of(-12.4375))
                 ));
 
                 public RobotConfig config;
