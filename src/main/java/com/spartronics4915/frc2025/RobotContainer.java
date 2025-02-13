@@ -4,22 +4,32 @@
 
 package com.spartronics4915.frc2025;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.spartronics4915.frc2025.Constants.Drive;
 import com.spartronics4915.frc2025.Constants.OI;
 import com.spartronics4915.frc2025.commands.Autos;
 import com.spartronics4915.frc2025.commands.ElementLocator;
+import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
+import com.spartronics4915.frc2025.commands.autos.AlignToReef;
 import com.spartronics4915.frc2025.commands.autos.DriveToReefPoint;
+import com.spartronics4915.frc2025.commands.autos.AlignToReef.BranchSide;
+import com.spartronics4915.frc2025.commands.autos.AlignToReef.ReefSide;
 import com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers;
 import com.spartronics4915.frc2025.commands.drive.RotationIndependentControlCommand;
 import com.spartronics4915.frc2025.commands.drive.SwerveTeleopCommand;
+import com.spartronics4915.frc2025.subsystems.ClimberSubsystem;
 import com.spartronics4915.frc2025.subsystems.MotorSimulationSubsystem;
 import com.spartronics4915.frc2025.subsystems.OdometrySubsystem;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSegment;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.SimVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler;
@@ -29,8 +39,17 @@ import static com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers.s
 
 import java.util.Set;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -48,6 +67,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
+@Logged
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(Drive.SwerveDirectories.PROGRAMMER_CHASSIS);
@@ -55,25 +75,32 @@ public class RobotContainer {
     private static final CommandXboxController driverController = new CommandXboxController(OI.kDriverControllerPort);
 
     private static final CommandXboxController operatorController = new CommandXboxController(
-            OI.kOperatorControllerPort);
-
+        OI.kOperatorControllerPort);
+        
     private static final CommandXboxController debugController = new CommandXboxController(OI.kDebugControllerPort);
 
-    private ElevatorSubsystem elevatorSubsystem;
-
+    private static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
     private final ElementLocator elementLocator = new ElementLocator();
     private final VisionDeviceSubystem visionSubsystem;
     private final OdometrySubsystem odometrySubsystem;
-
+        
     // ******** Simulation entries
     public final MotorSimulationSubsystem mechanismSim;
     // ********
+    
+    public final IntakeSubsystem intakeSubsystem;
+    public final ArmSubsystem armSubsystem;
+    public final ElevatorSubsystem elevatorSubsystem;
+    public final ClimberSubsystem climberSubsystem;
 
     public final SwerveTeleopCommand swerveTeleopCommand = new SwerveTeleopCommand(driverController, swerveSubsystem);
     // Replace with CommandPS4Controller or CommandJoystick if needed
-
+    
     public final BlingSubsystem blingSubsystem = new BlingSubsystem(0, BlingSegment.solid(Color.kYellow, 21), BlingSegment.solid(Color.kBlue, 21));
+    
+    private final AlignToReef alignmentCommandFactory = new AlignToReef(swerveSubsystem, fieldLayout);
 
+    @NotLogged
     private final SendableChooser<Command> autoChooser;
 
     /**
@@ -82,8 +109,17 @@ public class RobotContainer {
     public RobotContainer() {
 
         mechanismSim = new MotorSimulationSubsystem();
+
+        intakeSubsystem = new IntakeSubsystem();
+        armSubsystem = new ArmSubsystem();
         elevatorSubsystem = new ElevatorSubsystem();
-        ModeSwitchHandler.EnableModeSwitchHandler(swerveSubsystem); //TODO add any subsystems that extend ModeSwitchInterface
+        climberSubsystem = new ClimberSubsystem();
+
+        ModeSwitchHandler.EnableModeSwitchHandler(
+            intakeSubsystem,
+            armSubsystem,
+            elevatorSubsystem
+        ); //TODO add any subsystems that extend ModeSwitchInterface
 
         if (RobotBase.isSimulation()) {
             visionSubsystem = new SimVisionSubsystem(swerveSubsystem);
@@ -122,13 +158,12 @@ public class RobotContainer {
     private void configureBindings() {
 
         swerveSubsystem.setDefaultCommand(new SwerveTeleopCommand(driverController, swerveSubsystem));
-
+        
+        operatorController.leftTrigger().onTrue(climberSubsystem.presetCommand(Constants.ClimberConstants.ClimberState.STOW));
+        operatorController.leftBumper().onTrue(climberSubsystem.presetCommand(Constants.ClimberConstants.ClimberState.LIFTED));
 
         //switch field and robot relative
-        driverController.a().onTrue(Commands.defer(() -> {return Commands.runOnce(
-                () -> swerveTeleopCommand.setFieldRelative(!swerveTeleopCommand.getFieldRelative())
-            );}
-        ,Set.of()));
+        driverController.a().toggleOnTrue(Commands.startEnd(() -> {swerveTeleopCommand.setFieldRelative(!OI.kStartFieldRel);}, () -> {swerveTeleopCommand.setFieldRelative(OI.kStartFieldRel);}));
 
         driverController.b().onTrue(
             Commands.defer(() -> {
@@ -147,19 +182,29 @@ public class RobotContainer {
                 Commands.run(swerveSubsystem::lockModules, swerveSubsystem)
             );
 
+        driverController.leftBumper().whileTrue(
+            alignmentCommandFactory.generateCommand(BranchSide.LEFT)
+        );
+
+        driverController.rightBumper().whileTrue(
+            alignmentCommandFactory.generateCommand(BranchSide.RIGHT)
+        );
+
 
         //this is a approximate version, we can do something more advanced by placing points at the center of the reef sides, then detecting which side it's closest to based on it's position
         driverController.rightTrigger().whileTrue(
             new RotationIndependentControlCommand(
-                ChassisSpeedSuppliers.gotoAngle(() -> ChassisSpeedSuppliers.getFieldAngleBetween(swerveSubsystem.getPose().getTranslation(), 
-                    shouldFlip() ? new Translation2d(13.073, 4): new Translation2d(4.5, 4)
-                ), swerveSubsystem),
+                ChassisSpeedSuppliers.gotoAngle(ChassisSpeedSuppliers.orientTowardsReef(swerveSubsystem), swerveSubsystem),
                 ChassisSpeedSuppliers.getSwerveTeleopCSSupplier(driverController.getHID(), swerveSubsystem),
                 swerveSubsystem
             )
         );
 
         swerveSubsystem.setDefaultCommand(swerveTeleopCommand);
+
+        // DEBUG CONTROLLER
+        debugController.leftBumper().onTrue(Commands.runOnce(() -> LimelightVisionSubsystem.setMegaTag1Override(true)));
+        debugController.leftBumper().onFalse(Commands.runOnce(() -> LimelightVisionSubsystem.setMegaTag1Override(false)));
     }
 
     /**
@@ -187,6 +232,35 @@ public class RobotContainer {
         chooser.addOption("M-R debug curve", new PathPlannerAuto("M-R curve debug"));
         chooser.addOption("M-R Circle", new PathPlannerAuto("Circle move debug"));
         chooser.addOption("Reef loop debug", new PathPlannerAuto("Reef loop debug"));
+        chooser.addOption("Leave", new PathPlannerAuto("Leave Auto"));
+
+        chooser.addOption("Align with move", Commands.sequence(
+            Autos.getAutoPathCommand(AutoPaths.CORAL_TWO),
+            alignmentCommandFactory.generateCommand(ReefSide.TWO, BranchSide.LEFT),
+            Autos.getAutoPathCommand(AutoPaths.TWO_CORAL),
+            // Commands.waitUntil(debugController.a()::getAsBoolean),
+            Autos.getAutoPathCommand(AutoPaths.CORAL_TWO),
+            alignmentCommandFactory.generateCommand(ReefSide.TWO, BranchSide.RIGHT),
+            Autos.getAutoPathCommand(AutoPaths.TWO_CORAL),
+            // Commands.waitUntil(debugController.a()::getAsBoolean),
+            Autos.getAutoPathCommand(AutoPaths.CORAL_THREE),
+            alignmentCommandFactory.generateCommand(ReefSide.THREE, BranchSide.LEFT),
+            Autos.getAutoPathCommand(AutoPaths.THREE_CORAL)
+        ));
+
+        chooser.addOption("Align Mirror with move", Commands.sequence(
+            Autos.getAutoPathCommand(AutoPaths.CORAL_TWO, true),
+            alignmentCommandFactory.generateCommand(ReefSide.TWO.mirror(), BranchSide.LEFT),
+            Autos.getAutoPathCommand(AutoPaths.TWO_CORAL, true),
+            // Commands.waitUntil(debugController.a()::getAsBoolean),
+            Autos.getAutoPathCommand(AutoPaths.CORAL_TWO, true),
+            alignmentCommandFactory.generateCommand(ReefSide.TWO.mirror(), BranchSide.RIGHT),
+            Autos.getAutoPathCommand(AutoPaths.TWO_CORAL, true),
+            // Commands.waitUntil(debugController.a()::getAsBoolean),
+            Autos.getAutoPathCommand(AutoPaths.CORAL_THREE, true),
+            alignmentCommandFactory.generateCommand(ReefSide.THREE.mirror(), BranchSide.LEFT),
+            Autos.getAutoPathCommand(AutoPaths.THREE_CORAL, true)
+        ));
 
         SmartDashboard.putData("Auto Chooser", chooser);
 
@@ -203,6 +277,10 @@ public class RobotContainer {
 
     public static CommandXboxController getDebugController() {
         return debugController;
+    }
+
+    public static AprilTagFieldLayout getFieldLayout() {
+        return fieldLayout;
     }
 
 }

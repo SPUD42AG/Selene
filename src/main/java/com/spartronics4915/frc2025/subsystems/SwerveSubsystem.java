@@ -1,5 +1,7 @@
 package com.spartronics4915.frc2025.subsystems;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -40,7 +42,7 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
     public SwerveSubsystem(SwerveDirectories swerveDir) {
 
         try {
-            swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), swerveDir.directory)).createSwerveDrive(Drive.kMaxSpeed,
+            swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), swerveDir.directory)).createSwerveDrive(Drive.kMaxSpeed.in(MetersPerSecond),
             // new Pose2d(new Translation2d(Meter.of(2),
             //     Meter.of(5)),
             //     Rotation2d.fromDegrees(180)
@@ -54,6 +56,7 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
         // swerveDrive.getMapleSimDrive().ifPresent((a) -> a.removeAllFixtures());
         swerveDrive.setMotorIdleMode(true);
+        swerveDrive.setChassisDiscretization(true, 0.02);
         swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
         swerveDrive.setCosineCompensator(false);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
@@ -152,6 +155,11 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
     public MutAngularVelocity getAngularVelocity() {
         return swerveDrive.getGyro().getYawAngularVelocity();
+    }
+
+    public double getSpeed() {
+        ChassisSpeeds fieldVelocity = getFieldVelocity();
+        return Math.sqrt(fieldVelocity.vxMetersPerSecond * fieldVelocity.vxMetersPerSecond + fieldVelocity.vyMetersPerSecond * fieldVelocity.vyMetersPerSecond);
     }
 
     public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
