@@ -20,6 +20,7 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructArrayTopic;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -64,6 +65,7 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
                 SmartDashboard.putNumber("VisionDiagnostics/limelight-" + config.name() + "/distance", -1);
                 SmartDashboard.putNumber("VisionDiagnostics/limelight-" + config.name() + "/speed", -1);
                 SmartDashboard.putString("VisionDiagnostics/limelight-" + config.name() + "/method", "");
+                SmartDashboard.putData("VisionDiagnostics/limelight-" + config.name() + "/pose", new Field2d());
             }
         }
 
@@ -137,6 +139,7 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/distance", measurement.diagTagDistance());
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/speed", measurement.diagRobotSpeed());
                 SmartDashboard.putString("VisionDiagnostics/" + measurement.diagName() + "/method", measurement.diagMethod().toString());
+                ((Field2d) SmartDashboard.getData("VisionDiagnostics/" + measurement.diagName() + "/pose")).setRobotPose(measurement.pose());
             }
         });
 
