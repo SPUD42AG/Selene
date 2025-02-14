@@ -11,6 +11,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.spartronics4915.frc2025.Constants.Drive;
 import com.spartronics4915.frc2025.Constants.OI;
 import com.spartronics4915.frc2025.commands.Autos;
+import com.spartronics4915.frc2025.commands.ComplexAutoChooser;
 import com.spartronics4915.frc2025.commands.ElementLocator;
 import com.spartronics4915.frc2025.commands.VariableAutos;
 import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
@@ -99,6 +100,9 @@ public class RobotContainer {
     @NotLogged
     private final SendableChooser<Command> autoChooser;
 
+    @NotLogged
+    private final ComplexAutoChooser complexAutoChooser;
+
     private final IntakeSubsystem intake = new IntakeSubsystem();
 
     /**
@@ -120,6 +124,8 @@ public class RobotContainer {
 
         // Configure the trigger bindings
         configureBindings();
+
+        complexAutoChooser = new ComplexAutoChooser(variableAutoFactory, 3);
 
         // Need to initialize this here after vision is configured.
         // Need to clean up initialization flow to make it more clear
@@ -204,6 +210,7 @@ public class RobotContainer {
 
         // return Autos.driveToNote(swerveSubsystem, noteDetector);
         // return new DriveToReefPoint(swerveSubsystem, elementLocator, 11).generate();
+        // return complexAutoChooser.getAuto();
         return autoChooser.getSelected();
 
     }
@@ -239,6 +246,8 @@ public class RobotContainer {
             variableAutoFactory.generateAutoCycle(FieldBranch.I, StationSide.RIGHT),
             variableAutoFactory.generateAutoCycle(FieldBranch.K, StationSide.RIGHT)
         ));
+
+        chooser.addOption("Create auto...", Commands.defer(complexAutoChooser::getAuto, Set.of(swerveSubsystem)));
 
         SmartDashboard.putData("Auto Chooser", chooser);
 
