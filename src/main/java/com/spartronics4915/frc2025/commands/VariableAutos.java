@@ -116,6 +116,14 @@ public class VariableAutos {
         );
     }
 
+    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side){
+        var pathPair = getPathPair(branch, side);
+        
+        return Commands.sequence(
+            pathPair.autoAlign,
+            pathPair.returnPath
+        );
+    }
 
     public PathPair getPathPair(FieldBranch branch, StationSide side){
         boolean shouldMirror = side == StationSide.RIGHT;
