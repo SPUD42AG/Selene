@@ -106,6 +106,7 @@ public class LimelightDevice extends SubsystemBase {
         PoseEstimationMethod method = PoseEstimationMethod.MEGATAG_2;
         final boolean BEFORE_MATCH = !Robot.AUTO_TIMER.hasElapsed(0.01);
         final PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+        if (!LimelightHelpers.validPoseEstimate(poseEstimate)) return Optional.empty();
         final boolean twoOrMoreTags = poseEstimate.tagCount >= 2;
         final boolean closeEnough = poseEstimate.avgTagDist < VisionConstants.kMaxDistanceForMegaTag1;
         double robotSpeed = swerve.getSpeed();
