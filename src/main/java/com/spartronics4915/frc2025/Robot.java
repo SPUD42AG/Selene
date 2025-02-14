@@ -41,6 +41,10 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog(), true);
+
         CanBridge.runTCP();
         Epilogue.configure(config -> {
             if (isSimulation()) {
@@ -49,9 +53,6 @@ public class Robot extends TimedRobot {
             config.root = "Epilogue";
         });
         Epilogue.bind(this); //"Epilogue cannot be resolved" error will go away when you build
-
-        DataLogManager.start();
-        DriverStation.startDataLog(DataLogManager.getLog(), true);
     }
 
     @Override
