@@ -128,7 +128,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
     }
 
     public void incrementAngle(Rotation2d delta){
-        mCurrentSetPoint = mCurrentSetPoint.plus(delta);
+        mCurrentSetPoint = Rotation2d.fromRotations(mCurrentSetPoint.getRotations() + delta.getRotations());
     }
 
 
