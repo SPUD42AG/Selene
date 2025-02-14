@@ -102,6 +102,15 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
     //     SmartDashboard.putBoolean("LaserCanDetect", measurement.distance_mm<=laserCANDistance);
     // }
 
+    public boolean detect(){
+        LaserCan.Measurement measurement = lc.getMeasurement();
+        if (measurement == null) {
+            return false;
+        }
+
+        return measurement.distance_mm < IntakeConstants.laserCANDistance;
+    }
+
     public void intakeMotors (IntakeSpeed preset) {
         setSpeed(preset.intakeSpeed);
     }
