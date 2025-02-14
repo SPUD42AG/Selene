@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import static com.spartronics4915.frc2025.Constants.IntakeConstants.*;
+import static edu.wpi.first.units.Units.RPM;
 
 import com.spartronics4915.frc2025.Constants.IntakeConstants;
 import com.spartronics4915.frc2025.Constants.Drive.SwerveDirectories;
@@ -21,6 +22,7 @@ import com.spartronics4915.frc2025.Constants.IntakeConstants.IntakeSpeed;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler.ModeSwitchInterface;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import au.grapplerobotics.LaserCan;
@@ -77,14 +79,7 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
         SmartDashboard.putData("IntakeSpeed: NEURTRAL", setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
         SmartDashboard.putData("IntakeSpeed: OUT", setPresetSpeedCommand(IntakeSpeed.OUT));
 
-        var lcTrigger = new Trigger(() -> {
-            LaserCan.Measurement measurement = lc.getMeasurement();
-            if (measurement == null) {
-                return false;
-            }
-
-            return measurement.distance_mm < IntakeConstants.laserCANDistance;
-        }).onTrue(setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
+        var lcTrigger = new Trigger(() -> detect()).onTrue(setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
 
     }
 
@@ -123,6 +118,9 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
         return this.runOnce(() -> intakeMotors(preset));
     }
 
+    public AngularVelocity getSpeed(){
+        return RPM.of(mMotor1.getEncoder().getVelocity());
+    }
     // @Override
     // public void periodic() {
     //     detect();

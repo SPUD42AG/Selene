@@ -19,6 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -76,10 +77,18 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
         return rotation;
     }
 
-    private Rotation2d getPosition() {
+    public Rotation2d getSetpoint() {
+        return mCurrentSetPoint;
+    }
+
+    public Rotation2d getPosition() {
         var position = mArmMotor.getRotorPosition().getValue().in(Rotations);
 
         return rawToAngle(position);
+    }
+
+    public Rotation2d getTargetPosition(){
+        return rawToAngle(mCurrentState.position);
     }
 
     private void initArmProfile() {
@@ -138,7 +147,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
         return this.runEnd(() -> {
             incrementAngle(delta);
         }, () -> {
-            resetMechanism();
+            if (RobotBase.isReal()) resetMechanism();
         });
     }
 

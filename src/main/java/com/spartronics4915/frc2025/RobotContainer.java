@@ -21,6 +21,7 @@ import com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers;
 import com.spartronics4915.frc2025.commands.drive.RotationIndependentControlCommand;
 import com.spartronics4915.frc2025.commands.drive.SwerveTeleopCommand;
 import com.spartronics4915.frc2025.subsystems.ClimberSubsystem;
+import com.spartronics4915.frc2025.subsystems.MechanismRenderer;
 import com.spartronics4915.frc2025.subsystems.MotorSimulationSubsystem;
 import com.spartronics4915.frc2025.subsystems.OdometrySubsystem;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
@@ -35,6 +36,7 @@ import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler;
 
 import static com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers.shouldFlip;
+import static edu.wpi.first.units.Units.Meters;
 
 import java.util.Set;
 
@@ -43,6 +45,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -84,7 +87,7 @@ public class RobotContainer {
     private OdometrySubsystem odometrySubsystem = null;
         
     // ******** Simulation entries
-    public final MotorSimulationSubsystem mechanismSim;
+    public final MechanismRenderer mechRenderer;
     // ********
     
     public final IntakeSubsystem intakeSubsystem;
@@ -107,8 +110,6 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
-        mechanismSim = new MotorSimulationSubsystem();
-
         intakeSubsystem = new IntakeSubsystem();
         armSubsystem = new ArmSubsystem();
         elevatorSubsystem = new ElevatorSubsystem();
@@ -119,6 +120,30 @@ public class RobotContainer {
             armSubsystem,
             elevatorSubsystem
         ); //TODO add any subsystems that extend ModeSwitchInterface
+
+        mechRenderer = new MechanismRenderer(
+            elevatorSubsystem::getDesiredPosition, 
+            () -> armSubsystem.getTargetPosition().getMeasure(), 
+            intakeSubsystem::getSpeed, 
+            intakeSubsystem::detect,
+            "Target Position"
+        );
+
+        new MechanismRenderer(
+            () -> Meters.of(elevatorSubsystem.getPosition()), 
+            () -> armSubsystem.getPosition().getMeasure(), 
+            intakeSubsystem::getSpeed, 
+            intakeSubsystem::detect,
+            "Current Position"
+        );
+
+        new MechanismRenderer(
+            () -> elevatorSubsystem.getSetpoint(), 
+            () -> armSubsystem.getSetpoint().getMeasure(), 
+            intakeSubsystem::getSpeed, 
+            intakeSubsystem::detect,
+            "setpoints"
+        );
 
         if (swerveSubsystem != null) {
             swerveTeleopCommand = new SwerveTeleopCommand(driverController, swerveSubsystem);
@@ -208,6 +233,14 @@ public class RobotContainer {
             debugController.leftBumper().onTrue(Commands.runOnce(() -> LimelightVisionSubsystem.setMegaTag1Override(true)));
             debugController.leftBumper().onFalse(Commands.runOnce(() -> LimelightVisionSubsystem.setMegaTag1Override(false)));
         }
+    
+        debugController.button(1).whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(1)));
+        debugController.button(2).whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(-1)));
+
+        debugController.button(4).whileTrue(elevatorSubsystem.manualMode(0.01));
+        debugController.button(5).whileTrue(elevatorSubsystem.manualMode(-0.01));
+
+    
     }
 
     /**
