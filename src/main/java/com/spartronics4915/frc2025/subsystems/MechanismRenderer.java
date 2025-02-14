@@ -38,15 +38,15 @@ public class MechanismRenderer extends SubsystemBase {
      * @param intakeSpeedSupplier a supplier which returns the intake's angular velocity
      * 
      */
-    public MechanismRenderer(Supplier<Distance> elevatorHeightSupplier, Supplier<Angle> armAngleSupplier, Supplier<AngularVelocity> intakeSpeedSupplier, BooleanSupplier intakeTrigger) {
+    public MechanismRenderer(Supplier<Distance> elevatorHeightSupplier, Supplier<Angle> armAngleSupplier, Supplier<AngularVelocity> intakeSpeedSupplier, BooleanSupplier intakeTrigger, String name) {
         super();
         this.elevatorHeightSupplier = elevatorHeightSupplier;
         this.armAngleSupplier = armAngleSupplier;
         this.intakeSpeedSupplier = intakeSpeedSupplier;
         this.intakeTrigger = intakeTrigger;
 
-        canvas = new Mechanism2d(4,4);
-        var root = canvas.getRoot("root", 2, 0);
+        canvas = new Mechanism2d(3, 3);
+        var root = canvas.getRoot("root", 1.5, 1);
         elev = new MechanismLigament2d("elevator", 
             elevatorHeightSupplier.get().in(Meters),
             90,
@@ -55,7 +55,7 @@ public class MechanismRenderer extends SubsystemBase {
         );
 
         arm = new MechanismLigament2d("arm", 
-            0.9,
+            0.329302,
             armAngleSupplier.get().in(Degrees),
             5,
             new Color8Bit(Color.kBlue)
@@ -70,7 +70,7 @@ public class MechanismRenderer extends SubsystemBase {
         elev.append(arm);
         root.append(elev);
 
-        SmartDashboard.putData("mechanisms", canvas);
+        SmartDashboard.putData(name, canvas);
 
     }
 
