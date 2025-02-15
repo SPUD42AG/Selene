@@ -18,11 +18,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
+
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilogram;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
@@ -30,6 +34,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.ctre.phoenix6.configs.SlotConfigs;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -46,30 +51,34 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 public final class Constants {
 
     public static final class IntakeConstants {
-        public static final int kMotorID = 20;
+        public static final int kMotorID = 12;
 
-        public static final int mPIDController = 0;
-        public static final int kPIDConstants = 0;
+        public static final int kLaserCANID = 21;
+        public static final int laserCANDistance = 110;
 
-        public static final int kLaserCANID = 0;
-        public static final int laserCANDistance = 100;
+        public static final int smartCurrentLimit = 18;
+        public static final int secondaryCurrentLimit = 20;
 
-        public static final SparkBaseConfig kMotorConfig = new SparkMaxConfig()
-            .inverted(true)
-            .idleMode(IdleMode.kBrake);
-            
         public static final EncoderConfig kEncoderConfig = new EncoderConfig()
-            .positionConversionFactor(1000)
-            .velocityConversionFactor(1000);
+            .positionConversionFactor(1/4.0)
+            .velocityConversionFactor(1/4.0);
 
         public static final ClosedLoopConfig kCLConfig = new ClosedLoopConfig()
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.0, 0.0, 0.0);
+            .pid(0.0006, 0, 0.0);
+
+        public static final SparkBaseConfig kMotorConfig = new SparkMaxConfig()
+            .inverted(false)
+            .idleMode(IdleMode.kCoast)
+            .apply(kCLConfig)
+            .apply(kEncoderConfig)
+            .smartCurrentLimit(smartCurrentLimit)
+            .secondaryCurrentLimit(secondaryCurrentLimit);
 
         public enum IntakeSpeed {
-            IN (0.0),
-            NEURTRAL (0.0),
-            OUT (-0.0);
+            IN (500),
+            NEUTRAL (0),
+            OUT (-1000);
 
             public final double intakeSpeed;
             
@@ -97,30 +106,47 @@ public final class Constants {
 
     public static final class ClimberConstants{
 
-        public static double liftedAngle = 0.5;
-        public static double stowAngle = 0.5;
+        public static final int motorID = 13;
+        
+        public static final double liftedAngle = 0.75;
+        public static final double stowAngle = 0.25;
 
-        public static double kP = 0.0;
-        public static double kI = 0.0;
-        public static double kD = 0.0;
+        public static final double kP = 0.01;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
+        //ff  
+            //place holder values
+            public static final Rotation2d kMinAngle = Rotation2d.fromRotations(0);
+            public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(1);
+
+            public static final double kDt = 0.02;
+
+            public static final double kS = 0.0;
+            public static final double kG = 0.0;
+            public static final double kV = 0.0;
+            public static final double kA = 0.0;
+
+
 
         public static final Constraints kConstraints = new Constraints(1.0, 1.0);
 
         public enum ClimberState {
         
-        LIFTED(Rotation2d.fromDegrees(Constants.ClimberConstants.liftedAngle)),
-        STOW(Rotation2d.fromDegrees(Constants.ClimberConstants.stowAngle)),;
+            LIFTED(Rotation2d.fromDegrees(Constants.ClimberConstants.liftedAngle)),
+            STOW(Rotation2d.fromDegrees(Constants.ClimberConstants.stowAngle)),;
         
-        public final Rotation2d angle;
+            public final Rotation2d angle;
 
-        private ClimberState(Rotation2d angle) {
-            this.angle = angle;
+            private ClimberState(Rotation2d angle) {
+                this.angle = angle;
             
+            }
+
         }
 
-        
 
-    }
+
     }
 
     public static final class Drive {
@@ -140,8 +166,8 @@ public final class Constants {
         public static final double kChassisRadius = Math.hypot(
                 kTrackWidth / 2, kWheelbase / 2);
 
-        public static final double kMaxSpeed = 5;
-        public static final double kMaxAngularSpeed = kMaxSpeed * Math.PI / kChassisRadius;
+        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(5);
+        public static final AngularVelocity kMaxAngularSpeed = RadiansPerSecond.of(kMaxSpeed.in(MetersPerSecond) * Math.PI / kChassisRadius);
 
         public static final class AutoConstants {
             public static final PIDConstants kTranslationPID = new PIDConstants(5.0,0,0);
@@ -238,8 +264,9 @@ public final class Constants {
         public enum ArmSubsystemState {
 
             INTAKE(Rotation2d.fromDegrees(0)),
-            SCORE(Rotation2d.fromDegrees(0)),
-            STOW(Rotation2d.fromDegrees(0));
+            SCORE(Rotation2d.fromDegrees(30)),
+            EH(Rotation2d.fromDegrees(90)),
+            STOW(Rotation2d.fromDegrees(180));
 
             public Rotation2d angle;
 
@@ -249,35 +276,28 @@ public final class Constants {
 
         }
         
-        public static final int kArmMotorID = 0;
+        public static final int kArmMotorID = 11;
         public static final int kPositionConversionFactor = 1;
         public static final int kVelocityConversionFactor = 1;
-
-        public static final class kArmPIDConstants {
-            public static final double kP = 0;
-            public static final double kI = 0;
-            public static final double kD = 0;
-        }
         
         public static final double kDt = 0.02;
 
         public static final Constraints kConstraints = new Constraints(1.0, 1.0);
         public static final int kPeriodMs = 0;
 
-        public static final double kMaxAngleScore = 0.0;
-        public static final double kMaxAngleIntake = 0.0;
-
         public static final double kS = 0.0;
         public static final double kG = 0.0;
-        public static final double kV = 0.0;
+        public static final double kV = 0.02;
         public static final double kA = 0.0;
         
         //The values set here are placeholders for sim
-        public static final Rotation2d kMinAngle = Rotation2d.fromRotations(300);
-        public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(120);
+        public static final Rotation2d kMinAngle = Rotation2d.fromRotations(-3);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(3);
 
-
-
+        public static final SlotConfigs kPIDConfigs = new SlotConfigs()
+            .withKP(1)
+            .withKI(0.0)
+            .withKD(0.0);
     }
 
     public static final class ElevatorConstants {
@@ -285,8 +305,9 @@ public final class Constants {
         public enum ElevatorSubsystemState {
 
             STOW(0),
-            L3(0),
-            L4(0);
+            L1(0.1),
+            L3(0.2),
+            L4(0.3);
 
             public double meter;
 
@@ -295,25 +316,23 @@ public final class Constants {
             }
         }
 
-        public static final int elevatorMotorID = 20;
-        public static final int elevatorFollowerID = 16;
+        public static final int elevatorMotorID = 9; //left motor
+        public static final int elevatorFollowerID = 10; //right motor
         public static final boolean motorInverted = false;
-        public static final boolean followerInverted = false;
-        public static final double motorPositionConversionFactor = 0;
-        public static final double motorVelocityConversionFactor = 0;
-        public static final double followerPositionConversionFactor = 0;
-        public static final double followerVelocityConversionFactor = 0;
-        public static final int motorSmartCurrentLimit = 0;
-        public static final int motorSecondaryCurrentLimit = 0;
-        public static final int followerSmartCurrentLimit = 0;
-        public static final int followerSecondaryCurrentLimit = 0;
+        public static final boolean followerInverted = true;
+        public static final double motorPositionConversionFactor = (1/20.0) * 0.14044 * 2;
+        public static final double motorVelocityConversionFactor = (1/20.0) * 0.14044 * 2;
+        public static final int motorSmartCurrentLimit = 13;
+        public static final int motorSecondaryCurrentLimit = 15;
+        public static final int followerSmartCurrentLimit = 13;
+        public static final int followerSecondaryCurrentLimit = 15;
 
         public static final double dt = 0.02;
 
-        public static final Constraints constraints = new Constraints(0, 0);
+        public static final Constraints constraints = new Constraints(1.0, 1.0);
 
         public static final double minHeight = 0;
-        public static final double maxHeight = 0;
+        public static final double maxHeight = 0.5;
 
         public static final double kS = 0.0;
         public static final double kG = 0.0;
@@ -321,13 +340,7 @@ public final class Constants {
         public static final double kA = 0.0;
 
         public static final class motorPIDConstants {
-            public static final double kP = 0;
-            public static final double kI = 0;
-            public static final double kD = 0;
-        }
-
-        public static final class followerPIDConstants {
-            public static final double kP = 0;
+            public static final double kP = 0.25;
             public static final double kI = 0;
             public static final double kD = 0;
         }
