@@ -24,12 +24,8 @@ import com.spartronics4915.frc2025.subsystems.ClimberSubsystem;
 import com.spartronics4915.frc2025.subsystems.MotorSimulationSubsystem;
 import com.spartronics4915.frc2025.subsystems.OdometrySubsystem;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
-import com.spartronics4915.frc2025.subsystems.bling2.BlingShow;
-import com.spartronics4915.frc2025.subsystems.bling2.BlingSubsystem;
-import com.spartronics4915.frc2025.subsystems.bling2.DriverCommunication;
+import com.spartronics4915.frc2025.subsystems.bling2.*;
 import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
-import com.spartronics4915.frc2025.subsystems.Bling.BlingSegment;
-import com.spartronics4915.frc2025.subsystems.Bling.BlingSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
@@ -100,18 +96,12 @@ public class RobotContainer {
     public SwerveTeleopCommand swerveTeleopCommand = null;
     // Replace with CommandPS4Controller or CommandJoystick if needed
     
-    public final BlingSubsystem blingSubsystem = new BlingSubsystem(0, BlingSegment.solid(Color.kYellow, 21), BlingSegment.solid(Color.kBlue, 21));
-    
     private AlignToReef alignmentCommandFactory = null;
 
     @NotLogged
     private final SendableChooser<Command> autoChooser;
 
     private final BlingSubsystem blingSubsystem;
-
-    private final AlignToReef alignmentCommandFactory = new AlignToReef(swerveSubsystem, fieldLayout);
-
-    private final IntakeSubsystem intake = new IntakeSubsystem();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -152,7 +142,7 @@ public class RobotContainer {
         autoChooser =
                 buildAutoChooser();
 
-        blingSubsystem = new BlingSubsystem(0, new DriverCommunication(42, swerveSubsystem, visionSubsystem));
+        blingSubsystem = new BlingSubsystem(0, BlingSegment.scrollingRainbow(42, 10));
     }
 
     /**
