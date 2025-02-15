@@ -34,6 +34,8 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 
 /**
@@ -277,17 +279,17 @@ public final class Constants {
         }
         
         public static final int kArmMotorID = 11;
-        public static final int kPositionConversionFactor = 1;
-        public static final int kVelocityConversionFactor = 1;
+        public static final double kPositionConversionFactor = 1 * 0.03888888888888;
+        public static final double kVelocityConversionFactor = 1 * 0.03888888888888;
         
         public static final double kDt = 0.02;
 
-        public static final Constraints kConstraints = new Constraints(1.0, 1.0);
+        public static final Constraints kConstraints = new Constraints(8.0, 10.0);
         public static final int kPeriodMs = 0;
 
         public static final double kS = 0.0;
         public static final double kG = 0.0;
-        public static final double kV = 0.02;
+        public static final double kV = 0.0;
         public static final double kA = 0.0;
         
         //The values set here are placeholders for sim
@@ -295,9 +297,16 @@ public final class Constants {
         public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(3);
 
         public static final SlotConfigs kPIDConfigs = new SlotConfigs()
-            .withKP(1)
+            .withKP(120)
             .withKI(0.0)
             .withKD(0.0);
+
+        public static final CurrentLimitsConfigs kCurrentLimits = new CurrentLimitsConfigs()
+            .withSupplyCurrentLimit(20);
+        public static final FeedbackConfigs kFeedbackConfig = new FeedbackConfigs()
+            .withSensorToMechanismRatio(25.7143)
+        ;
+
     }
 
     public static final class ElevatorConstants {
