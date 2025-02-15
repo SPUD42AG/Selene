@@ -45,12 +45,11 @@ public class LimelightDevice extends SubsystemBase {
         this.id = constants.id();
         this.role = constants.role();
 
-        int portOffset = (id - 11) * 10; // limelight 11 will have 5800-5809, limelight 12 will have 5810-5819, etc.
-
-        // ports are forwarded to http://roborio-4915-FRC.local and are accessed while tethered to the roborio over USB
-        for (int port = 5800; port <= 5809; port++) {
-            PortForwarder.add(port + portOffset, name + ".local", port); 
-        }
+        // // ports are forwarded to http://roborio-4915-FRC.local and are accessed while tethered to the roborio over USB
+        // int portOffset = (id - 11) * 10; // limelight 11 will have 5800-5809, limelight 12 will have 5810-5819, etc.
+        // for (int port = 5800; port <= 5809; port++) {
+        //     PortForwarder.add(port + portOffset, name + ".local", port); 
+        // }
     }
 
     public void setTagFilter(Optional<DriverStation.Alliance> alliance) {
