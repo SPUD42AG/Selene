@@ -25,6 +25,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.Distance;
@@ -78,7 +79,10 @@ public class ElevatorSubsystem extends SubsystemBase implements ModeSwitchInterf
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        FFCalculator = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
+        // If you are setting constants to zero, please explicitly set them to zero in the code.
+        // It makes it *MUCH* easier to debug if you can quickly see which features and constants are being used.
+
+        FFCalculator = new ElevatorFeedforward(0,0,0,0);
         elevatorProfile = new TrapezoidProfile(ElevatorConstants.constraints);
         elevatorClosedLoopController = motor.getClosedLoopController();
 
