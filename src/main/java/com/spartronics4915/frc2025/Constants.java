@@ -306,8 +306,8 @@ public final class Constants {
 
             STOW(0),
             L1(0.1),
-            L3(0.2),
-            L4(0.3);
+            L3(0.3),
+            L4(1.1);
 
             public double meter;
 
@@ -322,17 +322,17 @@ public final class Constants {
         public static final boolean followerInverted = true;
         public static final double motorPositionConversionFactor = (1/20.0) * 0.14044 * 2;
         public static final double motorVelocityConversionFactor = (1/20.0) * 0.14044 * 2;
-        public static final int motorSmartCurrentLimit = 13;
-        public static final int motorSecondaryCurrentLimit = 15;
-        public static final int followerSmartCurrentLimit = 13;
-        public static final int followerSecondaryCurrentLimit = 15;
+        public static final int motorSmartCurrentLimit = 35;
+        public static final int motorSecondaryCurrentLimit = 40;
+        public static final int followerSmartCurrentLimit = 35;
+        public static final int followerSecondaryCurrentLimit = 40;
 
         public static final double dt = 0.02;
 
-        public static final Constraints constraints = new Constraints(1.0, 1.0);
+        public static final Constraints constraints = new Constraints(12.0, 7.5);
 
         public static final double minHeight = 0;
-        public static final double maxHeight = 0.5;
+        public static final double maxHeight = 1.15;
 
         // Not using elevator feedforward constants for now, so just commenting them out.
         
@@ -342,7 +342,7 @@ public final class Constants {
         // public static final double kA = 0.0;
 
         public static final class motorPIDConstants {
-            public static final double kP = 0.25;
+            public static final double kP = 16;
             public static final double kI = 0;
             public static final double kD = 0;
         }
