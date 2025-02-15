@@ -4,6 +4,7 @@ package com.spartronics4915.frc2025.subsystems.coral;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.spartronics4915.frc2025.Constants.ArmConstants;
@@ -19,6 +20,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -35,10 +37,10 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
     private Rotation2d mCurrentSetPoint = Rotation2d.fromRotations(0);;
     private State mCurrentState;
 
-    private final DoublePublisher appliedOutPub = NetworkTableInstance.getDefault().getTable("log").getDoubleTopic("applied out").publish();
-    private final StructPublisher<Rotation2d> positionPub = NetworkTableInstance.getDefault().getTable("log").getStructTopic("position", Rotation2d.struct).publish();
-    private final StructPublisher<Rotation2d> desiredStatePub = NetworkTableInstance.getDefault().getTable("log").getStructTopic("desiredState", Rotation2d.struct).publish();
-    private final StructPublisher<Rotation2d> setpointpub = NetworkTableInstance.getDefault().getTable("log").getStructTopic("setpointpub", Rotation2d.struct).publish();
+    private final DoublePublisher appliedOutPub = NetworkTableInstance.getDefault().getTable("logArm").getDoubleTopic("applied out").publish();
+    private final StructPublisher<Rotation2d> positionPub = NetworkTableInstance.getDefault().getTable("logArm").getStructTopic("position", Rotation2d.struct).publish();
+    private final StructPublisher<Rotation2d> desiredStatePub = NetworkTableInstance.getDefault().getTable("logArm").getStructTopic("desiredState", Rotation2d.struct).publish();
+    private final StructPublisher<Rotation2d> setpointpub = NetworkTableInstance.getDefault().getTable("logArm").getStructTopic("setpointpub", Rotation2d.struct).publish();
 
 
     public ArmSubsystem() {
@@ -52,12 +54,19 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
         setMechanismAngle(Rotation2d.kZero);
     
         ModeSwitchHandler.EnableModeSwitchHandler(this);
+
+        SmartDashboard.putData("preset1Arm", presetCommand(ArmSubsystemState.EH));
+        SmartDashboard.putData("preset2Arm", presetCommand(ArmSubsystemState.INTAKE));
+        SmartDashboard.putData("preset3Arm", presetCommand(ArmSubsystemState.SCORE));
+        SmartDashboard.putData("preset4Arm", presetCommand(ArmSubsystemState.STOW));
     }
 
     private void initArmMotor() {
         mArmMotor = new TalonFX(ArmConstants.kArmMotorID);
         var mConfigurator = mArmMotor.getConfigurator();
         mConfigurator.apply(ArmConstants.kPIDConfigs);
+        mConfigurator.apply(ArmConstants.kCurrentLimits);
+        mConfigurator.apply(ArmConstants.kFeedbackConfig);
     }
 
     public void resetMechanism(){
@@ -77,7 +86,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
     }
 
     private Rotation2d getPosition() {
-        var position = mArmMotor.getRotorPosition().getValue().in(Rotations);
+        var position = mArmMotor.getPosition().getValue().in(Rotations);
 
         return rawToAngle(position);
     }
