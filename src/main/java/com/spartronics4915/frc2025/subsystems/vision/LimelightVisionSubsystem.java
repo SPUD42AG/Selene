@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LimelightVisionSubsystem extends SubsystemBase implements VisionDeviceSubystem, ModeSwitchInterface {
     private final ArrayList<LimelightDevice> limelights;
     private static boolean mt1Override = false;
+    private static boolean discardMeasurements = false;
 
     private LimelightDevice reefLL;
     private LimelightDevice alignLL;
@@ -132,7 +133,7 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
     @Override
     public void periodic() {
         getVisionMeasurements().forEach((measurement) -> {
-            swerveSubsystem.addVisionMeasurement(measurement.pose(), measurement.timestamp(), measurement.stdDevs());
+            if (!discardMeasurements) swerveSubsystem.addVisionMeasurement(measurement.pose(), measurement.timestamp(), measurement.stdDevs());
             if (VisionConstants.kVisionDiagnostics) {
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/stddev", measurement.stdDevs().get(0, 0));
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/count", measurement.diagTagCount());
@@ -157,6 +158,10 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
 
     public static void setMegaTag1Override(boolean b) {
         mt1Override = b;
+    }
+
+    public static void setDiscardMeasurements(boolean b) {
+        discardMeasurements = b;
     }
 
     public Optional<Pose2d> getBotPose2dFromReefCamera() {
