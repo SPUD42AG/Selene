@@ -52,7 +52,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
         
         initArmProfile();
 
-        setMechanismAngle(Rotation2d.kZero);
+        setMechanismAngle(Rotation2d.fromDegrees(90));
     
         ModeSwitchHandler.EnableModeSwitchHandler(this);
 
