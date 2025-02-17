@@ -6,36 +6,7 @@
       "name": "Teleoperated",
       "grid_layout": {
         "layouts": [],
-        "containers": [
-          {
-            "title": "ElevatorPosition",
-            "x": 512.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/ElevatorPosition",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "ElevatorSetpoint",
-            "x": 512.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/ElevatorSetpoint",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          }
-        ]
+        "containers": []
       }
     },
     {
@@ -43,10 +14,10 @@
       "grid_layout": {
         "layouts": [
           {
-            "title": "List Layout",
-            "x": 0.0,
-            "y": 128.0,
-            "width": 256.0,
+            "title": "Step 1",
+            "x": 128.0,
+            "y": 0.0,
+            "width": 128.0,
             "height": 256.0,
             "type": "List Layout",
             "properties": {
@@ -54,31 +25,68 @@
             },
             "children": [
               {
-                "title": "odom",
+                "title": "Score on...",
                 "x": 0.0,
-                "y": 256.0,
-                "width": 640.0,
+                "y": 0.0,
+                "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "ComboBox Chooser",
                 "properties": {
-                  "topic": "/SmartDashboard/calibrate/odom",
+                  "topic": "/SmartDashboard/Variable Autos/Step 1/Score on...",
                   "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": false
+                  "sort_options": true
                 }
-              },
+              }
+            ]
+          },
+          {
+            "title": "Step 2",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
               {
-                "title": "vision",
+                "title": "Score on...",
                 "x": 0.0,
-                "y": 256.0,
-                "width": 384.0,
+                "y": 0.0,
+                "width": 128.0,
                 "height": 128.0,
-                "type": "Text Display",
+                "type": "ComboBox Chooser",
                 "properties": {
-                  "topic": "/SmartDashboard/calibrate/vision",
+                  "topic": "/SmartDashboard/Variable Autos/Step 2/Score on...",
                   "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": false
+                  "sort_options": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "Step 3",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Score on...",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "ComboBox Chooser",
+                "properties": {
+                  "topic": "/SmartDashboard/Variable Autos/Step 3/Score on...",
+                  "period": 0.06,
+                  "sort_options": true
                 }
               }
             ]
@@ -86,16 +94,16 @@
         ],
         "containers": [
           {
-            "title": "calibrate",
-            "x": 384.0,
+            "title": "Field",
+            "x": 512.0,
             "y": 0.0,
-            "width": 768.0,
-            "height": 512.0,
+            "width": 640.0,
+            "height": 384.0,
             "type": "Field",
             "properties": {
-              "topic": "/SmartDashboard/calibrate",
+              "topic": "/SmartDashboard/Field",
               "period": 0.06,
-              "field_game": "Crescendo",
+              "field_game": "Reefscape",
               "robot_width": 0.85,
               "robot_length": 0.85,
               "show_other_objects": true,
@@ -104,30 +112,285 @@
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
             }
+          },
+          {
+            "title": "Station",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 256.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Variable Autos/Station",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
           }
         ]
       }
     },
     {
-      "name": "logging",
+      "name": "Vision",
       "grid_layout": {
-        "layouts": [],
-        "containers": [
+        "layouts": [
           {
-            "title": "yaw",
+            "title": "limelight-alex",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "RIGHT"
+            },
+            "children": [
+              {
+                "title": "Tags Seen",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-alex/count",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Average Distance",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-alex/distance",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Robot Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-alex/speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Standard Deviation",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-alex/stddev",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Method",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-alex/method",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Pose",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 256.0,
+                "type": "Field",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-alex/pose",
+                  "period": 0.06,
+                  "field_game": "Reefscape",
+                  "robot_width": 2.5,
+                  "robot_length": 2.5,
+                  "show_other_objects": true,
+                  "show_trajectories": true,
+                  "field_rotation": 0.0,
+                  "robot_color": 4294198070,
+                  "trajectory_color": 4294967295
+                }
+              }
+            ]
+          },
+          {
+            "title": "limelight-ben",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "RIGHT"
+            },
+            "children": [
+              {
+                "title": "Tags Seen",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-ben/count",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Average Distance",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-ben/distance",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Robot Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-ben/speed",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Standard Deviation",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-ben/stddev",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Method",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-ben/method",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Pose",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 256.0,
+                "type": "Field",
+                "properties": {
+                  "topic": "/SmartDashboard/VisionDiagnostics/limelight-ben/pose",
+                  "period": 0.06,
+                  "field_game": "Reefscape",
+                  "robot_width": 2.5,
+                  "robot_length": 2.5,
+                  "show_other_objects": true,
+                  "show_trajectories": true,
+                  "field_rotation": 0.0,
+                  "robot_color": 4294198070,
+                  "trajectory_color": 4294967295
+                }
+              }
+            ]
+          },
+          {
+            "title": "Camera Streams",
             "x": 0.0,
             "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "width": 384.0,
+            "height": 512.0,
+            "type": "List Layout",
             "properties": {
-              "topic": "/Shuffleboard/logging/yaw",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
+              "label_position": "HIDDEN"
+            },
+            "children": [
+              {
+                "title": "limelight-alex",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 256.0,
+                "type": "Camera Stream",
+                "properties": {
+                  "topic": "/CameraPublisher/limelight-alex",
+                  "period": 0.06
+                }
+              },
+              {
+                "title": "limelight-ben",
+                "x": 1152.0,
+                "y": 384.0,
+                "width": 256.0,
+                "height": 256.0,
+                "type": "Camera Stream",
+                "properties": {
+                  "topic": "/CameraPublisher/limelight-ben",
+                  "period": 0.06
+                }
+              }
+            ]
           }
-        ]
+        ],
+        "containers": []
       }
     }
   ]

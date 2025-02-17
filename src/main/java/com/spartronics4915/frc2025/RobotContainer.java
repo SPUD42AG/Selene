@@ -90,8 +90,7 @@ public class RobotContainer {
         
     private static final CommandXboxController debugController = new CommandXboxController(OI.kDebugControllerPort);
 
-    private static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
-    // private static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    private static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     
     private final ElementLocator elementLocator = new ElementLocator();
     private VisionDeviceSubystem visionSubsystem = null;
@@ -255,6 +254,9 @@ public class RobotContainer {
             // DEBUG CONTROLLER
             debugController.leftBumper().onTrue(Commands.runOnce(() -> LimelightVisionSubsystem.setMegaTag1Override(true)));
             debugController.leftBumper().onFalse(Commands.runOnce(() -> LimelightVisionSubsystem.setMegaTag1Override(false)));
+
+            debugController.x().onTrue(Commands.runOnce(() -> LimelightVisionSubsystem.setDiscardMeasurements(true)));
+            debugController.x().onFalse(Commands.runOnce(() -> LimelightVisionSubsystem.setDiscardMeasurements(false)));
         }
     
         debugController.button(1).whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(1)));
