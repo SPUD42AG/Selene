@@ -5,6 +5,7 @@ import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
 import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
 import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory;
+import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory.DynaPreset;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,10 +16,18 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class VariableAutos {
 
     public enum BranchHeight{
-        L4,
-        L3,
-        L2,
-        L1
+        L4(DynaPreset.L4),
+        L3(DynaPreset.L3);
+        // L2(DynaPreset.L2),
+        ;
+
+        public final DynaPreset preset;
+
+        private BranchHeight(DynaPreset preset) {
+            this.preset = preset;
+        }
+
+
     }
 
     public enum FieldBranch{
@@ -123,7 +132,10 @@ public class VariableAutos {
         
         return Commands.sequence(
             pathPair.approachPath,
-            pathPair.autoAlign,
+            Commands.parallel(
+                pathPair.autoAlign,
+                dynamics.gotoScore(null)
+            ),
             pathPair.returnPath
         );
     }
