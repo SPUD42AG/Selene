@@ -8,6 +8,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.spartronics4915.frc2025.Constants.ArmConstants.ArmSubsystemState;
+import com.spartronics4915.frc2025.Constants.ElevatorConstants.ElevatorSubsystemState;
 import com.spartronics4915.frc2025.Constants.Drive;
 import com.spartronics4915.frc2025.Constants.OI;
 import com.spartronics4915.frc2025.commands.Autos;
@@ -25,6 +27,7 @@ import com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers;
 import com.spartronics4915.frc2025.commands.drive.RotationIndependentControlCommand;
 import com.spartronics4915.frc2025.commands.drive.SwerveTeleopCommand;
 import com.spartronics4915.frc2025.subsystems.ClimberSubsystem;
+import com.spartronics4915.frc2025.subsystems.MechanismRenderer;
 import com.spartronics4915.frc2025.subsystems.MotorSimulationSubsystem;
 import com.spartronics4915.frc2025.subsystems.OdometrySubsystem;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
@@ -32,13 +35,17 @@ import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSegment;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory.DynaPreset;
 import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory;
 import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.SimVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler;
+import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 
 import static com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers.shouldFlip;
+import static edu.wpi.first.units.Units.Meters;
 
 import java.util.Set;
 
@@ -47,6 +54,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -90,13 +98,16 @@ public class RobotContainer {
     private OdometrySubsystem odometrySubsystem = null;
         
     // ******** Simulation entries
-    public final MotorSimulationSubsystem mechanismSim;
+    public final MechanismRenderer mechRenderer;
     // ********
     
     public final IntakeSubsystem intakeSubsystem;
     public final ArmSubsystem armSubsystem;
     public final ElevatorSubsystem elevatorSubsystem;
     public final ClimberSubsystem climberSubsystem;
+
+    
+    public final DynamicsCommandFactory dynamics;
 
     public SwerveTeleopCommand swerveTeleopCommand = null;
     // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -117,18 +128,42 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
-        mechanismSim = new MotorSimulationSubsystem();
-
         intakeSubsystem = new IntakeSubsystem();
         armSubsystem = new ArmSubsystem();
         elevatorSubsystem = new ElevatorSubsystem();
         climberSubsystem = new ClimberSubsystem();
+
+        dynamics = new DynamicsCommandFactory(armSubsystem, elevatorSubsystem, intakeSubsystem);
 
         ModeSwitchHandler.EnableModeSwitchHandler(
             intakeSubsystem,
             armSubsystem,
             elevatorSubsystem
         ); //TODO add any subsystems that extend ModeSwitchInterface
+
+        mechRenderer = new MechanismRenderer(
+            elevatorSubsystem::getDesiredPosition, 
+            () -> armSubsystem.getTargetPosition().getMeasure(), 
+            intakeSubsystem::getSpeed, 
+            intakeSubsystem::detect,
+            "Target Position"
+        );
+
+        new MechanismRenderer(
+            () -> Meters.of(elevatorSubsystem.getPosition()), 
+            () -> armSubsystem.getPosition().getMeasure(), 
+            intakeSubsystem::getSpeed, 
+            intakeSubsystem::detect,
+            "Current Position"
+        );
+
+        new MechanismRenderer(
+            () -> elevatorSubsystem.getSetpoint(), 
+            () -> armSubsystem.getSetpoint().getMeasure(), 
+            intakeSubsystem::getSpeed, 
+            intakeSubsystem::detect,
+            "setpoints"
+        );
 
         if (swerveSubsystem != null) {
             swerveTeleopCommand = new SwerveTeleopCommand(driverController, swerveSubsystem);
@@ -221,6 +256,23 @@ public class RobotContainer {
             debugController.leftBumper().onTrue(Commands.runOnce(() -> LimelightVisionSubsystem.setMegaTag1Override(true)));
             debugController.leftBumper().onFalse(Commands.runOnce(() -> LimelightVisionSubsystem.setMegaTag1Override(false)));
         }
+    
+        debugController.button(1).whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(1)));
+        debugController.button(2).whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(-1)));
+        debugController.button(3).whileTrue(elevatorSubsystem.manualMode(0.01));
+        debugController.button(4).whileTrue(elevatorSubsystem.manualMode(-0.01));
+
+        debugController.button(5).onTrue(dynamics.stow());
+        debugController.button(6).onTrue(dynamics.gotoScore(DynaPreset.L4));
+        debugController.button(7).onTrue(dynamics.gotoScore(DynaPreset.L3));
+        // debugController.button(8).onTrue(dynamics.gotoScore(DynaPreset.L2));
+
+        SmartDashboard.putData("preset1elevator", elevatorSubsystem.presetCommand(ElevatorSubsystemState.STOW));
+        SmartDashboard.putData("preset2elevator", elevatorSubsystem.presetCommand(ElevatorSubsystemState.L1));
+        SmartDashboard.putData("preset3elevator", elevatorSubsystem.presetCommand(ElevatorSubsystemState.L3));
+        SmartDashboard.putData("preset4elevator", elevatorSubsystem.presetCommand(ElevatorSubsystemState.L4));
+
+    
     }
 
     /**
