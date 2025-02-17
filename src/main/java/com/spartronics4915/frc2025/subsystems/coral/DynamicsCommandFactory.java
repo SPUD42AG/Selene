@@ -55,7 +55,7 @@ public class DynamicsCommandFactory {
      */
     private boolean isElevSafeToMove(){
         var currAngle =  armSubsystem.getTargetPosition();
-        return currAngle.getCos() < Math.cos(kMoveableArmAngle.in(Radians)); //TODO fix this once arm angle's have established angle system
+        return currAngle.getCos() < Math.cos(kMoveableArmAngle.in(Radians));
     }
 
     private boolean isElevAtSetpoint(double setpoint){
@@ -103,7 +103,7 @@ public class DynamicsCommandFactory {
             Commands.none(),
             () -> {return !this.isElevSafeToMove() || (this.isArmStowed() || forceMinSafeHeightMove);}
         ).andThen(
-            Commands.waitUntil(() -> {return this.isElevSafeToMove() && !this.isElevStowed();}).withTimeout(1.0) //TODO replace with setpoint check
+            Commands.waitUntil(() -> {return this.isElevSafeToMove() && !this.isElevStowed();}).withTimeout(1.0)
         );
     }
 
