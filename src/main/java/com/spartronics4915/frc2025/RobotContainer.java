@@ -31,7 +31,9 @@ import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSegment;
 import com.spartronics4915.frc2025.subsystems.Bling.BlingSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory.DynaPreset;
 import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory;
 import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.SimVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
@@ -75,7 +77,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 @Logged
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public final SwerveSubsystem swerveSubsystem = null;//new SwerveSubsystem(Drive.SwerveDirectories.PROGRAMMER_CHASSIS);
+    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(Drive.SwerveDirectories.PROGRAMMER_CHASSIS);
 
     private static final CommandXboxController driverController = new CommandXboxController(OI.kDriverControllerPort);
 
@@ -100,6 +102,9 @@ public class RobotContainer {
     public final ElevatorSubsystem elevatorSubsystem;
     public final ClimberSubsystem climberSubsystem;
 
+    
+    public final DynamicsCommandFactory dynamics;
+
     public SwerveTeleopCommand swerveTeleopCommand = null;
     // Replace with CommandPS4Controller or CommandJoystick if needed
     
@@ -119,6 +124,8 @@ public class RobotContainer {
         armSubsystem = new ArmSubsystem();
         elevatorSubsystem = new ElevatorSubsystem();
         climberSubsystem = new ClimberSubsystem();
+
+        dynamics = new DynamicsCommandFactory(armSubsystem, elevatorSubsystem, intakeSubsystem);
 
         ModeSwitchHandler.EnableModeSwitchHandler(
             intakeSubsystem,
@@ -241,9 +248,13 @@ public class RobotContainer {
     
         debugController.button(1).whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(1)));
         debugController.button(2).whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(-1)));
+        debugController.button(3).whileTrue(elevatorSubsystem.manualMode(0.01));
+        debugController.button(4).whileTrue(elevatorSubsystem.manualMode(-0.01));
 
-        debugController.button(4).whileTrue(elevatorSubsystem.manualMode(0.01));
-        debugController.button(5).whileTrue(elevatorSubsystem.manualMode(-0.01));
+        debugController.button(5).onTrue(dynamics.stow());
+        debugController.button(6).onTrue(dynamics.gotoScore(DynaPreset.L4));
+        debugController.button(7).onTrue(dynamics.gotoScore(DynaPreset.L3));
+        // debugController.button(8).onTrue(dynamics.gotoScore(DynaPreset.L2));
 
         SmartDashboard.putData("preset1elevator", elevatorSubsystem.presetCommand(ElevatorSubsystemState.STOW));
         SmartDashboard.putData("preset2elevator", elevatorSubsystem.presetCommand(ElevatorSubsystemState.L1));

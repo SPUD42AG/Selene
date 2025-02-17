@@ -18,13 +18,16 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilogram;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -355,5 +358,15 @@ public final class Constants {
             public static final double kI = 0;
             public static final double kD = 0;
         }
+    }
+
+    public static final class DynamicsConstants {
+        public static final Angle kArmAngleTolerance = Degrees.of(10);
+        public static final double kElevatorHeightTolerance = Inches.of(5).in(Meters);
+        public static final Angle kSafeArmAngle = Degrees.of(270); //TODO this is currently straight up, this might change
+        public static final Angle kMoveableArmAngle = Degrees.of(276.198611); //used in cos math, so this is equivalent to ~80 degrees either side of the left horizon //TODO this is currently straight up, this might change
+    
+        public static final double kMinSafeElevHeight = Inches.of(17.352524).in(Meters); // height of the elevator for when the arm is stowed and needs to move
+
     }
 }
