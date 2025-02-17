@@ -46,7 +46,7 @@ public class MechanismRenderer extends SubsystemBase {
         this.intakeTrigger = intakeTrigger;
 
         canvas = new Mechanism2d(3, 3);
-        var root = canvas.getRoot("root", 1.5, 1);
+        var root = canvas.getRoot("root", 1.5, 0.735800);
         elev = new MechanismLigament2d("elevator", 
             elevatorHeightSupplier.get().in(Meters),
             90,
@@ -55,7 +55,7 @@ public class MechanismRenderer extends SubsystemBase {
         );
 
         arm = new MechanismLigament2d("arm", 
-            0.329302,
+            0.321500,
             armAngleSupplier.get().in(Degrees),
             5,
             new Color8Bit(Color.kBlue)
@@ -77,7 +77,7 @@ public class MechanismRenderer extends SubsystemBase {
     @Override
     public void periodic() {
         elev.setLength(elevatorHeightSupplier.get().in(Meters));
-        arm.setAngle(armAngleSupplier.get().in(Degrees) + 180);
+        arm.setAngle(armAngleSupplier.get().in(Degrees) + 90);
         intakeBB.setColor(intakeTrigger.getAsBoolean() ? new Color8Bit(Color.kGreen) : new Color8Bit(Color.kRed));
         
         double t = MathUtil.inverseInterpolate(
