@@ -2,6 +2,8 @@ package com.spartronics4915.frc2025.commands;
 
 import com.spartronics4915.frc2025.commands.VariableAutos.FieldBranch;
 import com.spartronics4915.frc2025.commands.VariableAutos.StationSide;
+import com.spartronics4915.frc2025.commands.VariableAutos.BranchHeight;
+
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class ComplexAutoChooser {
     private class VariableAutoSegment {
         private SendableChooser<FieldBranch> branchChooser = new SendableChooser<>();
+        private SendableChooser<BranchHeight> heightChooser = new SendableChooser<>();
 
         private int index;
         private static int count = 1;
@@ -19,7 +22,9 @@ public class ComplexAutoChooser {
             index = count++;
             String path = "Variable Autos/Step " + index + "/";
             buildBranchChooser();
+            buildHeightChooser();
             SmartDashboard.putData(path + "Score on...", branchChooser);
+            SmartDashboard.putData(path + "at...", heightChooser);
         }
 
         private void buildBranchChooser() {
@@ -41,8 +46,17 @@ public class ComplexAutoChooser {
             branchChooser.addOption("J", FieldBranch.J);
         }
 
+        private void buildHeightChooser() {
+            heightChooser.setDefaultOption("L4", BranchHeight.L4);
+            heightChooser.addOption("L3", BranchHeight.L3);
+            heightChooser.addOption("L2", BranchHeight.L2);
+        }
+
         protected FieldBranch getFieldBranch() {
             return branchChooser.getSelected();
+        }
+        protected BranchHeight getBranchHeight() {
+            return heightChooser.getSelected();
         }
     }
 
@@ -70,9 +84,9 @@ public class ComplexAutoChooser {
         for (int i = 0; i < segments.length; i++) {
             VariableAutoSegment segment = segments[i];
             if (i == 0) {
-                commands[i] = factory.generateStartingAutoCycle(segment.getFieldBranch(), stationChooser.getSelected());
+                commands[i] = factory.generateStartingAutoCycle(segment.getFieldBranch(), stationChooser.getSelected(), segment.getBranchHeight());
             } else {
-                commands[i] = factory.generateAutoCycle(segment.getFieldBranch(), stationChooser.getSelected());
+                commands[i] = factory.generateAutoCycle(segment.getFieldBranch(), stationChooser.getSelected(), segment.getBranchHeight());
             }
         }
         return Commands.sequence(commands);

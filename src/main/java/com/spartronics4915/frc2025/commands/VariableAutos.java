@@ -4,6 +4,7 @@ import com.spartronics4915.frc2025.RobotContainer;
 import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
 import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
+import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -12,6 +13,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class VariableAutos {
+
+    public enum BranchHeight{
+        L4,
+        L3,
+        L2,
+        L1
+    }
+
     public enum FieldBranch{
         A(BranchSide.LEFT, ReefSide.ONE),
         B(BranchSide.RIGHT, ReefSide.ONE),
@@ -97,16 +106,19 @@ public class VariableAutos {
     public record PathPair(Command approachPath, Command autoAlign, Command returnPath) {}
 
     private AlignToReef alignmentGenerator;
+    private DynamicsCommandFactory dynamics;
 
-    public VariableAutos(AlignToReef alignmentGenerator) {
+
+    public VariableAutos(AlignToReef alignmentGenerator, DynamicsCommandFactory dynamics) {
         super();
         this.alignmentGenerator = alignmentGenerator;
+        this.dynamics = dynamics;
     }
 
     /**
      * outputs the entire auto cycle from station to branch with mechanism movement
      */
-    public Command generateAutoCycle(FieldBranch branch, StationSide side){
+    public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height){
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
@@ -116,7 +128,7 @@ public class VariableAutos {
         );
     }
 
-    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side){
+    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height){
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(

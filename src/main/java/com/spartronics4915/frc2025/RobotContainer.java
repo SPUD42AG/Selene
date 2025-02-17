@@ -19,6 +19,7 @@ import com.spartronics4915.frc2025.commands.VariableAutos;
 import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
 import com.spartronics4915.frc2025.commands.autos.DriveToReefPoint;
+import com.spartronics4915.frc2025.commands.VariableAutos.BranchHeight;
 import com.spartronics4915.frc2025.commands.VariableAutos.BranchSide;
 import com.spartronics4915.frc2025.commands.VariableAutos.FieldBranch;
 import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
@@ -167,7 +168,7 @@ public class RobotContainer {
         if (swerveSubsystem != null) {
             swerveTeleopCommand = new SwerveTeleopCommand(driverController, swerveSubsystem);
             alignmentCommandFactory = new AlignToReef(swerveSubsystem, fieldLayout);
-            variableAutoFactory = new VariableAutos(alignmentCommandFactory);
+            variableAutoFactory = new VariableAutos(alignmentCommandFactory, dynamics);
             if (RobotBase.isSimulation()) {
                 visionSubsystem = new SimVisionSubsystem(swerveSubsystem);
             } else {
@@ -308,21 +309,21 @@ public class RobotContainer {
             chooser.addOption("Leave", new PathPlannerAuto("Leave Auto"));
 
             chooser.addOption("Align with move", Commands.sequence(
-                variableAutoFactory.generateAutoCycle(FieldBranch.A, StationSide.LEFT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.LEFT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.E, StationSide.LEFT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.G, StationSide.LEFT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.I, StationSide.LEFT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.K, StationSide.LEFT)
+                variableAutoFactory.generateAutoCycle(FieldBranch.A, StationSide.LEFT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.LEFT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.E, StationSide.LEFT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.G, StationSide.LEFT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.I, StationSide.LEFT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.K, StationSide.LEFT, BranchHeight.L4)
             ));
 
             chooser.addOption("Align Mirror with move", Commands.sequence(
-                variableAutoFactory.generateAutoCycle(FieldBranch.A, StationSide.RIGHT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.E, StationSide.RIGHT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.G, StationSide.RIGHT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.I, StationSide.RIGHT),
-                variableAutoFactory.generateAutoCycle(FieldBranch.K, StationSide.RIGHT)
+                variableAutoFactory.generateAutoCycle(FieldBranch.A, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.E, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.G, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.I, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.K, StationSide.RIGHT, BranchHeight.L4)
             ));
 
             chooser.addOption("Create auto...", Commands.defer(complexAutoChooser::getAuto, Set.of(swerveSubsystem)));
