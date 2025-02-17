@@ -25,6 +25,10 @@ public class DynamicsCommandFactory {
         this.armSubsystem = armSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
+
+        if (RobotBase.isReal()) {
+            throw new RuntimeException("This is currently only working in sim, change the way it gets the position");
+        }
     }
 
     private record DynamicsSetpoint(double heightMeters, Rotation2d armAngle) {
