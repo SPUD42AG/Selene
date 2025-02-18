@@ -1,5 +1,7 @@
 package com.spartronics4915.frc2025.commands;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.spartronics4915.frc2025.RobotContainer;
 import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
 import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
@@ -8,6 +10,7 @@ import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory;
 import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory.DynaPreset;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -124,10 +127,18 @@ public class VariableAutos {
         this.dynamics = dynamics;
     }
 
+    public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height) {
+        return generateAutoCycle(branch, side, height, Seconds.of(0));
+    }
+
+    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height) {
+        return generateStartingAutoCycle(branch, side, height, Seconds.of(0));
+    }
+
     /**
      * Outputs the entire auto cycle from station to branch with mechanism movement
      */
-    public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height){
+    public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height, Time delay) {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
@@ -138,14 +149,17 @@ public class VariableAutos {
             ),
             dynamics.score(),
             Commands.parallel(
-                pathPair.returnPath,
+                Commands.sequence(
+                    Commands.waitTime(delay),
+                    pathPair.returnPath
+                ),
                 dynamics.stow()
             ),
             dynamics.blockingIntake()
         );
     }
 
-    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height){
+    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height, Time delay) {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
@@ -155,7 +169,10 @@ public class VariableAutos {
             ),
             dynamics.score(),
             Commands.parallel(
-                pathPair.returnPath,
+                Commands.sequence(
+                    Commands.waitTime(delay),
+                    pathPair.returnPath
+                ),
                 dynamics.stow()
             ),
             dynamics.blockingIntake()
