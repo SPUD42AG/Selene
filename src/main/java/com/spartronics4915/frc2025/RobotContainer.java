@@ -254,6 +254,10 @@ public class RobotContainer {
 
         dynamics.hasScoredTrigger.onTrue(dynamics.stow());
 
+        new Trigger(dynamics::funnelDetect).onTrue(
+            dynamics.intake()
+        );
+
         //#endregion
 
         //#region Operator Controls
