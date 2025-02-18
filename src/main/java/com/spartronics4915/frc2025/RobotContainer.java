@@ -326,8 +326,15 @@ public class RobotContainer {
                 variableAutoFactory.generateAutoCycle(FieldBranch.K, StationSide.RIGHT, BranchHeight.L4)
             ));
 
-            chooser.addOption("Create auto...", Commands.defer(complexAutoChooser::getAuto, Set.of(swerveSubsystem)));
+            var variableAuto = Commands.defer(complexAutoChooser::getAuto, Set.of(swerveSubsystem));
+            variableAuto.setName("variableAuto");
+
+            chooser.addOption("Create auto...", variableAuto);
         }
+
+        Shuffleboard.getTab("autos").addBoolean("Using Variable Auto?", () -> {
+            return chooser.getSelected().getName() == "variableAuto";
+        });
 
         SmartDashboard.putData("Auto Chooser", chooser);
 
