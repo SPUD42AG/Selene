@@ -249,17 +249,16 @@ public final class ChassisSpeedSuppliers {
     }
 
     public static Supplier<Rotation2d> orientTowardsReef(SwerveSubsystem swerve) {
-        //return () -> Rotation2d.fromDegrees(45);
         return () -> {
             if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
                 Pose2d reef = new Pose2d(4.5, 4, Rotation2d.kZero);
                 if (Math.sqrt(Math.pow(reef.getX() - swerve.getPose().getX(), 2) + Math.pow(reef.getY() - swerve.getPose().getY(), 2)) < 6) 
-                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation();
+                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation().plus(Rotation2d.k180deg);
             }
             if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
                 Pose2d reef = new Pose2d(13, 4, Rotation2d.kZero);
                 if (Math.sqrt(Math.pow(reef.getX() - swerve.getPose().getX(), 2) + Math.pow(reef.getY() - swerve.getPose().getY(), 2)) < 6) 
-                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation();
+                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation().plus(Rotation2d.k180deg);
             }
             return swerve.getHeading();
         };
