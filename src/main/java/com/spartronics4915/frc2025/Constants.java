@@ -372,7 +372,7 @@ public final class Constants {
 
         public static final double laserCanDebounce = 0.3; //seconds
 
-        public static final int kFunnelLaserCanID = 1;
+        public static final int kFunnelLaserCanID = 20;
         public static final Distance funnelLCTriggerDist = Inches.of(1.0);
 
     }
