@@ -51,7 +51,7 @@ public class MechanismRenderer extends SubsystemBase {
             elevatorHeightSupplier.get().in(Meters),
             90,
             5,
-            new Color8Bit(Color.kGray)
+            new Color8Bit(Color.kCoral)
         );
 
         arm = new MechanismLigament2d("arm", 
@@ -77,7 +77,7 @@ public class MechanismRenderer extends SubsystemBase {
     @Override
     public void periodic() {
         elev.setLength(elevatorHeightSupplier.get().in(Meters));
-        arm.setAngle(armAngleSupplier.get().in(Degrees) + 90);
+        arm.setAngle(-(armAngleSupplier.get().in(Degrees) + 90));
         intakeBB.setColor(intakeTrigger.getAsBoolean() ? new Color8Bit(Color.kGreen) : new Color8Bit(Color.kRed));
         
         double t = MathUtil.inverseInterpolate(
