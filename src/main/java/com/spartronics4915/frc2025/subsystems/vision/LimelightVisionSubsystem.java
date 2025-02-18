@@ -37,6 +37,8 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
     private final StructArrayPublisher<Pose3d> visionTargetPublisher;
     private final AprilTagFieldLayout fieldLayout;
 
+    private boolean initalPoseSet = false;
+
     public LimelightVisionSubsystem(SwerveSubsystem swerveSubsystem, AprilTagFieldLayout fieldLayout) {
         limelights = new ArrayList<>();
         for (LimelightConstants config : VisionConstants.kLimelights) {
@@ -68,6 +70,8 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
                 SmartDashboard.putString("VisionDiagnostics/limelight-" + config.name() + "/method", "");
                 SmartDashboard.putData("VisionDiagnostics/limelight-" + config.name() + "/pose", new Field2d());
             }
+
+            SmartDashboard.putBoolean("Initial Pose Set?", false);
         }
 
         this.fieldLayout = fieldLayout;
@@ -133,6 +137,10 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
     @Override
     public void periodic() {
         getVisionMeasurements().forEach((measurement) -> {
+            if (!initalPoseSet) {
+                initalPoseSet = true;
+                SmartDashboard.putBoolean("Initial Pose Set?", true);
+            }
             if (!discardMeasurements) swerveSubsystem.addVisionMeasurement(measurement.pose(), measurement.timestamp(), measurement.stdDevs());
             if (VisionConstants.kVisionDiagnostics) {
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/stddev", measurement.stdDevs().get(0, 0));
@@ -162,6 +170,10 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
 
     public static void setDiscardMeasurements(boolean b) {
         discardMeasurements = b;
+    }
+
+    public boolean isInitialPoseSet() {
+        return initalPoseSet;
     }
 
     public Optional<Pose2d> getBotPose2dFromReefCamera() {

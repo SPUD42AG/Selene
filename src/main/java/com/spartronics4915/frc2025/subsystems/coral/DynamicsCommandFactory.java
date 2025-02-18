@@ -65,7 +65,7 @@ public class DynamicsCommandFactory {
 
     /**
      * 
-     * @return whether the elevator is safe to move (based on the arm's position)
+     * @return Whether the elevator is safe to move (based on the arm's position)
      */
     private boolean isElevSafeToMove(){
         var currAngle =  armSubsystem.getTargetPosition();
@@ -81,7 +81,9 @@ public class DynamicsCommandFactory {
         return armSubsystem.getTargetPosition().minus(angle).getMeasure().isNear(Degrees.of(0), kArmAngleTolerance);
     }
 
-    // is the arm below the horizon and is the elevator too low to allow movement
+    /**
+     * @return Whether the arm is below the horizon and the elevator is too low to allow movement
+     */
     private boolean isArmStowed(){
         return (armSubsystem.getTargetPosition().getDegrees() < 180) && isElevStowed();
     }
@@ -107,10 +109,8 @@ public class DynamicsCommandFactory {
     }
 
     /**
-     * Make sure the elevator is not in the load position, if it is goto the safe Elevator height, otherwise it's fine to move the arm
-     * Then move the arm to make it safe to move
-     * 
-     * @return Command to do above actions
+     * If the elevator is not in the load position, go to the safe elevator height.
+     * Then, move the arm such that it is safe to move (meaning it won't hit the reef).
      */
     private Command makeSystemSafeToMove(boolean forceMinSafeHeightMove){ 
         //note to self, careful about when data gets read here
@@ -134,7 +134,6 @@ public class DynamicsCommandFactory {
 
     /**
      * Moves the elevator first before moving the arm
-     * @return Command to do above actions
      */
     private Command elevatorPriorityMove(DynamicsSetpoint setpoint){
         return Commands.parallel(
@@ -147,7 +146,6 @@ public class DynamicsCommandFactory {
 
     /**
      * Moves the arm first before moving the elevator
-     * @return Command to do above actions
      */
     private Command armPriorityMove(DynamicsSetpoint setpoint){
         return Commands.parallel(
@@ -208,8 +206,7 @@ public class DynamicsCommandFactory {
     }
 
     /**
-     * this tells the intake to start intaking, it'll end when the funnel Lasercan has detected a coral
-     * @return
+     * Starts the intake immediately and stops the intake once the funnel LaserCAN detects coral
      */
     public Command blockingIntake(){
         return Commands.deadline(
