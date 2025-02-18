@@ -1,7 +1,9 @@
 package com.spartronics4915.frc2025.subsystems.coral;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.spartronics4915.frc2025.RobotContainer;
+import com.spartronics4915.frc2025.Constants.IntakeConstants.IntakeSpeed;
 
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -13,6 +15,7 @@ import static com.spartronics4915.frc2025.Constants.DynamicsConstants.*;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Millimeter;
 import static edu.wpi.first.units.Units.Radians;
 
 public class DynamicsCommandFactory {
@@ -25,6 +28,8 @@ public class DynamicsCommandFactory {
         this.armSubsystem = armSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
+
+        this.funnelLC = new LaserCan(kFunnelLaserCanID);
 
         if (RobotBase.isReal()) {
             throw new RuntimeException("This is currently only working in sim, change the way it gets the position");
@@ -83,6 +88,17 @@ public class DynamicsCommandFactory {
     private boolean isCoralInArm(){
         // return false;
         return intakeSubsystem.detect();
+    }
+
+    public boolean funnelDetect(){
+
+        var measurement = funnelLC.getMeasurement();
+
+        if (measurement == null) {
+            return false;
+        }
+
+        return  measurement.distance_mm < funnelLCTriggerDist.in(Millimeter);
     }
 
     /**
