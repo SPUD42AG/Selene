@@ -41,11 +41,11 @@ public class DynamicsCommandFactory {
     }
 
     public enum DynaPreset{
-        LOAD(0.0, Rotation2d.fromDegrees(122.210182)),
-        PRESCORE(0.0, Rotation2d.fromDegrees(245.826889)),
+        LOAD(0.0, Rotation2d.fromDegrees(237.789818)),
+        PRESCORE(0.0, Rotation2d.fromDegrees(114.173111)),
         // L2(0.0, Rotation2d.fromDegrees(319.357058)),
-        L3(Inches.of(21.826948).in(Meters), Rotation2d.fromDegrees(301.896888)),
-        L4(Inches.of(53.312356).in(Meters), Rotation2d.fromDegrees(359));
+        L3(Inches.of(21.826948).in(Meters), Rotation2d.fromDegrees(58.10311200000001)),
+        L4(Inches.of(47.0).in(Meters), Rotation2d.fromDegrees(5));
 
         private final DynamicsSetpoint setpoint;
 

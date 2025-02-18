@@ -285,10 +285,10 @@ public final class Constants {
         //I dont know the numbers yet so 0 is a place holder
         public enum ArmSubsystemState {
 
-            INTAKE(Rotation2d.fromDegrees(0)),
-            SCORE(Rotation2d.fromDegrees(30)),
-            EH(Rotation2d.fromDegrees(90)),
-            STOW(Rotation2d.fromDegrees(180));
+            EH(Rotation2d.fromDegrees(270)),
+            INTAKE(Rotation2d.fromDegrees(225)),
+            SCORE(Rotation2d.fromDegrees(180)),
+            STOW(Rotation2d.fromDegrees(90));
 
             public Rotation2d angle;
 
@@ -304,7 +304,7 @@ public final class Constants {
         
         public static final double kDt = 0.02;
 
-        public static final Constraints kConstraints = new Constraints(8.0, 10.0);
+        public static final Constraints kConstraints = new Constraints(1.0, 1.0); //8.0, 10
         public static final int kPeriodMs = 0;
 
         public static final double kS = 0.0;
@@ -313,11 +313,11 @@ public final class Constants {
         public static final double kA = 0.0;
         
         //The values set here are placeholders for sim
-        public static final Rotation2d kMinAngle = Rotation2d.fromRotations(-3);
-        public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(3);
+        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(5);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(330);
 
         public static final SlotConfigs kPIDConfigs = new SlotConfigs()
-            .withKP(120)
+            .withKP(120/3)
             .withKI(0.0)
             .withKD(0.0);
 
@@ -358,10 +358,10 @@ public final class Constants {
 
         public static final double dt = 0.02;
 
-        public static final Constraints constraints = new Constraints(1.0, 1.0);
+        public static final Constraints constraints = new Constraints(1.0, 1.0); //12, 7.5
 
         public static final double minHeight = 0;
-        public static final double maxHeight = 1.4;
+        public static final double maxHeight = 1.20;
 
         // Not using elevator feedforward constants for now, so just commenting them out.
         
