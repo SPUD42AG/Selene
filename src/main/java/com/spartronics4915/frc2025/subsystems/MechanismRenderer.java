@@ -31,6 +31,10 @@ public class MechanismRenderer extends SubsystemBase {
     MechanismLigament2d intake;
     MechanismLigament2d intakeBB;
     
+    public static void generateRenderer(Supplier<Distance> elevatorHeightSupplier, Supplier<Angle> armAngleSupplier, Supplier<AngularVelocity> intakeSpeedSupplier, BooleanSupplier intakeTrigger, String name) {
+        new MechanismRenderer(elevatorHeightSupplier, armAngleSupplier, intakeSpeedSupplier, intakeTrigger, name);
+    }
+
     /**
      * 
      * @param elevatorHeightSupplier a supplier which returns the elevator's height from the ground

@@ -137,7 +137,7 @@ public class RobotContainer {
             elevatorSubsystem
         ); //TODO add any subsystems that extend ModeSwitchInterface
 
-        new MechanismRenderer(
+        MechanismRenderer.generateRenderer(
             elevatorSubsystem::getDesiredPosition, 
             () -> armSubsystem.getTargetPosition().getMeasure(), 
             intakeSubsystem::getSpeed, 
@@ -145,7 +145,7 @@ public class RobotContainer {
             "Target Position"
         );
 
-        new MechanismRenderer(
+        MechanismRenderer.generateRenderer(
             () -> Meters.of(elevatorSubsystem.getPosition()), 
             () -> armSubsystem.getPosition().getMeasure(), 
             intakeSubsystem::getSpeed, 
@@ -153,7 +153,7 @@ public class RobotContainer {
             "Current Position"
         );
 
-        new MechanismRenderer(
+        MechanismRenderer.generateRenderer(
             () -> elevatorSubsystem.getSetpoint(), 
             () -> armSubsystem.getSetpoint().getMeasure(), 
             intakeSubsystem::getSpeed, 
