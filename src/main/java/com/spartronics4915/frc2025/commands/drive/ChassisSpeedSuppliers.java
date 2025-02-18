@@ -2,6 +2,7 @@ package com.spartronics4915.frc2025.commands.drive;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.spartronics4915.frc2025.Constants.Drive;
@@ -45,9 +46,11 @@ public final class ChassisSpeedSuppliers {
             .or(RobotModeTriggers.autonomous())
             .or(RobotModeTriggers.test())
             .onTrue(
-                Commands.runOnce(() -> {
-                    resetTeleopHeadingOffset();
-                })
+                Commands.defer(() -> {
+                    return Commands.runOnce(() -> {
+                        if (shouldResetHeading()) resetTeleopHeadingOffset();
+                    });
+                }, Set.of())
             );
     }
 
@@ -246,17 +249,16 @@ public final class ChassisSpeedSuppliers {
     }
 
     public static Supplier<Rotation2d> orientTowardsReef(SwerveSubsystem swerve) {
-        //return () -> Rotation2d.fromDegrees(45);
         return () -> {
             if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
                 Pose2d reef = new Pose2d(4.5, 4, Rotation2d.kZero);
                 if (Math.sqrt(Math.pow(reef.getX() - swerve.getPose().getX(), 2) + Math.pow(reef.getY() - swerve.getPose().getY(), 2)) < 6) 
-                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation();
+                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation().plus(Rotation2d.k180deg);
             }
             if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
                 Pose2d reef = new Pose2d(13, 4, Rotation2d.kZero);
                 if (Math.sqrt(Math.pow(reef.getX() - swerve.getPose().getX(), 2) + Math.pow(reef.getY() - swerve.getPose().getY(), 2)) < 6) 
-                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation();
+                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation().plus(Rotation2d.k180deg);
             }
             return swerve.getHeading();
         };
@@ -264,5 +266,18 @@ public final class ChassisSpeedSuppliers {
 
     //#endregion
 
+    //#region debug
+
+    private static boolean resetHeading = true;
+
+    private static boolean shouldResetHeading() {
+        return resetHeading;
+    }
+
+    public static void toggleResetHeading() {
+        resetHeading = !resetHeading;
+    }
+
+    //#endregion
 
 }

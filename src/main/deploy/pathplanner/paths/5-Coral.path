@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6894886363636363,
-        "y": 2.6206676136363627
+        "x": 5.4046022727272724,
+        "y": 5.555639204545454
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6175426136363638,
-        "y": 1.8146306818181814
+        "x": 4.008579545454546,
+        "y": 6.333423295454545
       },
       "isLocked": false,
-      "linkedName": "Reef exit 2"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 7.051377840909091
       },
       "prevControl": {
-        "x": 1.7932244318181816,
-        "y": 6.178863636363636
+        "x": 2.2502556818181825,
+        "y": 6.577727272727272
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Pairs",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

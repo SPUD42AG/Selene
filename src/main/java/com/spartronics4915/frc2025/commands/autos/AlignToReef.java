@@ -15,6 +15,8 @@ import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import com.spartronics4915.frc2025.RobotContainer;
+import com.spartronics4915.frc2025.commands.VariableAutos.BranchSide;
+import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.Constants.VisionConstants;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
 import com.spartronics4915.frc2025.util.AprilTagRegion;
@@ -34,49 +36,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AlignToReef {
-
-    public enum BranchSide{
-        LEFT,
-        RIGHT;
-    } 
-
-    public enum ReefSide{
-        ONE(18, 7),
-        TWO(19, 6),
-        THREE(20, 11),
-        FOUR(21, 10),
-        FIVE(22, 9),
-        SIX(17, 8);
-
-        public final Pose2d redTagPose;
-        public final Pose2d blueTagPose;
-
-        public Pose2d getCurrent(){
-            return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ?
-                blueTagPose : 
-                redTagPose;
-        }
-
-        public ReefSide mirror(){
-            switch (this) {
-                case ONE: return ReefSide.ONE;
-                case TWO: return ReefSide.SIX;
-                case THREE: return ReefSide.FIVE;
-                case FOUR: return ReefSide.FOUR;
-                case FIVE: return ReefSide.THREE;
-                case SIX: return ReefSide.TWO;
-                default: return ReefSide.ONE;
-            }
-        }
-
-        private ReefSide(int blue, int red) {
-            var layout = RobotContainer.getFieldLayout();
-
-
-            redTagPose =layout.getTagPose(red).get().toPose2d();
-            blueTagPose = layout.getTagPose(blue).get().toPose2d();
-        }
-    } 
     
     private final SwerveSubsystem mSwerve;
 
@@ -140,7 +99,6 @@ public class AlignToReef {
         }, Set.of());
     }
 
-
     private Command getPathFromWaypoint(Pose2d waypoint) {
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(mSwerve.getPose().getTranslation(), getPathVelocityHeading(mSwerve.getFieldVelocity(), waypoint)),
@@ -155,7 +113,7 @@ public class AlignToReef {
             waypoints, 
             kPathConstraints,
             new IdealStartingState(getVelocityMagnitude(mSwerve.getFieldVelocity()), mSwerve.getHeading()), 
-            new GoalEndState(0.0, getBranchRotation(mSwerve))
+            new GoalEndState(0.0, waypoint.getRotation())
         );
 
         path.preventFlipping = true;

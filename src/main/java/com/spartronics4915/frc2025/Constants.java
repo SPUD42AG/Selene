@@ -18,13 +18,17 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilogram;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -34,6 +38,8 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 
 /**
@@ -179,17 +185,17 @@ public final class Constants {
                     KilogramSquareMeters.of(1.9387211145),
                     new ModuleConfig(
                         Inches.of(3.75/2.0),
-                        MetersPerSecond.of(5),
+                        MetersPerSecond.of(4),
                         1.00, //CHECKUP guess
                         DCMotor.getNEO(1),
                         6.75,
                         Amps.of(40),
                         1
                     ),
-                    new Translation2d(Inches.of(12.25), Inches.of(12.3125)),
-                    new Translation2d(Inches.of(12.25), Inches.of(-12.3125)),
-                    new Translation2d(Inches.of(-12.25), Inches.of(12.3125)),
-                    new Translation2d(Inches.of(-12.25), Inches.of(-12.3125))
+                    new Translation2d(Inches.of(12.625), Inches.of(12.5625)),
+                    new Translation2d(Inches.of(12.125), Inches.of(-12.5)),
+                    new Translation2d(Inches.of(-12), Inches.of(12.5)),
+                    new Translation2d(Inches.of(-12.125), Inches.of(-12.4375))
                 ));
 
                 public RobotConfig config;
@@ -214,6 +220,7 @@ public final class Constants {
     public static final class VisionConstants {
         public static final double kMaxAngularSpeed = 720;
         public static final double kMaxSpeedForMegaTag1 = 0.5; //meters
+        public static final double kMaxDistanceForMegaTag1 = 3.75; //meters
         public static final boolean kVisionDiagnostics = true;
         
         // Commenting this out for now because loading this is expensive and we want to have control over load times in auto.
@@ -277,17 +284,17 @@ public final class Constants {
         }
         
         public static final int kArmMotorID = 11;
-        public static final int kPositionConversionFactor = 1;
-        public static final int kVelocityConversionFactor = 1;
+        public static final double kPositionConversionFactor = 1 * 0.03888888888888;
+        public static final double kVelocityConversionFactor = 1 * 0.03888888888888;
         
         public static final double kDt = 0.02;
 
-        public static final Constraints kConstraints = new Constraints(1.0, 1.0);
+        public static final Constraints kConstraints = new Constraints(8.0, 10.0);
         public static final int kPeriodMs = 0;
 
         public static final double kS = 0.0;
         public static final double kG = 0.0;
-        public static final double kV = 0.02;
+        public static final double kV = 0.0;
         public static final double kA = 0.0;
         
         //The values set here are placeholders for sim
@@ -295,9 +302,16 @@ public final class Constants {
         public static final Rotation2d kMaxAngle = Rotation2d.fromRotations(3);
 
         public static final SlotConfigs kPIDConfigs = new SlotConfigs()
-            .withKP(1)
+            .withKP(120)
             .withKI(0.0)
             .withKD(0.0);
+
+        public static final CurrentLimitsConfigs kCurrentLimits = new CurrentLimitsConfigs()
+            .withSupplyCurrentLimit(20);
+        public static final FeedbackConfigs kFeedbackConfig = new FeedbackConfigs()
+            .withSensorToMechanismRatio(25.7143)
+        ;
+
     }
 
     public static final class ElevatorConstants {
@@ -306,8 +320,8 @@ public final class Constants {
 
             STOW(0),
             L1(0.1),
-            L3(0.2),
-            L4(0.3);
+            L3(0.3),
+            L4(1.1);
 
             public double meter;
 
@@ -318,31 +332,48 @@ public final class Constants {
 
         public static final int elevatorMotorID = 9; //left motor
         public static final int elevatorFollowerID = 10; //right motor
-        public static final boolean motorInverted = false;
+        public static final boolean motorInverted = true;
         public static final boolean followerInverted = true;
         public static final double motorPositionConversionFactor = (1/20.0) * 0.14044 * 2;
         public static final double motorVelocityConversionFactor = (1/20.0) * 0.14044 * 2;
-        public static final int motorSmartCurrentLimit = 13;
-        public static final int motorSecondaryCurrentLimit = 15;
-        public static final int followerSmartCurrentLimit = 13;
-        public static final int followerSecondaryCurrentLimit = 15;
+        public static final int motorSmartCurrentLimit = 18;
+        public static final int motorSecondaryCurrentLimit = 20;
+        public static final int followerSmartCurrentLimit = 18;
+        public static final int followerSecondaryCurrentLimit = 20;
 
         public static final double dt = 0.02;
 
         public static final Constraints constraints = new Constraints(1.0, 1.0);
 
         public static final double minHeight = 0;
-        public static final double maxHeight = 0.5;
+        public static final double maxHeight = 1.4;
 
-        public static final double kS = 0.0;
-        public static final double kG = 0.0;
-        public static final double kV = 0.0;
-        public static final double kA = 0.0;
+        // Not using elevator feedforward constants for now, so just commenting them out.
+        
+        // public static final double kS = 0.0;
+        // public static final double kG = 0.0;
+        // public static final double kV = 0.0;
+        // public static final double kA = 0.0;
 
         public static final class motorPIDConstants {
-            public static final double kP = 0.25;
+            public static final double kP = 16;
             public static final double kI = 0;
             public static final double kD = 0;
         }
+    }
+
+    public static final class DynamicsConstants {
+        public static final Angle kArmAngleTolerance = Degrees.of(10);
+        public static final double kElevatorHeightTolerance = Inches.of(5).in(Meters);
+        public static final Angle kSafeArmAngle = Degrees.of(270); //TODO this is currently straight up, this might change
+        public static final Angle kMoveableArmAngle = Degrees.of(276.198611); //used in cos math, so this is equivalent to ~80 degrees either side of the left horizon //TODO this is currently straight up, this might change
+    
+        public static final double kMinSafeElevHeight = Inches.of(17.352524).in(Meters); // height of the elevator for when the arm is stowed and needs to move
+
+        public static final double laserCanDebounce = 0.3; //seconds
+
+        public static final int kFunnelLaserCanID = 20;
+        public static final Distance funnelLCTriggerDist = Inches.of(1.0);
+
     }
 }
