@@ -217,6 +217,21 @@ public final class Constants {
         public static final PIDFConstants kAnglePIDConstants = new PIDFConstants(5.0, 0.0, 0.0, 0);
     }
 
+    public static final class OrientTowardsNearestPOIConstants {
+        public static final Rotation2d REEF_OFFSET = Rotation2d.k180deg;
+        public static final double CORAL_STATION_ANGLE = 55;
+        public static final Translation2d[] BARGE_RED_CAGE_POSITIONS = {
+            new Translation2d(8.8, 3),
+            new Translation2d(8.8, 1.9),
+            new Translation2d(8.8, .8)
+        };
+        public static final Translation2d[] BARGE_BLUE_CAGE_POSITIONS = {
+            new Translation2d(8.8, 7.2),
+            new Translation2d(8.8, 6.1),
+            new Translation2d(8.8, 5)
+        };
+    }
+
     public static final class VisionConstants {
         public static final double kMaxAngularSpeed = 720;
         public static final double kMaxSpeedForMegaTag1 = 0.5; //meters
