@@ -239,7 +239,7 @@ public class RobotContainer {
             //this is a approximate version, we can do something more advanced by placing points at the center of the reef sides, then detecting which side it's closest to based on it's position
             driverController.rightTrigger().whileTrue(
                 new RotationIndependentControlCommand(
-                    ChassisSpeedSuppliers.gotoAngle(ChassisSpeedSuppliers.orientTowardsReef(swerveSubsystem), swerveSubsystem),
+                    ChassisSpeedSuppliers.gotoAngle(ChassisSpeedSuppliers.orientTowardsNearestPOI(swerveSubsystem), swerveSubsystem),
                     ChassisSpeedSuppliers.getSwerveTeleopCSSupplier(driverController.getHID(), swerveSubsystem),
                     swerveSubsystem
                 )

@@ -41,8 +41,16 @@ public class DriverCommunication extends BlingSegment {
             }
         ),
         BARGE(
-            new Translation2d[] {new Translation2d(9, 6)}, 
-            new Translation2d[] {new Translation2d(9, 2)}, 
+            new Translation2d[] {
+                new Translation2d(8.8, 7.2),
+                new Translation2d(8.8, 6.1),
+                new Translation2d(8.8, 5)
+            }, 
+            new Translation2d[] {
+                new Translation2d(8.8, 3),
+                new Translation2d(8.8, 1.9),
+                new Translation2d(8.8, .8)
+            }, 
             null
         ),
         CORAL_STATION(

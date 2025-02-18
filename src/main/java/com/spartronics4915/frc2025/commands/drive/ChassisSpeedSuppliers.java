@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import com.spartronics4915.frc2025.Constants.Drive;
 import com.spartronics4915.frc2025.Constants.OI;
+import com.spartronics4915.frc2025.Constants.OrientTowardsNearestPOIConstants;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
 
 import static com.spartronics4915.frc2025.Constants.DriveCommandConstants.*;
@@ -15,6 +16,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
+import com.spartronics4915.frc2025.subsystems.bling2.DriverCommunication;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 import com.spartronics4915.frc2025.subsystems.vision.TargetDetectorInterface.Detection;
 
@@ -30,12 +32,14 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
+import static com.spartronics4915.frc2025.Constants.OrientTowardsNearestPOIConstants;
 
 public final class ChassisSpeedSuppliers {
     private static final PIDController mAnglePIDRad = new PIDController(kAnglePIDConstants.kP(), kAnglePIDConstants.kI(), kAnglePIDConstants.kD());
@@ -248,17 +252,30 @@ public final class ChassisSpeedSuppliers {
         return to.minus(from).getAngle();
     }
 
-    public static Supplier<Rotation2d> orientTowardsReef(SwerveSubsystem swerve) {
+    public static Supplier<Rotation2d> orientTowardsNearestPOI(SwerveSubsystem swerve) {
         return () -> {
-            if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-                Pose2d reef = new Pose2d(4.5, 4, Rotation2d.kZero);
-                if (Math.sqrt(Math.pow(reef.getX() - swerve.getPose().getX(), 2) + Math.pow(reef.getY() - swerve.getPose().getY(), 2)) < 6) 
-                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation().plus(Rotation2d.k180deg);
-            }
-            if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-                Pose2d reef = new Pose2d(13, 4, Rotation2d.kZero);
-                if (Math.sqrt(Math.pow(reef.getX() - swerve.getPose().getX(), 2) + Math.pow(reef.getY() - swerve.getPose().getY(), 2)) < 6) 
-                    return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation().plus(Rotation2d.k180deg);
+            boolean isBlue = DriverStation.getAlliance().get().equals(Alliance.Blue);
+            switch (DriverCommunication.getClosestRegion(swerve)) {
+                case REEF, PROCESSOR: {
+                    if (isBlue) {
+                        return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation().plus(OrientTowardsNearestPOIConstants.REEF_OFFSET);
+                    }
+                    else {
+                        return AlignToReef.getClosestReefAprilTag(swerve.getPose()).getRotation().plus(OrientTowardsNearestPOIConstants.REEF_OFFSET);
+                    }
+                }
+                case CORAL_STATION: {
+                    if (swerve.getPose().getTranslation().getY() > 4) return new Rotation2d((OrientTowardsNearestPOIConstants.CORAL_STATION_ANGLE + (isBlue ? + 180 : 0)) * Math.PI / 180 * (isBlue ? -1 : 1));
+                    else return new Rotation2d((-OrientTowardsNearestPOIConstants.CORAL_STATION_ANGLE + (isBlue ? + 180 : 0)) * Math.PI / 180 * (isBlue ? -1 : 1));
+                }
+                case BARGE: {
+                    int location = DriverStation.getLocation().getAsInt() - 1;
+                    System.out.println(location);
+                    if (isBlue)
+                        return OrientTowardsNearestPOIConstants.BARGE_BLUE_CAGE_POSITIONS[location].minus(swerve.getPose().getTranslation()).getAngle();
+                    else 
+                        return OrientTowardsNearestPOIConstants.BARGE_RED_CAGE_POSITIONS[location].minus(swerve.getPose().getTranslation()).getAngle();
+                }
             }
             return swerve.getHeading();
         };
