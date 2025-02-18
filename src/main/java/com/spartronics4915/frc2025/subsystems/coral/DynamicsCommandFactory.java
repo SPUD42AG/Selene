@@ -102,7 +102,7 @@ public class DynamicsCommandFactory {
             return false;
         }
 
-        return  measurement.distance_mm < funnelLCTriggerDist.in(Millimeter);
+        return  measurement.distance_mm < funnelLCTriggerDist.in(Millimeter) || intakeSubsystem.detect(); // the || is here as a way to prevent us stalling at a CS when we are already holding a coral
     }
 
     /**
@@ -203,7 +203,7 @@ public class DynamicsCommandFactory {
                 new Trigger(this::isCoralInArm).negate().debounce(laserCanDebounce)
             ).withTimeout(1.0),
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT)
-        );
+        ).andThen(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
     }
 
     /**
@@ -212,7 +212,7 @@ public class DynamicsCommandFactory {
      */
     public Command blockingIntake(){
         return Commands.deadline(
-            Commands.waitUntil(this::funnelDetect).withTimeout(1.0),
+            Commands.waitUntil(this::funnelDetect).withTimeout(1.0), //TODO remove this timeout outside of sim
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN)
         );
     }
