@@ -96,10 +96,6 @@ public class RobotContainer {
     private final ElementLocator elementLocator = new ElementLocator();
     private VisionDeviceSubystem visionSubsystem = null;
     private OdometrySubsystem odometrySubsystem = null;
-        
-    // ******** Simulation entries
-    public final MechanismRenderer mechRenderer;
-    // ********
     
     public final IntakeSubsystem intakeSubsystem;
     public final ArmSubsystem armSubsystem;
@@ -141,7 +137,7 @@ public class RobotContainer {
             elevatorSubsystem
         ); //TODO add any subsystems that extend ModeSwitchInterface
 
-        mechRenderer = new MechanismRenderer(
+        new MechanismRenderer(
             elevatorSubsystem::getDesiredPosition, 
             () -> armSubsystem.getTargetPosition().getMeasure(), 
             intakeSubsystem::getSpeed, 
