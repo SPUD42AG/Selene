@@ -1,6 +1,5 @@
 package com.spartronics4915.frc2025.subsystems.bling2;
 
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -11,8 +10,6 @@ import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
 import com.spartronics4915.frc2025.subsystems.vision.VisionDeviceSubystem;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.LinearVelocityUnit;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -23,7 +20,7 @@ public class DriverCommunication extends BlingSegment {
     private static SwerveSubsystem swerve;
     private static VisionDeviceSubystem vision;
     
-    public enum Region {
+    public static enum Region {
         REEF(
             new Translation2d[] {new Translation2d(5, 4), new Translation2d(4, 4), new Translation2d(4.5, 4.5), new Translation2d(4.5, 3.5)}, 
             new Translation2d[] {new Translation2d(13.5, 4), new Translation2d(12.5, 4), new Translation2d(13, 4.5), new Translation2d(13, 4.5)}, 
@@ -70,20 +67,23 @@ public class DriverCommunication extends BlingSegment {
         this.vision = vision;
     }
 
-    @Override
-    protected void updateLights() {
+    public static Region getClosestRegion(SwerveSubsystem swerve) {
         Region closest = null;
         double closestDistance = Double.MAX_VALUE;
-
         for (Region reg : Region.values()) {
             for (Translation2d position : (DriverStation.getAlliance().isPresent() ? (DriverStation.getAlliance().get().equals(Alliance.Blue) ? reg.bluePositions : reg.redPositions) : reg.redPositions)) {
-                if (this.swerve.getPose().getTranslation().getDistance(position) < closestDistance) {
+                if (swerve.getPose().getTranslation().getDistance(position) < closestDistance) {
                     closest = reg;
-                    closestDistance = this.swerve.getPose().getTranslation().getDistance(position);
+                    closestDistance = swerve.getPose().getTranslation().getDistance(position);
                 }
             }
         }
-    
+        return closest;
+    }
+
+    @Override
+    protected void updateLights() {
+        Region closest = getClosestRegion(this.swerve);
         if (closest.pattern != null)
             closest.pattern.get().applyTo(buffer);
         else 
