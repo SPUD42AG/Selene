@@ -27,6 +27,7 @@ public class DynamicsCommandFactory {
     private ArmSubsystem armSubsystem;
 
     private LaserCan funnelLC;
+    public Trigger hasScoredTrigger = new Trigger(this::isCoralInArm).negate().debounce(kScoreLaserCanDebounce);
 
     public DynamicsCommandFactory(ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
         this.armSubsystem = armSubsystem;
@@ -161,21 +162,21 @@ public class DynamicsCommandFactory {
 
     //#region small Commands
 
-    private Command scoreHeight(DynamicsSetpoint scoringPoint){
+    public Command scoreHeight(DynamicsSetpoint scoringPoint){
         return Commands.sequence(
             makeSystemSafeToMove(false),
             elevatorPriorityMove(scoringPoint)
         );
     }
 
-    private Command loadStow(){
+    public Command loadStow(){
         return Commands.sequence(
             makeSystemSafeToMove(true),
             armPriorityMove(DynaPreset.LOAD.setpoint) //brings arm to the load angle, then drops the elevator
         );
     }
 
-    private Command prescoreStow(){
+    public Command prescoreStow(){
         return Commands.sequence(
             makeSystemSafeToMove(false),
             armPriorityMove(DynaPreset.PRESCORE.setpoint) //using arm Priority allows the arm to goto the right place then move the elevator down to the needed position 
@@ -200,7 +201,7 @@ public class DynamicsCommandFactory {
     public Command score(){
         return Commands.deadline(
             Commands.waitUntil(
-                new Trigger(this::isCoralInArm).negate().debounce(laserCanDebounce)
+                hasScoredTrigger
             ).withTimeout(1.0),
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT)
         ).andThen(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
@@ -215,5 +216,9 @@ public class DynamicsCommandFactory {
             Commands.waitUntil(this::funnelDetect).withTimeout(1.0), //TODO remove this timeout outside of sim
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN)
         );
+    }
+
+    public Command intake(){
+        return intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN);
     }
 }

@@ -11,8 +11,8 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 | Left stick |  Drive |
 | Push Left Stick |  reset FR pos heading |
 | Right stick | Field angle |
-| R Trigger | X Brake Swerve |
-| L Trigger | reef auto orient |
+| L Trigger | X Brake Swerve |
+| R Trigger | reef / coral station auto orient |
 | B | Toggle field relative |
 | A | Set FR pos heading |
 | Right bumper | auto-align to right branch |
@@ -21,10 +21,12 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 ## Operator controller
 | input   | action |
 | -------- | ------- |
-|   |     |
-|  |      |
-|     |     |
-
+| Right trigger | Score / reverse funnel |
+| Left trigger | stow |
+| Windows | force load preset |
+| Y | L4 scoring preset |
+| X | L3 scoring preset |
+| Menu | Intake |
 
 ## Debug controller
 this is a controller that shouldn't be used during competition matches
