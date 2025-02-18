@@ -32,9 +32,8 @@ import com.spartronics4915.frc2025.subsystems.MechanismRenderer;
 import com.spartronics4915.frc2025.subsystems.MotorSimulationSubsystem;
 import com.spartronics4915.frc2025.subsystems.OdometrySubsystem;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
+import com.spartronics4915.frc2025.subsystems.bling2.*;
 import com.spartronics4915.frc2025.subsystems.vision.LimelightVisionSubsystem;
-import com.spartronics4915.frc2025.subsystems.Bling.BlingSegment;
-import com.spartronics4915.frc2025.subsystems.Bling.BlingSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory.DynaPreset;
 import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
@@ -108,8 +107,8 @@ public class RobotContainer {
     public SwerveTeleopCommand swerveTeleopCommand = null;
     // Replace with CommandPS4Controller or CommandJoystick if needed
     
-    public final BlingSubsystem blingSubsystem = new BlingSubsystem(0, BlingSegment.solid(Color.kYellow, 21), BlingSegment.solid(Color.kBlue, 21));
-
+    public final BlingSubsystem blingSubsystem;
+    
     private AlignToReef alignmentCommandFactory = null;
     private VariableAutos variableAutoFactory = null;
 
@@ -183,9 +182,9 @@ public class RobotContainer {
         // Need to initialize this here after vision is configured.
         // Need to clean up initialization flow to make it more clear
         autoChooser =
-
                 buildAutoChooser();
 
+        blingSubsystem = new BlingSubsystem(0, BlingSegment.scrollingRainbow(42, 10));
     }
 
     /**
@@ -240,7 +239,7 @@ public class RobotContainer {
             //this is a approximate version, we can do something more advanced by placing points at the center of the reef sides, then detecting which side it's closest to based on it's position
             driverController.rightTrigger().whileTrue(
                 new RotationIndependentControlCommand(
-                    ChassisSpeedSuppliers.gotoAngle(ChassisSpeedSuppliers.orientTowardsReef(swerveSubsystem), swerveSubsystem),
+                    ChassisSpeedSuppliers.gotoAngle(ChassisSpeedSuppliers.orientTowardsNearestPOI(swerveSubsystem), swerveSubsystem),
                     ChassisSpeedSuppliers.getSwerveTeleopCSSupplier(driverController.getHID(), swerveSubsystem),
                     swerveSubsystem
                 )
