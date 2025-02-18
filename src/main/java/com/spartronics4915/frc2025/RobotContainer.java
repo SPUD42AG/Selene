@@ -332,9 +332,10 @@ public class RobotContainer {
             chooser.addOption("Create auto...", variableAuto);
         }
 
-        Shuffleboard.getTab("autos").addBoolean("Using Variable Auto?", () -> {
-            return chooser.getSelected().getName() == "variableAuto";
+        chooser.onChange((c) -> {
+            SmartDashboard.putBoolean("Using Variable Auto?", c.getName() == "variableAuto");
         });
+
 
         SmartDashboard.putData("Auto Chooser", chooser);
 
