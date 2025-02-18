@@ -24,7 +24,7 @@ public class ComplexAutoChooser {
             buildBranchChooser();
             buildHeightChooser();
             SmartDashboard.putData(path + "Score on...", branchChooser);
-            SmartDashboard.putData(path + "at...", heightChooser);
+            SmartDashboard.putData(path + "At...", heightChooser);
         }
 
         private void buildBranchChooser() {
