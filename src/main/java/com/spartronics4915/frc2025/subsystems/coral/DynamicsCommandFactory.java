@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import static com.spartronics4915.frc2025.Constants.DynamicsConstants.*;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -23,6 +25,8 @@ public class DynamicsCommandFactory {
     private IntakeSubsystem intakeSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
     private ArmSubsystem armSubsystem;
+
+    private LaserCan funnelLC;
 
     public DynamicsCommandFactory(ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
         this.armSubsystem = armSubsystem;
@@ -191,5 +195,25 @@ public class DynamicsCommandFactory {
 
     public Command gotoScore(DynaPreset scorePreset){
         return scoreHeight(scorePreset.setpoint);
+    }
+
+    public Command score(){
+        return Commands.deadline(
+            Commands.waitUntil(
+                new Trigger(this::isCoralInArm).negate().debounce(laserCanDebounce)
+            ).withTimeout(1.0),
+            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT)
+        );
+    }
+
+    /**
+     * this tells the intake to start intaking, it'll end when the funnel Lasercan has detected a coral
+     * @return
+     */
+    public Command blockingIntake(){
+        return Commands.deadline(
+            Commands.waitUntil(this::funnelDetect).withTimeout(1.0),
+            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN)
+        );
     }
 }

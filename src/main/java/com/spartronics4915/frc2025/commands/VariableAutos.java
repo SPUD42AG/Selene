@@ -134,9 +134,14 @@ public class VariableAutos {
             pathPair.approachPath,
             Commands.parallel(
                 pathPair.autoAlign,
-                dynamics.gotoScore(null)
+                dynamics.gotoScore(height.preset)
             ),
-            pathPair.returnPath
+            dynamics.score(),
+            Commands.parallel(
+                pathPair.returnPath,
+                dynamics.stow()
+            ),
+            dynamics.blockingIntake()
         );
     }
 
@@ -144,8 +149,16 @@ public class VariableAutos {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
-            pathPair.autoAlign,
-            pathPair.returnPath
+            Commands.parallel(
+                pathPair.autoAlign,
+                dynamics.gotoScore(height.preset)
+            ),
+            dynamics.score(),
+            Commands.parallel(
+                pathPair.returnPath,
+                dynamics.stow()
+            ),
+            dynamics.blockingIntake()
         );
     }
 
