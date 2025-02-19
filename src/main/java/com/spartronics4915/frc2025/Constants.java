@@ -34,6 +34,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -378,8 +379,8 @@ public final class Constants {
     }
 
     public static final class DynamicsConstants {
-        public static final Angle kArmAngleTolerance = Degrees.of(10);
-        public static final double kElevatorHeightTolerance = Inches.of(5).in(Meters);
+        public static final Angle kArmAngleTolerance = Degrees.of(2);
+        public static final double kElevatorHeightTolerance = Inches.of(2).in(Meters);
         public static final Angle kSafeArmAngle = Degrees.of(90); //TODO this is currently straight up, this might change
         public static final Angle kMoveableArmAngle = Degrees.of(276.198611); //used in cos math, so this is equivalent to ~80 degrees either side of the left horizon //TODO this is currently straight up, this might change
     
@@ -389,6 +390,26 @@ public final class Constants {
 
         public static final int kFunnelLaserCanID = 20;
         public static final Distance funnelLCTriggerDist = Inches.of(1.0);
+
+    }
+
+    public static final class WinchClimberConstants {
+        
+        public static final int kMotorID = 13;
+
+        private static final EncoderConfig kEncoderConfig = new EncoderConfig()
+            .positionConversionFactor(1.0)
+            .velocityConversionFactor(1.0)
+        ;
+
+        public static final SparkBaseConfig kMotorConfig = new SparkMaxConfig()
+            .smartCurrentLimit(35)
+            .secondaryCurrentLimit(40)
+            .inverted(false)
+            .openLoopRampRate(0.25)
+            .idleMode(IdleMode.kBrake)
+            .apply(kEncoderConfig)
+        ;
 
     }
 }
