@@ -81,7 +81,7 @@ public class DynamicsCommandFactory {
      * @return Whether the arm is below the horizon and the elevator is too low to allow movement
      */
     private boolean isArmStowed(){
-        return (armSubsystem.getPosition().getDegrees() < 180) && isElevStowed();
+        return (armSubsystem.getPosition().getDegrees() > 180) && isElevStowed();
     }
 
     private boolean isElevStowed(){
