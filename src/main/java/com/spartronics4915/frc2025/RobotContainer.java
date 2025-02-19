@@ -46,6 +46,7 @@ import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 
 import static com.spartronics4915.frc2025.commands.drive.ChassisSpeedSuppliers.shouldFlip;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.Set;
 
@@ -295,6 +296,24 @@ public class RobotContainer {
         chooser.setDefaultOption("None", Commands.none());
 
         if (swerveSubsystem != null) {
+
+            // START GARTRONICS
+
+            chooser.addOption("SingleCycleC", variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4));
+            chooser.addOption("DoubleCycleBC", Commands.sequence(
+                variableAutoFactory.generateAutoCycle(FieldBranch.B, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4)
+            ));
+            chooser.addOption("FiveCycleC", Commands.sequence(
+                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
+                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4)
+            ));
+            chooser.addOption("SingleCycleCWithDelay", variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4, Seconds.of(5)));
+
+            // END GARTRONICS
             chooser.addOption("ReverseLeave", Autos.reverseForSeconds(swerveSubsystem, 3));
             chooser.addOption("Drive to Reef Point", new DriveToReefPoint(swerveSubsystem, elementLocator, 11).generate());
             chooser.addOption("M-R debug straight", new PathPlannerAuto("M-R straight debug"));
