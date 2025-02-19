@@ -304,7 +304,7 @@ public final class Constants {
         
         public static final double kDt = 0.02;
 
-        public static final Constraints kConstraints = new Constraints(1.0, 1.0); //8.0, 10
+        public static final Constraints kConstraints = new Constraints(1.5, 1.5); //8.0, 10
         public static final int kPeriodMs = 0;
 
         public static final double kS = 0.0;
@@ -317,7 +317,7 @@ public final class Constants {
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(330);
 
         public static final SlotConfigs kPIDConfigs = new SlotConfigs()
-            .withKP(120/3)
+            .withKP(120)
             .withKI(0.0)
             .withKD(0.0);
 
@@ -351,14 +351,14 @@ public final class Constants {
         public static final boolean followerInverted = true;
         public static final double motorPositionConversionFactor = (1/20.0) * 0.14044 * 2;
         public static final double motorVelocityConversionFactor = (1/20.0) * 0.14044 * 2;
-        public static final int motorSmartCurrentLimit = 18;
-        public static final int motorSecondaryCurrentLimit = 20;
-        public static final int followerSmartCurrentLimit = 18;
-        public static final int followerSecondaryCurrentLimit = 20;
+        public static final int motorSmartCurrentLimit = 35; //18
+        public static final int motorSecondaryCurrentLimit = 40; //20
+        public static final int followerSmartCurrentLimit = 35;
+        public static final int followerSecondaryCurrentLimit = 40;
 
         public static final double dt = 0.02;
 
-        public static final Constraints constraints = new Constraints(1.0, 1.0); //12, 7.5
+        public static final Constraints constraints = new Constraints(3.0, 2.5); //12, 7.5
 
         public static final double minHeight = 0;
         public static final double maxHeight = 1.20;
