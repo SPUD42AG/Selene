@@ -380,7 +380,7 @@ public final class Constants {
     public static final class DynamicsConstants {
         public static final Angle kArmAngleTolerance = Degrees.of(10);
         public static final double kElevatorHeightTolerance = Inches.of(5).in(Meters);
-        public static final Angle kSafeArmAngle = Degrees.of(270); //TODO this is currently straight up, this might change
+        public static final Angle kSafeArmAngle = Degrees.of(90); //TODO this is currently straight up, this might change
         public static final Angle kMoveableArmAngle = Degrees.of(276.198611); //used in cos math, so this is equivalent to ~80 degrees either side of the left horizon //TODO this is currently straight up, this might change
     
         public static final double kMinSafeElevHeight = Inches.of(17.352524).in(Meters); // height of the elevator for when the arm is stowed and needs to move
