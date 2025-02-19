@@ -394,6 +394,19 @@ public final class Constants {
     }
 
     public static final class WinchClimberConstants {
+        //angles have 0 being horizantally away from the chassis, with clockwise rotation (when looking at the robot from the front) being positive
+
+        public enum WinchSpeeds{
+            ENGAGE(0.0), //speed which it'll rotate to move and engage the cage
+            RETRACT(0.0), //speed which it'll rotate to bring the cage down
+            ;
+
+            public final double speed;
+
+            private WinchSpeeds(double speed) {
+                this.speed = speed;
+            }
+        }
         
         public static final int kMotorID = 13;
 
@@ -410,6 +423,12 @@ public final class Constants {
             .idleMode(IdleMode.kBrake)
             .apply(kEncoderConfig)
         ;
+
+
+        public static final Rotation2d kStartingAngle = Rotation2d.fromDegrees(90.0); //angle at the start of the match
+        public static final Rotation2d kEngagedAngle = Rotation2d.fromDegrees(270.0); //angle to engage the cage
+        public static final Rotation2d kRetractedAngle = Rotation2d.fromDegrees(180.0); //desired angle at the end of the match
+
 
     }
 }
