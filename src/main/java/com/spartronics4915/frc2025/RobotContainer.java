@@ -290,6 +290,7 @@ public class RobotContainer {
         SmartDashboard.putData("stow", dynamics.stow());
         SmartDashboard.putData("score", dynamics.score());
 
+        SmartDashboard.putData("L2", dynamics.gotoScore(DynaPreset.L2));
         SmartDashboard.putData("L3", dynamics.gotoScore(DynaPreset.L3));
         SmartDashboard.putData("L4", dynamics.gotoScore(DynaPreset.L4));
 
