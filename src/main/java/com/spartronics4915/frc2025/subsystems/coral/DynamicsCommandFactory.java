@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static com.spartronics4915.frc2025.Constants.DynamicsConstants.*;
@@ -139,23 +140,36 @@ public class DynamicsCommandFactory {
         return Commands.defer(() -> {
 
             // it shouldn't realistically be possible for both of these to be true unless in the climb position during teleop
-            boolean isArmStowed = this.isArmStowed();
-            boolean isElevSafeToMove = this.isElevSafeToMove();
             
             Command makeArmAngleSafe = armSubsystem.setSetpointCommand(new Rotation2d(kSafeArmAngle));
+
+            Command moveElevatorFirstIfRequired = (this.isArmStowed() || forceElevatorMovement) && this.isElevSafeToMove()  ? makeElevatorSafeToMove() : Commands.none();
+
+            Command makeArmSafeIfNeeded = !this.isElevSafeToMove() || forceArmMovement  ? makeArmAngleSafe : Commands.none();
+
+            Command waitUntilElevSafeToMove = Commands.waitUntil(this::isElevSafeToMove).withTimeout(1.0);
+
+            Command moveElevatorIfNeeded = (this.isArmStowed() || forceElevatorMovement) ? makeElevatorSafeToMove() : Commands.none();
+            
+            ParallelRaceGroup WaitUntilSafeToMove = Commands.waitUntil(() -> {
+                // Are the setpoint and current arm angle on the same side of the horizon
+                boolean sameSide = !(this.isArmBelowHorizon() ^ isSetpointBelowHorizon);
+
+                // If they are on the same side then the arm is safe to move, if they aren't on the same side then wait until the elevator isn't stowed
+                boolean isArmSafeToMove = sameSide || !this.isElevStowed();
+
+                // If the elevator and arm are safe to move then continue
+                return this.isElevSafeToMove() && isArmSafeToMove;
+            }).withTimeout(1.0);
 
             // if the elev isn't safe to move (ie it would hook the reef) it should move the arm
             // if the arm is stowed then the elevator should move first, then bring the arm up 
             return Commands.sequence(
-                ((isArmStowed || forceElevatorMovement) && isElevSafeToMove ? makeElevatorSafeToMove() : Commands.none()),
-                (!isElevSafeToMove || forceArmMovement ? makeArmAngleSafe : Commands.none()),
-                Commands.waitUntil(this::isElevSafeToMove).withTimeout(1.0),
-                ((isArmStowed || forceElevatorMovement) ? makeElevatorSafeToMove() : Commands.none()),
-                Commands.waitUntil(() -> {
-                    boolean sameSide = !(this.isArmBelowHorizon() ^ isSetpointBelowHorizon); //make sure the elevator isn't stowed
-                    boolean isArmSafeToMove = sameSide || !this.isElevStowed();
-                    return this.isElevSafeToMove() && isArmSafeToMove; //is the system safe to move
-                }).withTimeout(1.0)
+                moveElevatorFirstIfRequired,
+                makeArmSafeIfNeeded,
+                waitUntilElevSafeToMove,
+                moveElevatorIfNeeded,
+                WaitUntilSafeToMove
             );
         }, Set.of());
     }
