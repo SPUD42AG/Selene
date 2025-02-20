@@ -112,14 +112,15 @@ public class DynamicsCommandFactory {
         //note to self, careful about when data gets read here
         return Commands.either(
             Commands.sequence(
+                armSubsystem.setSetpointCommand(new Rotation2d(kSafeArmAngle)),
                 Commands.either(
-                    elevatorSubsystem.setSetPointCommand(kMinSafeElevHeight).andThen(
+                    Commands.waitUntil(this::isElevSafeToMove).andThen(
+                        elevatorSubsystem.setSetPointCommand(kMinSafeElevHeight).andThen(
                         Commands.waitUntil(() -> !this.isElevStowed()) //ensures elevator is at a height so it can move
-                    ), 
+                    )), 
                     Commands.none(), 
                     () -> {return this.isArmStowed() || forceMinSafeHeightMove;}
-                ),
-                armSubsystem.setSetpointCommand(new Rotation2d(kSafeArmAngle))
+                )
             ), 
             Commands.none(),
             () -> {return !this.isElevSafeToMove() || (this.isArmStowed() || forceMinSafeHeightMove);}
