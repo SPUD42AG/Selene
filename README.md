@@ -8,24 +8,37 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 
 | input   | action |
 | -------- | ------- |
-| Left stick |  Drive |
-| Push Left Stick |  reset FR pos heading |
-| Right stick | Field angle |
-| L Trigger | X Brake Swerve |
-| R Trigger | reef / coral station auto orient |
-| B | Toggle field relative |
-| A | Set FR pos heading |
-| Right bumper | auto-align to right branch |
-| Left bumper | auto-align to left branch |
+| Left Stick |  Drive |
+| Push Left Stick |  Reset field relative heading |
+| Right Stick | Field angle |
+| Push Right Stick | *None* |
+| A | Toggle field relative |
+| B | Set field relative heading |
+| X | *None* |
+| Y | *None* |
+| Left Trigger | X-brake swerve |
+| Right Trigger | Reef / coral station auto orient |
+| Left Bumper | Auto-align to left branch |
+| Right Bumper | Auto-align to right branch |
+| Windows | *None* |
+| Menu | *None* |
 
 ## Operator controller
 | input   | action |
 | -------- | ------- |
-| Right trigger | Score / reverse funnel |
-| Left trigger | stow |
-| Windows | force load preset |
-| Y | L4 scoring preset |
+| Left Stick | *None* |
+| Push Left Stick | *None* |
+| Right Stick | *None* |
+| Push Right Stick | *None* |
+| A | *None* |
+| B | *None* |
 | X | L3 scoring preset |
+| Y | L4 scoring preset |
+| Left Trigger | Stow |
+| Right trigger | Score / reverse funnel |
+| Left bumper | *None* |
+| Right bumper | *None* |
+| Windows | Force load preset |
 | Menu | Intake |
 
 ## Debug controller
