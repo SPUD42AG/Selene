@@ -82,9 +82,9 @@ public final class Constants {
             .secondaryCurrentLimit(secondaryCurrentLimit);
 
         public enum IntakeSpeed {
-            IN (500),
+            IN (-500),
             NEUTRAL (0),
-            OUT (-1000);
+            OUT (1000);
 
             public final double intakeSpeed;
             
