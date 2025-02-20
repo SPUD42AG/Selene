@@ -253,7 +253,7 @@ public class RobotContainer {
 
         dynamics.hasScoredTrigger.onTrue(dynamics.stow());
 
-        new Trigger(intakeSubsystem::detect).debounce(0.02).onTrue(
+        new Trigger(intakeSubsystem::detect).and(DriverStation::isTeleop).debounce(0.02).onTrue(
             Commands.parallel(
                 dynamics.stow()
             ));
