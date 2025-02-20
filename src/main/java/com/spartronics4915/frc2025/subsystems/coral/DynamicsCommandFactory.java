@@ -247,6 +247,16 @@ public class DynamicsCommandFactory {
         ).andThen(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
     }
 
+    public Command autoScore(DynaPreset scoringLocation){
+        return Commands.sequence(
+            Commands.waitUntil(() -> 
+                isArmAtSetpoint(scoringLocation.setpoint.armAngle) && 
+                isElevAtSetpoint(scoringLocation.setpoint.heightMeters)
+            ),
+            score()
+        );
+    }
+
     /**
      * Starts the intake immediately and ends the command once the funnel or manipulator LaserCAN detects coral. This will not stop the intake
      */
@@ -255,7 +265,7 @@ public class DynamicsCommandFactory {
             intake(),
             Commands.waitUntil(
                 () -> funnelDetect() || isCoralInArm()
-            ).withTimeout(1.5)
+            ).withTimeout(3) //TODO remove for comps
         );
     }
 

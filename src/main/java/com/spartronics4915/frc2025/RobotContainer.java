@@ -322,16 +322,17 @@ public class RobotContainer {
         blockingIntakeCommand.addRequirements(intakeSubsystem);
 
         chooser.addOption("GartronicsDynamicsScoreL3", Commands.sequence(
+            dynamics.stow(),
             blockingIntakeCommand,
             dynamics.gotoScore(BranchHeight.L3.preset),
-            dynamics.score(),
+            dynamics.autoScore(BranchHeight.L3.preset),
             dynamics.stow()
         ));
         chooser.addOption("GartronicsDynamicsScoreL4", Commands.sequence(
             dynamics.stow(),
             dynamics.blockingIntake(),
-            dynamics.gotoScore(BranchHeight.L4.preset),
-            dynamics.score(),
+            dynamics.gotoScore(BranchHeight.L2.preset),
+            dynamics.autoScore(BranchHeight.L2.preset),
             dynamics.stow()
         ));
 
