@@ -52,10 +52,10 @@ public class DynamicsCommandFactory {
 
     public enum DynaPreset{
         LOAD(0.0, Rotation2d.fromDegrees(237.789818)),
-        PRESCORE(0.0, Rotation2d.fromDegrees(114.173111)),
-        L2(0.0, Rotation2d.fromDegrees(319.357058)),
+        PRESCORE(0.0, Rotation2d.fromDegrees(kSafeArmAngle.in(Degrees))),//114.173111)),
+        L2(0.0, Rotation2d.fromDegrees(47.900)),
         L3(Meters.of(0.23939+0.1524-0.0254).in(Meters), Rotation2d.fromDegrees(58.10311200000001)),
-        L4(Meters.of(1.25).in(Meters), Rotation2d.fromDegrees(10));
+        L4(Meters.of(1.25).in(Meters), Rotation2d.fromDegrees(15));
 
         private final DynamicsSetpoint setpoint;
 
@@ -75,7 +75,7 @@ public class DynamicsCommandFactory {
      */
     private boolean isElevSafeToMove(){
         var currAngle =  armSubsystem.getPosition();
-        return currAngle.getCos() < Math.cos(kMoveableArmAngle.in(Radians));
+        return currAngle.getCos() < Math.cos(kMoveableArmAngle.in(Radians)); //TODO measure this so it's only if it's above the horizon (for climb)
     }
 
     private boolean isElevAtSetpoint(double setpoint){
@@ -133,7 +133,7 @@ public class DynamicsCommandFactory {
      * If the elevator is not in the load position, go to the safe elevator height.
      * Then, move the arm such that it is safe to move (meaning it won't hit the reef).
      */
-    private Command makeSystemSafeToMove(boolean forceElevatorMovement){ 
+    private Command makeSystemSafeToMove(boolean forceElevatorMovement, boolean isSetpointBelowHorizon){ 
 
         //note to self, careful about when data gets read here
         return Commands.defer(() -> {
@@ -152,7 +152,8 @@ public class DynamicsCommandFactory {
                 Commands.waitUntil(this::isElevSafeToMove).withTimeout(1.0),
                 ((isArmStowed || forceElevatorMovement) ? makeElevatorSafeToMove() : Commands.none()),
                 Commands.waitUntil(() -> {
-                    boolean isArmSafeToMove = !(this.isElevStowed()); //make sure the elevator isn't stowed
+                    boolean sameSide = !(this.isArmBelowHorizon() ^ isSetpointBelowHorizon); //make sure the elevator isn't stowed
+                    boolean isArmSafeToMove = sameSide || !this.isElevStowed();
                     return this.isElevSafeToMove() && isArmSafeToMove; //is the system safe to move
                 }).withTimeout(1.0)
             );
@@ -189,21 +190,21 @@ public class DynamicsCommandFactory {
 
     public Command scoreHeight(DynamicsSetpoint scoringPoint){
         return Commands.sequence(
-            makeSystemSafeToMove(false),
+            makeSystemSafeToMove(false, false),
             elevatorPriorityMove(scoringPoint)
         );
     }
 
     public Command loadStow(){
         return Commands.sequence(
-            makeSystemSafeToMove(true),
+            makeSystemSafeToMove(true, true),
             armPriorityMove(DynaPreset.LOAD.setpoint) //brings arm to the load angle, then drops the elevator
         );
     }
 
     public Command prescoreStow(){
         return Commands.sequence(
-            makeSystemSafeToMove(false),
+            makeSystemSafeToMove(false, false),
             armPriorityMove(DynaPreset.PRESCORE.setpoint) //using arm Priority allows the arm to goto the right place then move the elevator down to the needed position 
         );
     }
