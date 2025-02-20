@@ -60,6 +60,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -327,6 +328,7 @@ public class RobotContainer {
             dynamics.stow()
         ));
         chooser.addOption("GartronicsDynamicsScoreL4", Commands.sequence(
+            dynamics.stow(),
             dynamics.blockingIntake(),
             dynamics.gotoScore(BranchHeight.L4.preset),
             dynamics.score(),
