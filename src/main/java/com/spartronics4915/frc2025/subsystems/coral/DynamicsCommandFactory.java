@@ -226,6 +226,10 @@ public class DynamicsCommandFactory {
         );
     }
 
+    /**
+     * Intakes if there is no coral in the manipulator
+     * @return a Command that will do the above actions 
+     */
     public Command intake(){
         return Commands.either(
             Commands.none(),
