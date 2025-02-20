@@ -80,8 +80,15 @@ public class DynamicsCommandFactory {
     /**
      * @return Whether the arm is below the horizon and the elevator is too low to allow movement
      */
+    private boolean isArmBelowHorizon(){
+        return (armSubsystem.getPosition().getDegrees() > 180);
+    }
+
+    /**
+     * @return Whether the arm is below the horizon and the elevator is too low to allow movement
+     */
     private boolean isArmStowed(){
-        return (armSubsystem.getPosition().getDegrees() > 100) && isElevStowed();
+        return isArmBelowHorizon() && isElevStowed();
     }
 
     private boolean isElevStowed(){
@@ -125,7 +132,10 @@ public class DynamicsCommandFactory {
             Commands.none(),
             () -> {return !this.isElevSafeToMove() || (this.isArmStowed() || forceMinSafeHeightMove);}
         ).andThen(
-            Commands.waitUntil(() -> {return this.isElevSafeToMove() && !this.isElevStowed();}).withTimeout(1.0)
+            Commands.waitUntil(() -> {
+                boolean isArmSafeToMove = !(this.isElevStowed() || this.isArmBelowHorizon()); //make sure the elevator isn't stowed or the arm isn't below the horizon
+                return this.isElevSafeToMove() && !isArmSafeToMove;
+            }).withTimeout(1.0)
         );
     }
 
