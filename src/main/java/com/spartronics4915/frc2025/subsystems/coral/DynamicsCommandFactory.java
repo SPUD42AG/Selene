@@ -20,6 +20,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Millimeter;
 import static edu.wpi.first.units.Units.Radians;
 
+import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
+
 public class DynamicsCommandFactory {
 
     private IntakeSubsystem intakeSubsystem;
@@ -213,12 +215,14 @@ public class DynamicsCommandFactory {
     }
 
     /**
-     * Starts the intake immediately and stops the intake once the funnel LaserCAN detects coral
+     * Starts the intake immediately and ends the command once the funnel or manipulator LaserCAN detects coral. This will not stop the intake
      */
     public Command blockingIntake(){
-        return Commands.deadline(
-            Commands.waitUntil(this::funnelDetect).withTimeout(1.0), //TODO remove this timeout outside of sim
-            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN)
+        return Commands.sequence(
+            intake(),
+            Commands.waitUntil(
+                () -> funnelDetect() || isCoralInArm()
+            ).withTimeout(1.5)
         );
     }
 
