@@ -43,7 +43,7 @@ public class DynamicsCommandFactory {
     public enum DynaPreset{
         LOAD(0.0, Rotation2d.fromDegrees(237.789818)),
         PRESCORE(0.0, Rotation2d.fromDegrees(114.173111)),
-        // L2(0.0, Rotation2d.fromDegrees(319.357058)),
+        L2(0.0, Rotation2d.fromDegrees(319.357058)),
         L3(Meters.of(0.23939+0.1524-0.0254).in(Meters), Rotation2d.fromDegrees(58.10311200000001)),
         L4(Meters.of(1.25).in(Meters), Rotation2d.fromDegrees(10));
 
@@ -165,7 +165,7 @@ public class DynamicsCommandFactory {
 
     public Command loadStow(){
         return Commands.sequence(
-            makeSystemSafeToMove(true),
+            makeSystemSafeToMove(false),
             armPriorityMove(DynaPreset.LOAD.setpoint) //brings arm to the load angle, then drops the elevator
         );
     }
