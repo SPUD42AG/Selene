@@ -148,7 +148,7 @@ public class DynamicsCommandFactory {
             // if the arm is stowed then the elevator should move first, then bring the arm up 
             return Commands.sequence(
                 ((isArmStowed || forceElevatorMovement) && isElevSafeToMove ? makeElevatorSafeToMove() : Commands.none()),
-                (isElevSafeToMove || forceArmMovement ? Commands.none() : makeArmAngleSafe),
+                (!isElevSafeToMove || forceArmMovement ? makeArmAngleSafe : Commands.none()),
                 Commands.waitUntil(this::isElevSafeToMove).withTimeout(1.0),
                 ((isArmStowed || forceElevatorMovement) ? makeElevatorSafeToMove() : Commands.none()),
                 Commands.waitUntil(() -> {
