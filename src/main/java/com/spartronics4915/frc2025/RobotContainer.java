@@ -315,6 +315,22 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("print", Commands.print("ping"));
 
+        Command blockingIntakeCommand = dynamics.blockingIntake();
+        blockingIntakeCommand.addRequirements(intakeSubsystem);
+
+        chooser.addOption("GartronicsDynamicsScoreL3", Commands.sequence(
+            blockingIntakeCommand,
+            dynamics.gotoScore(BranchHeight.L3.preset),
+            dynamics.score(),
+            dynamics.stow()
+        ));
+        chooser.addOption("GartronicsDynamicsScoreL4", Commands.sequence(
+            dynamics.blockingIntake(),
+            dynamics.gotoScore(BranchHeight.L4.preset),
+            dynamics.score(),
+            dynamics.stow()
+        ));
+
         chooser.setDefaultOption("None", Commands.none());
 
         if (swerveSubsystem != null) {
