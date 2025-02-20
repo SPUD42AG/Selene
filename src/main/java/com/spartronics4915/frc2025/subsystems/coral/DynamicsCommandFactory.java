@@ -227,6 +227,10 @@ public class DynamicsCommandFactory {
     }
 
     public Command intake(){
-        return intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN);
+        return Commands.either(
+            Commands.none(),
+            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN),
+            this::isCoralInArm
+        );
     }
 }
