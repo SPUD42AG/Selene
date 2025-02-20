@@ -133,7 +133,7 @@ public class DynamicsCommandFactory {
      * If the elevator is not in the load position, go to the safe elevator height.
      * Then, move the arm such that it is safe to move (meaning it won't hit the reef).
      */
-    private Command makeSystemSafeToMove(boolean forceElevatorMovement, boolean isSetpointBelowHorizon){ 
+    private Command makeSystemSafeToMove(boolean forceElevatorMovement, boolean forceArmMovement, boolean isSetpointBelowHorizon){ 
 
         //note to self, careful about when data gets read here
         return Commands.defer(() -> {
@@ -148,7 +148,7 @@ public class DynamicsCommandFactory {
             // if the arm is stowed then the elevator should move first, then bring the arm up 
             return Commands.sequence(
                 ((isArmStowed || forceElevatorMovement) && isElevSafeToMove ? makeElevatorSafeToMove() : Commands.none()),
-                (isElevSafeToMove ? Commands.none() : makeArmAngleSafe),
+                (isElevSafeToMove || forceArmMovement ? Commands.none() : makeArmAngleSafe),
                 Commands.waitUntil(this::isElevSafeToMove).withTimeout(1.0),
                 ((isArmStowed || forceElevatorMovement) ? makeElevatorSafeToMove() : Commands.none()),
                 Commands.waitUntil(() -> {
@@ -188,23 +188,23 @@ public class DynamicsCommandFactory {
 
     //#region small Commands
 
-    public Command scoreHeight(DynamicsSetpoint scoringPoint){
+    public Command scoreHeight(DynaPreset scoringPoint){
         return Commands.sequence(
-            makeSystemSafeToMove(false, false),
-            elevatorPriorityMove(scoringPoint)
+            makeSystemSafeToMove(false, scoringPoint.setpoint.heightMeters < kMinSafeElevHeight, false),
+            elevatorPriorityMove(scoringPoint.setpoint)
         );
     }
 
     public Command loadStow(){
         return Commands.sequence(
-            makeSystemSafeToMove(true, true),
+            makeSystemSafeToMove(true, false, true),
             armPriorityMove(DynaPreset.LOAD.setpoint) //brings arm to the load angle, then drops the elevator
         );
     }
 
     public Command prescoreStow(){
         return Commands.sequence(
-            makeSystemSafeToMove(false, false),
+            makeSystemSafeToMove(false, false, false),
             armPriorityMove(DynaPreset.PRESCORE.setpoint) //using arm Priority allows the arm to goto the right place then move the elevator down to the needed position 
         );
     }
@@ -221,7 +221,7 @@ public class DynamicsCommandFactory {
     }
 
     public Command gotoScore(DynaPreset scorePreset){
-        return scoreHeight(scorePreset.setpoint);
+        return scoreHeight(scorePreset);
     }
 
     public Command score(){
