@@ -253,6 +253,11 @@ public class RobotContainer {
 
         dynamics.hasScoredTrigger.onTrue(dynamics.stow());
 
+        new Trigger(intakeSubsystem::detect).debounce(0.02).onTrue(
+            Commands.parallel(
+                dynamics.stow()
+            ));
+
         new Trigger(dynamics::funnelDetect).onTrue(
             dynamics.intake()
         );
@@ -281,6 +286,9 @@ public class RobotContainer {
         //#endregion
 
         SmartDashboard.putData("stowLoad", dynamics.loadStow());
+        SmartDashboard.putData("stowPreScore", dynamics.prescoreStow());
+        SmartDashboard.putData("stow", dynamics.stow());
+        SmartDashboard.putData("score", dynamics.score());
 
         SmartDashboard.putData("L3", dynamics.gotoScore(DynaPreset.L3));
         SmartDashboard.putData("L4", dynamics.gotoScore(DynaPreset.L4));
