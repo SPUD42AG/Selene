@@ -1,5 +1,6 @@
 package com.spartronics4915.frc2025.subsystems.coral;
 import com.spartronics4915.frc2025.Constants.IntakeConstants.IntakeSpeed;
+import com.spartronics4915.frc2025.commands.VariableAutos.BranchHeight;
 
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,6 +27,8 @@ public class DynamicsCommandFactory {
 
     private LaserCan funnelLC;
     public Trigger hasScoredTrigger = new Trigger(this::isCoralInArm).negate().debounce(kScoreLaserCanDebounce);
+
+    private DynaPreset lastInputtedPreset = DynaPreset.L4;
 
     public DynamicsCommandFactory(ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
         this.armSubsystem = armSubsystem;
@@ -236,6 +239,18 @@ public class DynamicsCommandFactory {
 
     public Command gotoScore(DynaPreset scorePreset){
         return scoreHeight(scorePreset);
+    }
+
+    public Command gotoLastInputtedScore() {
+        return Commands.defer(() -> gotoScore(lastInputtedPreset), Set.of());
+    }
+
+    /**
+     * Runs gotoScore() and saves the input so we can automatically go there next time
+     */
+    public Command operatorScore(DynaPreset preset) {
+        return Commands.runOnce(() -> lastInputtedPreset = preset)
+                       .andThen(gotoScore(preset));
     }
 
     public Command score(){
