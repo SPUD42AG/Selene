@@ -65,6 +65,8 @@ public final class Constants {
         public static final int smartCurrentLimit = 18;
         public static final int secondaryCurrentLimit = 20;
 
+        public static final double kLaserCanDebounce = 0.1;
+
         public static final EncoderConfig kEncoderConfig = new EncoderConfig()
             .positionConversionFactor(1/4.0)
             .velocityConversionFactor(1/4.0);
