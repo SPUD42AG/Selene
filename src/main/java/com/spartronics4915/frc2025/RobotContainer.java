@@ -271,12 +271,12 @@ public class RobotContainer {
 
         //#region Operator Controls
 
-        operatorController.rightTrigger().whileTrue(
+        operatorController.rightTrigger().onTrue( //whileTrue
             dynamics.score()
-        ).onFalse(Commands.parallel(
+        );/*.onFalse(Commands.parallel(
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.NEUTRAL),
             dynamics.stow()
-        ));
+        ));*/
 
         operatorController.leftTrigger().onTrue(dynamics.stow());
 
@@ -285,6 +285,8 @@ public class RobotContainer {
         operatorController.y().onTrue(dynamics.operatorScore(DynaPreset.L4));
 
         operatorController.x().onTrue(dynamics.operatorScore(DynaPreset.L3));
+
+        operatorController.b().onTrue(dynamics.operatorScore(DynaPreset.L2));
 
         operatorController.start().onTrue(dynamics.intake()); //menu button
 
