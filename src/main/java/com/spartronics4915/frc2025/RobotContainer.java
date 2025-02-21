@@ -301,6 +301,16 @@ public class RobotContainer {
 
         SmartDashboard.putData("intake", dynamics.intake());
 
+        SmartDashboard.putNumber("elevator setpoint", 0);
+        SmartDashboard.putNumber("arm setpoint", 270);
+
+        SmartDashboard.putData("ManualElevator", Commands.defer(() -> {
+            return elevatorSubsystem.setSetPointCommand(SmartDashboard.getNumber("elevator setpoint", 0.0));
+        }, Set.of()));
+        SmartDashboard.putData("ManualArm", Commands.defer(() -> {
+            return armSubsystem.setSetpointCommand(Rotation2d.fromDegrees(SmartDashboard.getNumber("arm setpoint", 270.0)));
+        }, Set.of()));
+
     }
 
     /**
