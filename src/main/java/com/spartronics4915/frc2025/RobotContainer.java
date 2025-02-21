@@ -240,11 +240,15 @@ public class RobotContainer {
             );
 
             driverController.leftBumper().whileTrue(
-                alignmentCommandFactory.generateCommand(BranchSide.LEFT)
+                alignmentCommandFactory.generateCommand(BranchSide.LEFT).finallyDo((boolean interrupted) -> {
+                    dynamics.gotoLastInputtedScore().onlyIf(() -> !interrupted);
+                })
             );
     
             driverController.rightBumper().whileTrue(
-                alignmentCommandFactory.generateCommand(BranchSide.RIGHT)
+                alignmentCommandFactory.generateCommand(BranchSide.RIGHT).finallyDo((boolean interrupted) -> {
+                    dynamics.gotoLastInputtedScore().onlyIf(() -> !interrupted);
+                })
             );
         }
 
@@ -278,9 +282,9 @@ public class RobotContainer {
 
         operatorController.back().onTrue(dynamics.loadStow()); //windows button
 
-        operatorController.y().onTrue(dynamics.gotoScore(DynaPreset.L4));
+        operatorController.y().onTrue(dynamics.operatorScore(DynaPreset.L4));
 
-        operatorController.x().onTrue(dynamics.gotoScore(DynaPreset.L3));
+        operatorController.x().onTrue(dynamics.operatorScore(DynaPreset.L3));
 
         operatorController.start().onTrue(dynamics.intake()); //menu button
 
