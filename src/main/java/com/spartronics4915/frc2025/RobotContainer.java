@@ -290,6 +290,14 @@ public class RobotContainer {
 
         operatorController.start().onTrue(dynamics.intake()); //menu button
 
+        operatorController.povUp().whileTrue(elevatorSubsystem.manualMode(0.002));
+
+        operatorController.povDown().whileTrue(elevatorSubsystem.manualMode(-0.002));
+
+        operatorController.povLeft().whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(-0.3)));
+
+        operatorController.povRight().whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(0.3)));
+
         //#endregion
 
         SmartDashboard.putData("stowLoad", dynamics.loadStow());
