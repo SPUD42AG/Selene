@@ -318,23 +318,31 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("print", Commands.print("ping"));
 
-        Command blockingIntakeCommand = dynamics.blockingIntake();
-        blockingIntakeCommand.addRequirements(intakeSubsystem);
 
         chooser.addOption("GartronicsDynamicsScoreL3", Commands.sequence(
             dynamics.stow(),
-            blockingIntakeCommand,
+            dynamics.blockingIntake(),
             dynamics.gotoScore(BranchHeight.L3.preset),
             dynamics.autoScore(BranchHeight.L3.preset),
             dynamics.stow()
         ));
-        chooser.addOption("GartronicsDynamicsScoreL4", Commands.sequence(
+
+        chooser.addOption("GartronicsDynamicsScoreL2", Commands.sequence(
             dynamics.stow(),
             dynamics.blockingIntake(),
             dynamics.gotoScore(BranchHeight.L2.preset),
             dynamics.autoScore(BranchHeight.L2.preset),
             dynamics.stow()
         ));
+
+        chooser.addOption("GartronicsDynamicsScoreL4", Commands.sequence(
+            dynamics.stow(),
+            dynamics.blockingIntake(),
+            dynamics.gotoScore(BranchHeight.L4.preset),
+            dynamics.autoScore(BranchHeight.L4.preset),
+            dynamics.stow()
+        ));
+        
 
         chooser.setDefaultOption("None", Commands.none());
 
