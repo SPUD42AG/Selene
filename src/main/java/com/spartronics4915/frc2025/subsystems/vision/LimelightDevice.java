@@ -97,9 +97,6 @@ public class LimelightDevice extends SubsystemBase {
         return LimelightHelpers.getTV(name);
     }
 
-    /**
-     * Use MegaTag1 if it's within the first three seconds of auto, otherwise use MegaTag2
-     */
     public Optional<VisionMeasurement> getVisionMeasurement(SwerveSubsystem swerve) {
         if (role == LimelightRole.NOTHING) return Optional.empty();
         PoseEstimationMethod method = PoseEstimationMethod.MEGATAG_2;
