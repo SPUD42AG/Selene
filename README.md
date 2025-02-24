@@ -39,9 +39,9 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 | X | L3 scoring preset |
 | Y | L4 scoring preset |
 | Left Trigger | Stow |
-| Right trigger | Score |
-| Left bumper | *None* |
-| Right bumper | *None* |
+| Right Trigger | Score |
+| Left Bumper | *None* |
+| Right Bumper | *None* |
 | D-pad Up | (Manual) Elevator up |
 | D-pad Down | (Manual) Elevator down |
 | D-pad Left | (Manual) Arm CCW |
