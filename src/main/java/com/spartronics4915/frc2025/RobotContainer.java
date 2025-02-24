@@ -179,7 +179,7 @@ public class RobotContainer {
         // Configure the trigger bindings
         configureBindings();
 
-        complexAutoChooser = new ComplexAutoChooser(variableAutoFactory, 3);
+        complexAutoChooser = new ComplexAutoChooser(variableAutoFactory, 4);
 
         // Need to initialize this here after vision is configured.
         // Need to clean up initialization flow to make it more clear
