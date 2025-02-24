@@ -1,6 +1,9 @@
-package com.spartronics4915.frc2025.subsystems.coral;
+package com.spartronics4915.frc2025.commands;
 import com.spartronics4915.frc2025.Constants.IntakeConstants.IntakeSpeed;
 import com.spartronics4915.frc2025.commands.VariableAutos.BranchHeight;
+import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
+import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
 
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.geometry.Rotation2d;
