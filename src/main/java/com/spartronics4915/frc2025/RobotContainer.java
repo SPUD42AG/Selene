@@ -218,6 +218,7 @@ public class RobotContainer {
             driverController.leftTrigger()
                 .whileTrue(
                     Commands.run(swerveSubsystem::lockModules, swerveSubsystem)
+                    .withName("X Brake Swerve")
                 );
 
             //this is a approximate version, we can do something more advanced by placing points at the center of the reef sides, then detecting which side it's closest to based on it's position
@@ -227,9 +228,16 @@ public class RobotContainer {
                     ChassisSpeedSuppliers.getSwerveTeleopCSSupplier(driverController.getHID(), swerveSubsystem),
                     swerveSubsystem
                 )
+                .withName("Orient Towards Nearest POI")
             );
 
-            driverController.b().toggleOnTrue(Commands.startEnd(() -> {swerveTeleopCommand.setFieldRelative(!OI.kStartFieldRel);}, () -> {swerveTeleopCommand.setFieldRelative(OI.kStartFieldRel);}));
+            driverController.b().toggleOnTrue(
+                Commands.startEnd(
+                    () -> {swerveTeleopCommand.setFieldRelative(!OI.kStartFieldRel);},
+                    () -> {swerveTeleopCommand.setFieldRelative(OI.kStartFieldRel);}
+                )
+                .withName("Toggle Field Relative")
+            );
 
             driverController.a().onTrue(
                 Commands.defer(() -> {
@@ -243,12 +251,14 @@ public class RobotContainer {
                 alignmentCommandFactory.generateCommand(BranchSide.LEFT).finallyDo((boolean interrupted) -> {
                     dynamics.gotoLastInputtedScore().onlyIf(() -> !interrupted);
                 })
+                .withName("Align Left Branch")
             );
     
             driverController.rightBumper().whileTrue(
                 alignmentCommandFactory.generateCommand(BranchSide.RIGHT).finallyDo((boolean interrupted) -> {
                     dynamics.gotoLastInputtedScore().onlyIf(() -> !interrupted);
                 })
+                .withName("Align Right Branch")
             );
         }
 
