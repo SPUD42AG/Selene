@@ -12,14 +12,18 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 | Push Left Stick |  Reset field relative heading |
 | Right Stick | Field angle |
 | Push Right Stick | *None* |
-| A | Toggle field relative |
-| B | Set field relative heading |
+| A | Set field relative heading |
+| B | Toggle field relative |
 | X | *None* |
 | Y | *None* |
 | Left Trigger | X-brake swerve |
 | Right Trigger | Reef / coral station auto orient |
 | Left Bumper | Auto-align to left branch |
 | Right Bumper | Auto-align to right branch |
+| D-pad Up | *None* |
+| D-pad Down | *None* |
+| D-pad Left | *None* |
+| D-pad Right | *None* |
 | Windows | *None* |
 | Menu | *None* |
 
@@ -38,6 +42,10 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 | Right trigger | Score |
 | Left bumper | *None* |
 | Right bumper | *None* |
+| D-pad Up | (Manual) Elevator up |
+| D-pad Down | (Manual) Elevator down |
+| D-pad Left | (Manual) Arm CCW |
+| D-pad Right | (Manual) Arm CW |
 | Windows | Force load preset |
 | Menu | Intake |
 
