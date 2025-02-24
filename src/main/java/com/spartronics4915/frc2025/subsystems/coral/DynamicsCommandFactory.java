@@ -175,7 +175,8 @@ public class DynamicsCommandFactory {
                 moveElevatorIfNeeded,
                 WaitUntilSafeToMove
             );
-        }, Set.of());
+        }, Set.of())
+        .withName("Make System Safe");
     }
 
     /**
@@ -235,15 +236,18 @@ public class DynamicsCommandFactory {
             prescoreStow(), 
             loadStow(), 
             this::isCoralInArm
-        );
+        )
+        .withName("Stow");
     }
 
     public Command gotoScore(DynaPreset scorePreset){
-        return scoreHeight(scorePreset);
+        return scoreHeight(scorePreset)
+        .withName("Goto " + scorePreset);
     }
 
     public Command gotoLastInputtedScore() {
-        return Commands.defer(() -> gotoScore(lastInputtedPreset), Set.of());
+        return Commands.defer(() -> gotoScore(lastInputtedPreset), Set.of())
+        .withName("Goto Last");
     }
 
     /**
@@ -251,7 +255,8 @@ public class DynamicsCommandFactory {
      */
     public Command operatorScore(DynaPreset preset) {
         return Commands.runOnce(() -> lastInputtedPreset = preset)
-                       .andThen(gotoScore(preset));
+                       .andThen(gotoScore(preset))
+                       .withName("Operator Goto " + preset);
     }
 
     public Command score(){
@@ -260,7 +265,8 @@ public class DynamicsCommandFactory {
                 hasScoredTrigger
             ).withTimeout(1.0),
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT)
-        ).andThen(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
+        ).andThen(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.NEUTRAL))
+        .withName("Score");
     }
 
     public Command autoScore(DynaPreset scoringLocation){
@@ -270,7 +276,8 @@ public class DynamicsCommandFactory {
                 isElevAtSetpoint(scoringLocation.setpoint.heightMeters)
             ),
             score()
-        );
+        )
+        .withName("Autonomous Score");
     }
 
     /**
@@ -282,7 +289,8 @@ public class DynamicsCommandFactory {
             Commands.waitUntil(
                 () -> funnelDetect() || isCoralInArm()
             ).withTimeout(3) //TODO remove for comps
-        );
+        )
+        .withName("Blocking Intake");
     }
 
     /**
@@ -294,6 +302,7 @@ public class DynamicsCommandFactory {
             Commands.none(),
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN),
             this::isCoralInArm
-        );
+        )
+        .withName("Intake");
     }
 }
