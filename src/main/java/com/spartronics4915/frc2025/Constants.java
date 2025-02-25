@@ -396,5 +396,6 @@ public final class Constants {
 
     }
 
+    @SuppressWarnings("unused")
     private static final Optional<Integer> kGender = Optional.empty();
 }
