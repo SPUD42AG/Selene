@@ -5,6 +5,7 @@
 package com.spartronics4915.frc2025;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -394,4 +395,6 @@ public final class Constants {
         public static final Distance funnelLCTriggerDist = Inches.of(1.0);
 
     }
+
+    private static final Optional<Integer> kGender = Optional.empty();
 }
