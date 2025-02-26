@@ -58,7 +58,7 @@ public class DynamicsCommandFactory {
     }
 
     public enum DynaPreset{
-        LOAD(0.0, Rotation2d.fromDegrees(237.789818)),
+        LOAD(0.0, Rotation2d.fromDegrees(237.789818 + 8)),
         PRESCORE(0.0, Rotation2d.fromDegrees(kSafeArmAngle.in(Degrees))),//114.173111)),
         L1(0.1, Rotation2d.fromDegrees(47.900)),
         L2(0.0, Rotation2d.fromDegrees(47.900)),
