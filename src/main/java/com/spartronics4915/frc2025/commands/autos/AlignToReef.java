@@ -1,7 +1,6 @@
 package com.spartronics4915.frc2025.commands.autos;
 
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
-import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kTagOffset;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import java.util.ArrayList;
