@@ -68,7 +68,7 @@ public final class Constants {
 
         public static final double kOpenLoopRampRate = 0.1;
 
-        public static final double kLaserCanDebounce = 0.2;
+        public static final double kLaserCanDebounce = 0.05;
 
         public static final EncoderConfig kEncoderConfig = new EncoderConfig()
             .positionConversionFactor(1/4.0)
