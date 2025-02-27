@@ -134,6 +134,6 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
     @Override
     public void onModeSwitch() {
-        setSpeed(0.0);
+        intakeMotors(IntakeSpeed.NEUTRAL);
     }
 }
