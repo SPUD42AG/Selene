@@ -88,14 +88,16 @@ public final class Constants {
             .secondaryCurrentLimit(secondaryCurrentLimit);
 
         public enum IntakeSpeed {
-            IN (-2500),
-            NEUTRAL (0),
-            OUT (2500);
+            IN (-2500, -0.8),
+            NEUTRAL (0, 0),
+            OUT (2500, 0.8);
 
             public final double intakeSpeed;
+            public final double intakePercentage;
             
-            private IntakeSpeed(double intakeSpeed) {
+            private IntakeSpeed(double intakeSpeed, double intakePercentage) {
                 this.intakeSpeed = intakeSpeed;
+                this.intakePercentage = intakePercentage;
             }
         }
     }

@@ -91,19 +91,7 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
         );
     }
 
-    private void setPercentage(IntakeSpeed preset) {
-        double newPercentage = 0.0;
-        switch (preset) {
-            case IN:
-                newPercentage = 0.8;
-                break;
-            case NEUTRAL:
-                newPercentage = 0.0;
-                break;
-            case OUT:
-                newPercentage = -0.8;
-                break;
-        }
+    private void setPercentage(double newPercentage) {
         mMotor1.set(newPercentage);
     }
 
@@ -125,7 +113,7 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
     public void intakeMotors (IntakeSpeed preset) {
         // setSpeed(preset.intakeSpeed);
-        setPercentage(preset);
+        setPercentage(preset.intakePercentage);
     }
 
     public Command setSpeedCommand(double newSpeed){
