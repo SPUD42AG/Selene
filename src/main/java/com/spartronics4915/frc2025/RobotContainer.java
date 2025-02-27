@@ -248,16 +248,16 @@ public class RobotContainer {
             );
 
             driverController.leftBumper().whileTrue(
-                alignmentCommandFactory.generateCommand(BranchSide.LEFT).finallyDo((boolean interrupted) -> {
-                    dynamics.gotoLastInputtedScore().onlyIf(() -> !interrupted);
-                })
+                alignmentCommandFactory.generateCommand(BranchSide.LEFT)//.finallyDo((boolean interrupted) -> {
+                //     dynamics.gotoLastInputtedScore().onlyIf(() -> !interrupted);
+                // })
                 .withName("Align Left Branch")
             );
     
             driverController.rightBumper().whileTrue(
-                alignmentCommandFactory.generateCommand(BranchSide.RIGHT).finallyDo((boolean interrupted) -> {
-                    dynamics.gotoLastInputtedScore().onlyIf(() -> !interrupted);
-                })
+                alignmentCommandFactory.generateCommand(BranchSide.RIGHT)//.finallyDo((boolean interrupted) -> {
+                //     dynamics.gotoLastInputtedScore().onlyIf(() -> !interrupted);
+                // })
                 .withName("Align Right Branch")
             );
         }
