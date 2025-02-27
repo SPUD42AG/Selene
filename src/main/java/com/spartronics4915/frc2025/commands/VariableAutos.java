@@ -59,8 +59,8 @@ public class VariableAutos {
     }
 
     public enum BranchSide{
-        LEFT(new Translation2d(0.14,0.54)),
-        RIGHT(new Translation2d(0.25,0.54));
+        LEFT(new Translation2d(0.14 - 0.0508 + 0.0635, 0.54 + 0.0381)),
+        RIGHT(new Translation2d(0.25 - 0.0508 - 0.0254, 0.54 + 0.0381));
 
         public Translation2d tagOffset;
         private BranchSide(Translation2d offsets) {
@@ -138,14 +138,15 @@ public class VariableAutos {
         
         return Commands.sequence(
             pathPair.approachPath,
-            Commands.parallel(
+            Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
             ),
             dynamics.score(),
+            dynamics.waitUntilPreset(height.preset),
             Commands.parallel(
-                pathPair.returnPath,
-                dynamics.stow()
+                dynamics.stow(),
+                pathPair.returnPath
             ),
             dynamics.blockingIntake()
         );
@@ -155,14 +156,15 @@ public class VariableAutos {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
-            Commands.parallel(
+            Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
             ),
+            dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
             Commands.parallel(
-                pathPair.returnPath,
-                dynamics.stow()
+                dynamics.stow(),
+                pathPair.returnPath
             ),
             dynamics.blockingIntake()
         );
