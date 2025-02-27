@@ -168,8 +168,8 @@ public class AlignToReef {
     private static Pose2d getBranchFromTag(Pose2d tag, BranchSide side) {
         var translation = tag.getTranslation().plus(
             new Translation2d(
-                kTagOffset.getY(),
-                kTagOffset.getX() * (side == BranchSide.LEFT ? -1 : 1)
+                side.tagOffset.getY(),
+                side.tagOffset.getX() * (side == BranchSide.LEFT ? -1 : 1)
             ).rotateBy(tag.getRotation())
         );
 

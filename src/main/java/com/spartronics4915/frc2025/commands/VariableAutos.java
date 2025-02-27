@@ -7,6 +7,7 @@ import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,8 +59,14 @@ public class VariableAutos {
     }
 
     public enum BranchSide{
-        LEFT,
-        RIGHT;
+        LEFT(new Translation2d(0.14,0.54)),
+        RIGHT(new Translation2d(0.25,0.54));
+
+        public Translation2d tagOffset;
+        private BranchSide(Translation2d offsets) {
+            tagOffset = offsets;
+        }
+
         public BranchSide mirror(){
             switch (this) {
                 case LEFT: return RIGHT;
