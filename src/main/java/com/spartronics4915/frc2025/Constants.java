@@ -66,7 +66,7 @@ public final class Constants {
         public static final int smartCurrentLimit = 18;
         public static final int secondaryCurrentLimit = 20;
 
-        public static final double kLaserCanDebounce = 0.1;
+        public static final double kLaserCanDebounce = 0.2;
 
         public static final EncoderConfig kEncoderConfig = new EncoderConfig()
             .positionConversionFactor(1/4.0)
@@ -85,9 +85,9 @@ public final class Constants {
             .secondaryCurrentLimit(secondaryCurrentLimit);
 
         public enum IntakeSpeed {
-            IN (-1000),
+            IN (-2500),
             NEUTRAL (0),
-            OUT (1000);
+            OUT (2500);
 
             public final double intakeSpeed;
             
@@ -209,10 +209,10 @@ public final class Constants {
                 }
             }
 
-            public static final PathConstraints kPathConstraints = new PathConstraints(1.75, 1.75, 1/2 * Math.PI, 1 * Math.PI); // The constraints for this path.
+            public static final PathConstraints kPathConstraints = new PathConstraints(1.25, 1.25, 1 * Math.PI, 2 * Math.PI); // The constraints for this path.
         
             // X = side to side, Y = away from tag
-            public static final Translation2d kTagOffset = new Translation2d(0.10, 0.55); //TODO fix based off field cad
+            // public static final Translation2d kTagOffset = new Translation2d(0.10, 0.55); //TODO fix based off field cad
         }
 
     }
@@ -308,7 +308,7 @@ public final class Constants {
         
         public static final double kDt = 0.02;
 
-        public static final Constraints kConstraints = new Constraints(1.5, 1.5); //8.0, 10
+        public static final Constraints kConstraints = new Constraints(3.5, 3.5); //8.0, 10
         public static final int kPeriodMs = 0;
 
         public static final double kS = 0.0;
@@ -362,7 +362,7 @@ public final class Constants {
 
         public static final double dt = 0.02;
 
-        public static final Constraints constraints = new Constraints(3.0, 2.5); //12, 7.5
+        public static final Constraints constraints = new Constraints(4.0, 3.5); //12, 7.5
 
         public static final double minHeight = 0;
         public static final double maxHeight = 1.24;
@@ -382,8 +382,8 @@ public final class Constants {
     }
 
     public static final class DynamicsConstants {
-        public static final Angle kArmAngleTolerance = Degrees.of(2.5);
-        public static final double kElevatorHeightTolerance = Inches.of(2.5).in(Meters);
+        public static final Angle kArmAngleTolerance = Degrees.of(1);
+        public static final double kElevatorHeightTolerance = Inches.of(1).in(Meters);
         public static final Angle kSafeArmAngle = Degrees.of(90); //TODO this is currently straight up, this might change
         public static final Angle kMoveableArmAngle = Degrees.of(276.198611); //used in cos math, so this is equivalent to ~80 degrees either side of the left horizon //TODO this is currently straight up, this might change
     
