@@ -66,6 +66,8 @@ public final class Constants {
         public static final int smartCurrentLimit = 18;
         public static final int secondaryCurrentLimit = 20;
 
+        public static final double kOpenLoopRampRate = 0.1;
+
         public static final double kLaserCanDebounce = 0.2;
 
         public static final EncoderConfig kEncoderConfig = new EncoderConfig()
@@ -81,6 +83,7 @@ public final class Constants {
             .idleMode(IdleMode.kCoast)
             .apply(kCLConfig)
             .apply(kEncoderConfig)
+            .openLoopRampRate(kOpenLoopRampRate)
             .smartCurrentLimit(smartCurrentLimit)
             .secondaryCurrentLimit(secondaryCurrentLimit);
 
