@@ -1,7 +1,6 @@
 package com.spartronics4915.frc2025.commands.autos;
 
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
-import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kTagOffset;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ public class AlignToReef {
     }
 
 
-    public Command generateCommand(ReefSide reefTag, BranchSide side) {
+    public Command generateCommand(final ReefSide reefTag, BranchSide side) {
         return Commands.defer(() -> {
             var branch = getBranchFromTag(reefTag.getCurrent(), side);
             desiredBranchPublisher.accept(branch);
@@ -128,9 +127,9 @@ public class AlignToReef {
      * @return
      */
     private Rotation2d getPathVelocityHeading(ChassisSpeeds cs, Pose2d target){
-        if (getVelocityMagnitude(cs).in(MetersPerSecond) < 0.01 ) {
+        if (getVelocityMagnitude(cs).in(MetersPerSecond) < 0.05 ) {
             var diff =  mSwerve.getPose().minus(target).getTranslation();
-            return (diff.getNorm() < 0.01) ? target.getRotation() : diff.getAngle();
+            return (diff.getNorm() < 0.01) ? target.getRotation() : diff.getAngle().rotateBy(Rotation2d.k180deg);
         }
         return new Rotation2d(cs.vxMetersPerSecond, cs.vyMetersPerSecond);
     }
@@ -168,8 +167,8 @@ public class AlignToReef {
     private static Pose2d getBranchFromTag(Pose2d tag, BranchSide side) {
         var translation = tag.getTranslation().plus(
             new Translation2d(
-                kTagOffset.getY(),
-                kTagOffset.getX() * (side == BranchSide.LEFT ? -1 : 1)
+                side.tagOffset.getY(),
+                side.tagOffset.getX() * (side == BranchSide.LEFT ? -1 : 1)
             ).rotateBy(tag.getRotation())
         );
 

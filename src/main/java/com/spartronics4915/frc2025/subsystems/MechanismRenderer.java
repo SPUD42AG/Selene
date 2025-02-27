@@ -31,6 +31,10 @@ public class MechanismRenderer extends SubsystemBase {
     MechanismLigament2d intake;
     MechanismLigament2d intakeBB;
     
+    public static void generateRenderer(Supplier<Distance> elevatorHeightSupplier, Supplier<Angle> armAngleSupplier, Supplier<AngularVelocity> intakeSpeedSupplier, BooleanSupplier intakeTrigger, String name) {
+        new MechanismRenderer(elevatorHeightSupplier, armAngleSupplier, intakeSpeedSupplier, intakeTrigger, name);
+    }
+
     /**
      * 
      * @param elevatorHeightSupplier a supplier which returns the elevator's height from the ground
@@ -77,7 +81,7 @@ public class MechanismRenderer extends SubsystemBase {
     @Override
     public void periodic() {
         elev.setLength(elevatorHeightSupplier.get().in(Meters));
-        arm.setAngle(-(armAngleSupplier.get().in(Degrees) + 90));
+        arm.setAngle(90-(armAngleSupplier.get().in(Degrees)));
         intakeBB.setColor(intakeTrigger.getAsBoolean() ? new Color8Bit(Color.kGreen) : new Color8Bit(Color.kRed));
         
         double t = MathUtil.inverseInterpolate(

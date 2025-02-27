@@ -1,4 +1,4 @@
-package com.spartronics4915.frc2025.subsystems.Bling;
+package com.spartronics4915.frc2025.subsystems.bling2;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -25,11 +25,12 @@ public class BlingSubsystem extends SubsystemBase {
             x.buffer = buffer.createView(index, index + x.ledLength - 1);
             index += x.ledLength;
         }
+        
+        strip.start();
     }
 
     public BlingSubsystem(int port, BlingSegment... shows) {
         strip = new AddressableLED(port);
-        strip.start();
         updateSegments(shows);
     }
 

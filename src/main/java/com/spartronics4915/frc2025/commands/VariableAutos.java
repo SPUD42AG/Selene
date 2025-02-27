@@ -2,12 +2,12 @@ package com.spartronics4915.frc2025.commands;
 
 import com.spartronics4915.frc2025.RobotContainer;
 import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
+import com.spartronics4915.frc2025.commands.DynamicsCommandFactory.DynaPreset;
 import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
-import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory;
-import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory.DynaPreset;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,8 +17,8 @@ public class VariableAutos {
 
     public enum BranchHeight{
         L4(DynaPreset.L4),
-        L3(DynaPreset.L3);
-        // L2(DynaPreset.L2),
+        L3(DynaPreset.L3),
+        L2(DynaPreset.L2),
         ;
 
         public final DynaPreset preset;
@@ -59,8 +59,14 @@ public class VariableAutos {
     }
 
     public enum BranchSide{
-        LEFT,
-        RIGHT;
+        LEFT(new Translation2d(0.14 - 0.0508 + 0.0635, 0.54 + 0.0381)),
+        RIGHT(new Translation2d(0.25 - 0.0508 - 0.0254, 0.54 + 0.0381));
+
+        public Translation2d tagOffset;
+        private BranchSide(Translation2d offsets) {
+            tagOffset = offsets;
+        }
+
         public BranchSide mirror(){
             switch (this) {
                 case LEFT: return RIGHT;
@@ -125,21 +131,22 @@ public class VariableAutos {
     }
 
     /**
-     * outputs the entire auto cycle from station to branch with mechanism movement
+     * Outputs the entire auto cycle from station to branch with mechanism movement
      */
     public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height){
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
             pathPair.approachPath,
-            Commands.parallel(
+            Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
             ),
             dynamics.score(),
+            dynamics.waitUntilPreset(height.preset),
             Commands.parallel(
-                pathPair.returnPath,
-                dynamics.stow()
+                dynamics.stow(),
+                pathPair.returnPath
             ),
             dynamics.blockingIntake()
         );
@@ -149,14 +156,15 @@ public class VariableAutos {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
-            Commands.parallel(
+            Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
             ),
+            dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
             Commands.parallel(
-                pathPair.returnPath,
-                dynamics.stow()
+                dynamics.stow(),
+                pathPair.returnPath
             ),
             dynamics.blockingIntake()
         );

@@ -1,5 +1,5 @@
 {
-  "version": 1.2,
+  "version": 1.0,
   "grid_size": 128,
   "tabs": [
     {
@@ -142,7 +142,7 @@
             "properties": {
               "topic": "/SmartDashboard/Field",
               "period": 0.06,
-              "field_game": "Reefscape",
+              "field_game": "Crescendo",
               "robot_width": 0.85,
               "robot_length": 0.85,
               "show_other_objects": true,
@@ -309,7 +309,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/VisionDiagnostics/limelight-alex/pose",
                   "period": 0.06,
-                  "field_game": "Reefscape",
+                  "field_game": "Crescendo",
                   "robot_width": 2.5,
                   "robot_length": 2.5,
                   "show_other_objects": true,
@@ -412,7 +412,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/VisionDiagnostics/limelight-ben/pose",
                   "period": 0.06,
-                  "field_game": "Reefscape",
+                  "field_game": "Crescendo",
                   "robot_width": 2.5,
                   "robot_length": 2.5,
                   "show_other_objects": true,
@@ -463,6 +463,235 @@
           }
         ],
         "containers": []
+      }
+    },
+    {
+      "name": "Manual Controls",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "IntakeSpeed: IN",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/IntakeSpeed: IN",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "IntakeSpeed: NEUTRAL",
+            "x": 768.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/IntakeSpeed: NEUTRAL",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "IntakeSpeed: OUT",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/IntakeSpeed: OUT",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "preset1Arm",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/preset1Arm",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "preset2Arm",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/preset2Arm",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "preset3Arm",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/preset3Arm",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "preset4Arm",
+            "x": 256.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/preset4Arm",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "preset1elev",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/preset1elev",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "preset2elev",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/preset2elev",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "preset3elev",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/preset3elev",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "preset4elev",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/preset4elev",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "L3",
+            "x": 512.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/L3",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "L4",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/L4",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "stow",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/stow",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "stowLoad",
+            "x": 640.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/stowLoad",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "stowPreScore",
+            "x": 384.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/stowPreScore",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "L2",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/L2",
+              "period": 0.06,
+              "show_type": true
+            }
+          }
+        ]
       }
     }
   ]
