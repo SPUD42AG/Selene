@@ -58,7 +58,7 @@ public class DynamicsCommandFactory {
     }
 
     public enum DynaPreset{
-        LOAD(0.0, Rotation2d.fromDegrees(237.789818 + 8)),
+        LOAD(0.0, Rotation2d.fromDegrees(234.4421)),
         PRESCORE(0.0, Rotation2d.fromDegrees(kSafeArmAngle.in(Degrees))),//114.173111)),
         L1(0.1, Rotation2d.fromDegrees(47.900)),
         L2(0.0, Rotation2d.fromDegrees(47.900)),
@@ -194,6 +194,12 @@ public class DynamicsCommandFactory {
         );
     }
 
+    public Command waitUntilPreset(DynaPreset setpoint){
+        return Commands.waitUntil(() -> {
+            return isElevAtSetpoint(setpoint.setpoint.heightMeters) && isArmAtSetpoint(setpoint.setpoint.armAngle);
+        });
+    }
+
     /**
      * Moves the arm first before moving the elevator
      */
@@ -291,7 +297,7 @@ public class DynamicsCommandFactory {
             intake(),
             Commands.waitUntil(
                 () -> funnelDetect() || isCoralInArm()
-            ).withTimeout(3) //TODO remove for comps
+            ).withTimeout(7.5) //TODO remove for comps
         )
         .withName("Blocking Intake");
     }
