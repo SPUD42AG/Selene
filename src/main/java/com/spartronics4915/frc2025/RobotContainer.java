@@ -354,53 +354,14 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("print", Commands.print("ping"));
 
-
-        chooser.addOption("GartronicsDynamicsScoreL3", Commands.sequence(
-            dynamics.stow(),
-            dynamics.blockingIntake(),
-            dynamics.gotoScore(BranchHeight.L3.preset),
-            dynamics.autoScore(BranchHeight.L3.preset),
-            dynamics.stow()
-        ));
-
-        chooser.addOption("GartronicsDynamicsScoreL2", Commands.sequence(
-            dynamics.stow(),
-            dynamics.blockingIntake(),
-            dynamics.gotoScore(BranchHeight.L2.preset),
-            dynamics.autoScore(BranchHeight.L2.preset),
-            dynamics.stow()
-        ));
-
-        chooser.addOption("GartronicsDynamicsScoreL4", Commands.sequence(
-            dynamics.stow(),
-            dynamics.blockingIntake(),
-            dynamics.gotoScore(BranchHeight.L4.preset),
-            dynamics.autoScore(BranchHeight.L4.preset),
-            dynamics.stow()
-        ));
-        
-
         chooser.setDefaultOption("None", Commands.none());
 
         if (swerveSubsystem != null) {
+            var variableAuto = Commands.defer(complexAutoChooser::getAuto, Set.of(swerveSubsystem));
+            variableAuto.setName("variableAuto");
 
-            // START GARTRONICS
+            chooser.addOption("Create auto...", variableAuto);
 
-            chooser.addOption("SingleCycleC", variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4));
-            chooser.addOption("DoubleCycleBC", Commands.sequence(
-                variableAutoFactory.generateAutoCycle(FieldBranch.B, StationSide.RIGHT, BranchHeight.L4),
-                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4)
-            ));
-            chooser.addOption("FiveCycleC", Commands.sequence(
-                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
-                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
-                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
-                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4),
-                variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4)
-            ));
-            chooser.addOption("SingleCycleCWithDelay", variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.RIGHT, BranchHeight.L4, Seconds.of(5)));
-
-            // END GARTRONICS
             chooser.addOption("ReverseLeave", Autos.reverseForSeconds(swerveSubsystem, 3));
             chooser.addOption("Drive to Reef Point", new DriveToReefPoint(swerveSubsystem, elementLocator, 11).generate());
             chooser.addOption("M-R debug straight", new PathPlannerAuto("M-R straight debug"));
@@ -426,11 +387,6 @@ public class RobotContainer {
                 variableAutoFactory.generateAutoCycle(FieldBranch.I, StationSide.RIGHT, BranchHeight.L4),
                 variableAutoFactory.generateAutoCycle(FieldBranch.K, StationSide.RIGHT, BranchHeight.L4)
             ));
-
-            var variableAuto = Commands.defer(complexAutoChooser::getAuto, Set.of(swerveSubsystem));
-            variableAuto.setName("variableAuto");
-
-            chooser.addOption("Create auto...", variableAuto);
         }
 
         chooser.onChange((c) -> {
