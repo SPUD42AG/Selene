@@ -53,7 +53,7 @@ public class ComplexAutoChooser {
         private void buildHeightChooser() {
             heightChooser.setDefaultOption("L4", BranchHeight.L4);
             heightChooser.addOption("L3", BranchHeight.L3);
-            // heightChooser.addOption("L2", BranchHeight.L2);
+            heightChooser.addOption("L2", BranchHeight.L2);
         }
 
         protected FieldBranch getFieldBranch() {
