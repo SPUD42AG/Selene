@@ -2,7 +2,9 @@ package com.spartronics4915.frc2025.commands.autos;
 
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kTagOffset;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kAlignmentAdjustmentTimeout;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +108,7 @@ public class AlignToReef {
         );
 
         if (waypoints.get(0).anchor().getDistance(waypoints.get(1).anchor()) < 0.01) {
-            return Commands.none();
+            return PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout).andThen(Commands.print("end"));
         }
 
         PathPlannerPath path = new PathPlannerPath(
@@ -118,7 +120,11 @@ public class AlignToReef {
 
         path.preventFlipping = true;
 
-        return AutoBuilder.followPath(path);
+        return AutoBuilder.followPath(path).andThen(
+            Commands.print("start"),
+            PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout),
+            Commands.print("end")
+        );
     }
     
 

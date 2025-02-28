@@ -23,6 +23,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Time;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
@@ -32,6 +33,7 @@ import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
@@ -212,7 +214,9 @@ public final class Constants {
             }
 
             public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(2.0);
-            public static final Distance kPositionTolerance = Inches.of(2.0);
+            public static final Distance kPositionTolerance = Inches.of(0.5);
+
+            public static final Time kAlignmentAdjustmentTimeout = Seconds.of(1);
 
 
             public static final PathConstraints kPathConstraints = new PathConstraints(1.75, 1.75, 1/2 * Math.PI, 1 * Math.PI); // The constraints for this path.
