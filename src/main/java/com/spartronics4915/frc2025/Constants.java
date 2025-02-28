@@ -325,6 +325,8 @@ public final class Constants {
         public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(5);
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(330);
 
+        public static final Rotation2d kStartingAngle = Rotation2d.fromDegrees(270);
+
         public static final SlotConfigs kPIDConfigs = new SlotConfigs()
             .withKP(120)
             .withKI(0.0)
