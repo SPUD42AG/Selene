@@ -107,7 +107,12 @@ public class AlignToReef {
         );
 
         if (waypoints.get(0).anchor().getDistance(waypoints.get(1).anchor()) < 0.01) {
-            return PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout).andThen(Commands.print("end"));
+            return 
+            Commands.sequence(
+                Commands.print("start position PID loop"),
+                PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout),
+                Commands.print("end position PID loop")
+            );
         }
 
         PathPlannerPath path = new PathPlannerPath(
@@ -120,9 +125,9 @@ public class AlignToReef {
         path.preventFlipping = true;
 
         return AutoBuilder.followPath(path).andThen(
-            Commands.print("start"),
+            Commands.print("start position PID loop"),
             PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout),
-            Commands.print("end")
+            Commands.print("end position PID loop")
         );
     }
     
