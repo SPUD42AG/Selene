@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.spartronics4915.frc2025.Constants.ArmConstants;
 import com.spartronics4915.frc2025.Constants.ArmConstants.ArmSubsystemState;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler;
@@ -35,7 +36,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
 
     private TrapezoidProfile mArmProfile;
 
-    private Rotation2d mCurrentSetPoint = Rotation2d.fromRotations(0);;
+    private Rotation2d mCurrentSetPoint = ArmConstants.kStartingAngle;
     private State mCurrentState;
 
     private final DoublePublisher appliedOutPub = NetworkTableInstance.getDefault().getTable("logArm").getDoubleTopic("applied out").publish();
@@ -52,7 +53,7 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
         
         initArmProfile();
 
-        setMechanismAngle(Rotation2d.fromDegrees(90));
+        setMechanismAngle(ArmConstants.kStartingAngle);
     
         ModeSwitchHandler.EnableModeSwitchHandler(this);
 
@@ -64,6 +65,8 @@ public class ArmSubsystem extends SubsystemBase implements ModeSwitchInterface{
 
     private void initArmMotor() {
         mArmMotor = new TalonFX(ArmConstants.kArmMotorID);
+
+        mArmMotor.setNeutralMode(NeutralModeValue.Brake);
         var mConfigurator = mArmMotor.getConfigurator();
         mConfigurator.apply(ArmConstants.kPIDConfigs);
         mConfigurator.apply(ArmConstants.kCurrentLimits);
