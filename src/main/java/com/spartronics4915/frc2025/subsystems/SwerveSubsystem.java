@@ -72,9 +72,7 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
             swerveDrive::resetOdometry, 
             swerveDrive::getRobotVelocity, 
             (speeds, FF) -> {shimPublisher.accept(speeds); drive(speeds);}, 
-            new PPHolonomicDriveController(
-                Drive.AutoConstants.kTranslationPID, 
-                Drive.AutoConstants.kRotationPID), 
+            Drive.AutoConstants.kDriveController, 
             Drive.AutoConstants.PathplannerConfigs.PROGRAMMER_CHASSIS.config, 
             () -> {
                 Optional<Alliance> temp = DriverStation.getAlliance();
