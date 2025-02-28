@@ -4,6 +4,8 @@
 
 package com.spartronics4915.frc2025;
 
+import com.pathplanner.lib.commands.FollowPathCommand;
+
 import au.grapplerobotics.CanBridge;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
@@ -58,6 +60,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+        FollowPathCommand.warmupCommand().schedule();
     }
 
     /**
