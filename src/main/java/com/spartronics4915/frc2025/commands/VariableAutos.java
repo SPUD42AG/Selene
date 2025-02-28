@@ -153,8 +153,8 @@ public class VariableAutos {
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
             ),
-            dynamics.score(),
             dynamics.waitUntilPreset(height.preset),
+            dynamics.score(),
             Commands.parallel(
                 Commands.sequence(
                     Commands.waitTime(delay),
