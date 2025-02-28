@@ -396,7 +396,7 @@ public final class Constants {
     
         public static final double kMinSafeElevHeight = 0.385; //previously 4.361// height of the elevator for when the arm is stowed and needs to move
 
-        public static final double kScoreLaserCanDebounce = 0.5; //seconds
+        public static final double kScoreLaserCanDebounce = 0.1; //seconds
 
         public static final int kFunnelLaserCanID = 20;
         public static final Distance funnelLCTriggerDist = Inches.of(1.0);
