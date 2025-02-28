@@ -154,7 +154,7 @@ public class LimelightDevice extends SubsystemBase {
         
         if (poseEstimate.tagCount == 1 && poseEstimate.rawFiducials.length == 1) { //single tag TODO: why are two checks needed?
             RawFiducial singleTag = poseEstimate.rawFiducials[0];
-            SmartDashboard.putNumber("VisionDiagnostics/" + name + "/single tag pose ambiguity", singleTag.ambiguity);
+            if (VisionConstants.kVisionDiagnostics) SmartDashboard.putNumber("VisionDiagnostics/" + name + "/single tag pose ambiguity", singleTag.ambiguity);
             if (singleTag.ambiguity > 0.7 || singleTag.distToCamera > 5) {
                 return Optional.empty(); //don't trust if too ambiguous or too far
             }
