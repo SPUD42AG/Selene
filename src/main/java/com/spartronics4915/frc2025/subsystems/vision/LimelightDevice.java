@@ -108,7 +108,8 @@ public class LimelightDevice extends SubsystemBase {
         double robotSpeed = swerve.getSpeed();
         final boolean movingSlowEnough = robotSpeed < VisionConstants.kMaxSpeedForMegaTag1;
         final boolean CAN_GET_GOOD_HEADING = twoOrMoreTags && movingSlowEnough && closeEnough;
-        if (BEFORE_MATCH || CAN_GET_GOOD_HEADING || LimelightVisionSubsystem.getMegaTag1Override()) method = PoseEstimationMethod.MEGATAG_1;
+        if (BEFORE_MATCH && !CAN_GET_GOOD_HEADING) return Optional.empty(); //we only want the best for our inital pose
+        if (CAN_GET_GOOD_HEADING || LimelightVisionSubsystem.getMegaTag1Override()) method = PoseEstimationMethod.MEGATAG_1;
         return getVisionMeasurement(swerve, method);
     }
 
