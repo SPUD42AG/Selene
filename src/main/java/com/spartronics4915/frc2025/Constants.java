@@ -211,6 +211,10 @@ public final class Constants {
                 }
             }
 
+            public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(2.0);
+            public static final Distance kPositionTolerance = Inches.of(2.0);
+
+
             public static final PathConstraints kPathConstraints = new PathConstraints(1.75, 1.75, 1/2 * Math.PI, 1 * Math.PI); // The constraints for this path.
         
             // X = side to side, Y = away from tag
