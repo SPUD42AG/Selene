@@ -148,7 +148,10 @@ public class VariableAutos {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
-            pathPair.approachPath,
+            Commands.parallel(
+                pathPair.approachPath,
+                dynamics.stow()
+            ),
             Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
@@ -168,6 +171,7 @@ public class VariableAutos {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
+            dynamics.stow(),
             Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
