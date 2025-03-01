@@ -223,7 +223,7 @@ public final class Constants {
             }
 
             public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(2.0);
-            public static final Distance kPositionTolerance = Inches.of(0.1);
+            public static final Distance kPositionTolerance = Inches.of(0.25);
 
             public static final Time kAlignmentAdjustmentTimeout = Seconds.of(1);
 
@@ -342,7 +342,7 @@ public final class Constants {
         public static final Rotation2d kStartingAngle = Rotation2d.fromDegrees(270);
 
         public static final SlotConfigs kPIDConfigs = new SlotConfigs()
-            .withKP(120)
+            .withKP(200)
             .withKI(0.0)
             .withKD(0.0);
 
