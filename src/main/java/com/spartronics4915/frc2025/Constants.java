@@ -225,7 +225,7 @@ public final class Constants {
             }
 
             public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(2.0);
-            public static final Distance kPositionTolerance = Inches.of(0.25);
+            public static final Distance kPositionTolerance = Inches.of(0.4);
             public static final LinearVelocity kSpeedTolerance = InchesPerSecond.of(0.25);
 
             public static final Time kEndTriggerDebounce = Seconds.of(0.0);
@@ -418,7 +418,7 @@ public final class Constants {
         public static final double kScoreLaserCanDebounce = 0.1; //seconds
 
         public static final int kFunnelLaserCanID = 20;
-        public static final Distance funnelLCTriggerDist = Inches.of(1.0);
+        public static final Distance funnelLCTriggerDist = Meters.of(0.2);
 
     }
 
