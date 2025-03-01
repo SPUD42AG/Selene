@@ -301,6 +301,19 @@ public class RobotContainer {
 
         operatorController.start().onTrue(dynamics.intake()); //menu button
 
+        // operatorController.rightStick().whileTrue(
+        //     Commands.repeatingSequence(
+        //         Commands.sequence(
+        //             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT),
+        //             Commands.waitSeconds(.25)
+        //         ).onlyIf(() -> !intakeSubsystem.detect()),
+        //         Commands.sequence(
+        //             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN),
+        //             Commands.waitSeconds(.25)
+        //         ).onlyIf(() -> !intakeSubsystem.detect())
+        //     )
+        //     ).onFalse(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN).onlyIf(() -> !intakeSubsystem.detect()));
+
         operatorController.povUp().whileTrue(elevatorSubsystem.manualMode(0.002));
 
         operatorController.povDown().whileTrue(elevatorSubsystem.manualMode(-0.002));

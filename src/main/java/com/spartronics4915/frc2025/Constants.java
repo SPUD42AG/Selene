@@ -184,7 +184,7 @@ public final class Constants {
         public static final double kChassisRadius = Math.hypot(
                 kTrackWidth / 2, kWheelbase / 2);
 
-        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(1.5); //previously 5 (pathplanner max vel/acc divided by 2 as well)
+        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(3); //previously 5 (pathplanner max vel/acc divided by 2 as well)
         public static final AngularVelocity kMaxAngularSpeed = RadiansPerSecond.of(kMaxSpeed.in(MetersPerSecond) * Math.PI / kChassisRadius);
 
         public static final class AutoConstants {
@@ -265,8 +265,8 @@ public final class Constants {
         // public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
         public static final LimelightConstants kLimelights[] = {
                 new LimelightConstants("alex", LimelightModel.LIMELIGHT_3G, 11, LimelightRole.REEF),
-                new LimelightConstants("randy", LimelightModel.LIMELIGHT_3, 12, LimelightRole.ALIGN),
-                new LimelightConstants("ben", LimelightModel.LIMELIGHT_3G, 13, LimelightRole.STATION),
+                new LimelightConstants("randy", LimelightModel.LIMELIGHT_3, 12, LimelightRole.NOTHING),
+                new LimelightConstants("ben", LimelightModel.LIMELIGHT_3G, 13, LimelightRole.NOTHING),
                 new LimelightConstants("chucky", LimelightModel.LIMELIGHT_3, 14, LimelightRole.NOTHING),
                 new LimelightConstants("doug", LimelightModel.LIMELIGHT_3, 15, LimelightRole.NOTHING)
         };
@@ -410,7 +410,7 @@ public final class Constants {
     
         public static final double kMinSafeElevHeight = 0.385; //previously 4.361// height of the elevator for when the arm is stowed and needs to move
 
-        public static final double kScoreLaserCanDebounce = 0.5; //seconds
+        public static final double kScoreLaserCanDebounce = 0.1; //seconds
 
         public static final int kFunnelLaserCanID = 20;
         public static final Distance funnelLCTriggerDist = Inches.of(1.0);
