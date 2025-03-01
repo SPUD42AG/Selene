@@ -40,6 +40,14 @@ public class DynamicsCommandFactory {
 
         this.funnelLC = new LaserCan(kFunnelLaserCanID);
 
+        try {
+            lc.setRangingMode(LaserCan.RangingMode.SHORT);
+            lc.setRegionOfInterest(new LaserCan.RegionOfInterest(4, 4, 4, 4)); // prev numbers that worked(8, 8, 4, 4)
+            lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+          } catch (ConfigurationFailedException e) {
+            System.out.println("Configuration failed! " + e);
+          }
+
         var tab = Shuffleboard.getTab("dynamicsLogging");
         tab.addBoolean("armBelowHorizon", this::isArmBelowHorizon);
         tab.addBoolean("armStowed", this::isArmStowed);
