@@ -1,10 +1,12 @@
 package com.spartronics4915.frc2025.commands.autos;
 
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kEndTriggerDebounce;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPositionTolerance;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kRotationTolerance;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kSpeedTolerance;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
@@ -36,17 +38,25 @@ public class PositionPIDCommand extends Command{
 
         endTrigger = new Trigger(() -> {
             Pose2d diff = mSwerve.getPose().relativeTo(goalPose);
-            return MathUtil.isNear(
+
+            var rotation = MathUtil.isNear(
                 0.0, 
                 diff.getRotation().getRotations(), 
                 kRotationTolerance.getRotations(), 
                 0.0, 
                 1.0
-            ) && diff.getTranslation().getNorm() < kPositionTolerance.in(Meters)
-              && mSwerve.getSpeed() < kSpeedTolerance.in(MetersPerSecond);
+            );
+
+            var position = diff.getTranslation().getNorm() < kPositionTolerance.in(Meters);
+
+            var speed = mSwerve.getSpeed() < kSpeedTolerance.in(MetersPerSecond);
+
+            System.out.println(rotation + "\t" + position + "\t" + speed);
+            
+            return rotation && position && speed;
         });
 
-        endTriggerDebounced = endTrigger.debounce(0.05);
+        endTriggerDebounced = endTrigger.debounce(kEndTriggerDebounce.in(Seconds));
     }
 
     public static Command generateCommand(SwerveSubsystem swerve, Pose2d goalPose, Time timeout){
