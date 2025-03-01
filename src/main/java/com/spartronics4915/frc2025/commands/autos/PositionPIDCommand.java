@@ -2,7 +2,9 @@ package com.spartronics4915.frc2025.commands.autos;
 
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPositionTolerance;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kRotationTolerance;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kSpeedTolerance;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
@@ -40,7 +42,8 @@ public class PositionPIDCommand extends Command{
                 kRotationTolerance.getRotations(), 
                 0.0, 
                 1.0
-            ) && diff.getTranslation().getNorm() < kPositionTolerance.in(Meters);
+            ) && diff.getTranslation().getNorm() < kPositionTolerance.in(Meters)
+              && mSwerve.getSpeed() < kSpeedTolerance.in(MetersPerSecond);
         });
 
         endTriggerDebounced = endTrigger.debounce(0.05);

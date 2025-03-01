@@ -25,10 +25,12 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Velocity;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.Kilogram;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
@@ -224,6 +226,7 @@ public final class Constants {
 
             public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(2.0);
             public static final Distance kPositionTolerance = Inches.of(0.25);
+            public static final LinearVelocity kSpeedTolerance = InchesPerSecond.of(0.25);
 
             public static final Time kAlignmentAdjustmentTimeout = Seconds.of(1);
 
