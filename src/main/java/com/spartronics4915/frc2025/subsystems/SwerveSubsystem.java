@@ -16,6 +16,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.math.numbers.N1;
@@ -38,6 +39,7 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
     private final StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getTable("logging").getStructTopic("pose", Pose2d.struct).publish();
     private final StructPublisher<ChassisSpeeds> shimPublisher = NetworkTableInstance.getDefault().getTable("logging").getStructTopic("shim", ChassisSpeeds.struct).publish();
+    private final DoublePublisher speedPublisher = NetworkTableInstance.getDefault().getTable("logging").getDoubleTopic("speed").publish();
 
     public SwerveSubsystem(SwerveDirectories swerveDir) {
 
@@ -177,6 +179,7 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
     @Override
     public void periodic() {
         posePublisher.accept(getPose());
+        speedPublisher.accept(getSpeed());
     }
 
 }
