@@ -155,12 +155,10 @@ public class VariableAutos {
             ),
             dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
-            Commands.parallel(
-                Commands.sequence(
-                    Commands.waitTime(delay),
-                    pathPair.returnPath
-                ),
-                dynamics.stow()
+            Commands.sequence(
+                dynamics.stow(),
+                Commands.waitTime(delay),
+                pathPair.returnPath
             ),
             dynamics.blockingIntake()
         );
@@ -176,12 +174,10 @@ public class VariableAutos {
             ),
             dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
-            Commands.parallel(
-                Commands.sequence(
-                    Commands.waitTime(delay),
-                    pathPair.returnPath
-                ),
-                dynamics.stow()
+            Commands.sequence(
+                dynamics.stow(),
+                Commands.waitTime(delay),
+                pathPair.returnPath
             ),
             dynamics.blockingIntake()
         );
