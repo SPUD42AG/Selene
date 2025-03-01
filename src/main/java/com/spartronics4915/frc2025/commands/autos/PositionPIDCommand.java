@@ -13,6 +13,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class PositionPIDCommand extends Command{
     
@@ -20,9 +21,22 @@ public class PositionPIDCommand extends Command{
     public final Pose2d goalPose;
     private PPHolonomicDriveController mDriveController = Drive.AutoConstants.kDriveController;
 
+    private final Trigger endTrigger;
+
     private PositionPIDCommand(SwerveSubsystem mSwerve, Pose2d goalPose) {
         this.mSwerve = mSwerve;
         this.goalPose = goalPose;
+
+        endTrigger = new Trigger(() -> {
+            Pose2d diff = mSwerve.getPose().relativeTo(goalPose);
+            return MathUtil.isNear(
+                0.0, 
+                diff.getRotation().getRotations(), 
+                kRotationTolerance.getRotations(), 
+                0.0, 
+                1.0
+            ) && diff.getTranslation().getNorm() < kPositionTolerance.in(Meters);
+        }).debounce(0.1);
     }
 
     public static Command generateCommand(SwerveSubsystem swerve, Pose2d goalPose, Time timeout){
@@ -43,13 +57,6 @@ public class PositionPIDCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        Pose2d diff = mSwerve.getPose().relativeTo(goalPose);
-        return MathUtil.isNear(
-            0.0, 
-            diff.getRotation().getRotations(), 
-            kRotationTolerance.getRotations(), 
-            0.0, 
-            1.0
-        ) && diff.getTranslation().getNorm() < kPositionTolerance.in(Meters);
+        return endTrigger.getAsBoolean();
     }
 }
