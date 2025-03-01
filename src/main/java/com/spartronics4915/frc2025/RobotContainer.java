@@ -261,6 +261,30 @@ public class RobotContainer {
                 // })
                 .withName("Align Right Branch")
             );
+
+            driverController.povUp().whileTrue(
+                Commands.run(() -> {
+                    swerveSubsystem.drive(new ChassisSpeeds(0.25, 0, 0));
+                })
+            );
+
+            driverController.povLeft().whileTrue(
+                Commands.run(() -> {
+                    swerveSubsystem.drive(new ChassisSpeeds(0, 0.25, 0));
+                })
+            );
+
+            driverController.povRight().whileTrue(
+                Commands.run(() -> {
+                    swerveSubsystem.drive(new ChassisSpeeds(0, -0.25, 0));
+                })
+            );
+
+            driverController.povDown().whileTrue(
+                Commands.run(() -> {
+                    swerveSubsystem.drive(new ChassisSpeeds(-0.25, 0, 0));
+                })
+            );
         }
 
         //#endregion
