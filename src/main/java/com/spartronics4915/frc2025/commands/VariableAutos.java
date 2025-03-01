@@ -171,7 +171,6 @@ public class VariableAutos {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
-            dynamics.stow(),
             Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
