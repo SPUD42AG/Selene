@@ -36,7 +36,7 @@ public class PositionPIDCommand extends Command{
                 0.0, 
                 1.0
             ) && diff.getTranslation().getNorm() < kPositionTolerance.in(Meters);
-        }).debounce(0.1);
+        }).debounce(0.05);
     }
 
     public static Command generateCommand(SwerveSubsystem swerve, Pose2d goalPose, Time timeout){
