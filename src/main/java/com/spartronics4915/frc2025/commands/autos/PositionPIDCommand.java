@@ -15,6 +15,7 @@ import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.Time;
@@ -60,7 +61,10 @@ public class PositionPIDCommand extends Command{
     }
 
     public static Command generateCommand(SwerveSubsystem swerve, Pose2d goalPose, Time timeout){
-        return new PositionPIDCommand(swerve, goalPose).withTimeout(timeout);
+        return new PositionPIDCommand(swerve, goalPose).withTimeout(timeout).finallyDo(() -> {
+            swerve.drive(new ChassisSpeeds(0,0,0));
+            swerve.lockModules();
+        });
     }
 
     @Override
