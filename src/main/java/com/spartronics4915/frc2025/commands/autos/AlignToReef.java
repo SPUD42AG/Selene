@@ -1,8 +1,9 @@
 package com.spartronics4915.frc2025.commands.autos;
 
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
-import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kTagOffset;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kAlignmentAdjustmentTimeout;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,8 @@ import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import com.spartronics4915.frc2025.RobotContainer;
+import com.spartronics4915.frc2025.commands.VariableAutos.BranchSide;
+import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.Constants.VisionConstants;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
 import com.spartronics4915.frc2025.util.AprilTagRegion;
@@ -34,49 +37,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class AlignToReef {
-
-    public enum BranchSide{
-        LEFT,
-        RIGHT;
-    } 
-
-    public enum ReefSide{
-        ONE(18, 7),
-        TWO(19, 6),
-        THREE(20, 11),
-        FOUR(21, 10),
-        FIVE(22, 9),
-        SIX(17, 8);
-
-        public final Pose2d redTagPose;
-        public final Pose2d blueTagPose;
-
-        public Pose2d getCurrent(){
-            return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ?
-                blueTagPose : 
-                redTagPose;
-        }
-
-        public ReefSide mirror(){
-            switch (this) {
-                case ONE: return ReefSide.ONE;
-                case TWO: return ReefSide.SIX;
-                case THREE: return ReefSide.FIVE;
-                case FOUR: return ReefSide.FOUR;
-                case FIVE: return ReefSide.THREE;
-                case SIX: return ReefSide.TWO;
-                default: return ReefSide.ONE;
-            }
-        }
-
-        private ReefSide(int blue, int red) {
-            var layout = RobotContainer.getFieldLayout();
-
-
-            redTagPose =layout.getTagPose(red).get().toPose2d();
-            blueTagPose = layout.getTagPose(blue).get().toPose2d();
-        }
-    } 
     
     private final SwerveSubsystem mSwerve;
 
@@ -131,7 +91,7 @@ public class AlignToReef {
     }
 
 
-    public Command generateCommand(ReefSide reefTag, BranchSide side) {
+    public Command generateCommand(final ReefSide reefTag, BranchSide side) {
         return Commands.defer(() -> {
             var branch = getBranchFromTag(reefTag.getCurrent(), side);
             desiredBranchPublisher.accept(branch);
@@ -140,7 +100,6 @@ public class AlignToReef {
         }, Set.of());
     }
 
-
     private Command getPathFromWaypoint(Pose2d waypoint) {
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(mSwerve.getPose().getTranslation(), getPathVelocityHeading(mSwerve.getFieldVelocity(), waypoint)),
@@ -148,19 +107,28 @@ public class AlignToReef {
         );
 
         if (waypoints.get(0).anchor().getDistance(waypoints.get(1).anchor()) < 0.01) {
-            return Commands.none();
+            return 
+            Commands.sequence(
+                Commands.print("start position PID loop"),
+                PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout),
+                Commands.print("end position PID loop")
+            );
         }
 
         PathPlannerPath path = new PathPlannerPath(
             waypoints, 
             kPathConstraints,
             new IdealStartingState(getVelocityMagnitude(mSwerve.getFieldVelocity()), mSwerve.getHeading()), 
-            new GoalEndState(0.0, getBranchRotation(mSwerve))
+            new GoalEndState(0.0, waypoint.getRotation())
         );
 
         path.preventFlipping = true;
 
-        return AutoBuilder.followPath(path);
+        return AutoBuilder.followPath(path).andThen(
+            Commands.print("start position PID loop"),
+            PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout),
+            Commands.print("end position PID loop")
+        );
     }
     
 
@@ -170,9 +138,9 @@ public class AlignToReef {
      * @return
      */
     private Rotation2d getPathVelocityHeading(ChassisSpeeds cs, Pose2d target){
-        if (getVelocityMagnitude(cs).in(MetersPerSecond) < 0.01 ) {
-            var diff =  mSwerve.getPose().minus(target).getTranslation();
-            return (diff.getNorm() < 0.01) ? target.getRotation() : diff.getAngle();
+        if (getVelocityMagnitude(cs).in(MetersPerSecond) < 0.25) {
+            var diff = target.minus(mSwerve.getPose()).getTranslation();
+            return (diff.getNorm() < 0.01) ? target.getRotation() : diff.getAngle();//.rotateBy(Rotation2d.k180deg);
         }
         return new Rotation2d(cs.vxMetersPerSecond, cs.vyMetersPerSecond);
     }
@@ -210,8 +178,8 @@ public class AlignToReef {
     private static Pose2d getBranchFromTag(Pose2d tag, BranchSide side) {
         var translation = tag.getTranslation().plus(
             new Translation2d(
-                kTagOffset.getY(),
-                kTagOffset.getX() * (side == BranchSide.LEFT ? -1 : 1)
+                side.tagOffset.getY(),
+                side.tagOffset.getX() * (side == BranchSide.LEFT ? -1 : 1)
             ).rotateBy(tag.getRotation())
         );
 

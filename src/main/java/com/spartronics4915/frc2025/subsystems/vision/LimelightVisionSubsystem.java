@@ -20,12 +20,14 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructArrayTopic;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimelightVisionSubsystem extends SubsystemBase implements VisionDeviceSubystem, ModeSwitchInterface {
     private final ArrayList<LimelightDevice> limelights;
     private static boolean mt1Override = false;
+    private static boolean discardMeasurements = false;
 
     private LimelightDevice reefLL;
     private LimelightDevice alignLL;
@@ -34,6 +36,8 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
     private final SwerveSubsystem swerveSubsystem;
     private final StructArrayPublisher<Pose3d> visionTargetPublisher;
     private final AprilTagFieldLayout fieldLayout;
+
+    private boolean initalPoseSet = false;
 
     public LimelightVisionSubsystem(SwerveSubsystem swerveSubsystem, AprilTagFieldLayout fieldLayout) {
         limelights = new ArrayList<>();
@@ -64,7 +68,10 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
                 SmartDashboard.putNumber("VisionDiagnostics/limelight-" + config.name() + "/distance", -1);
                 SmartDashboard.putNumber("VisionDiagnostics/limelight-" + config.name() + "/speed", -1);
                 SmartDashboard.putString("VisionDiagnostics/limelight-" + config.name() + "/method", "");
+                SmartDashboard.putData("VisionDiagnostics/limelight-" + config.name() + "/pose", new Field2d());
             }
+
+            SmartDashboard.putBoolean("Initial Pose Set?", false);
         }
 
         this.fieldLayout = fieldLayout;
@@ -130,13 +137,18 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
     @Override
     public void periodic() {
         getVisionMeasurements().forEach((measurement) -> {
-            swerveSubsystem.addVisionMeasurement(measurement.pose(), measurement.timestamp(), measurement.stdDevs());
+            if (!initalPoseSet) {
+                initalPoseSet = true;
+                SmartDashboard.putBoolean("Initial Pose Set?", true);
+            }
+            if (!discardMeasurements) swerveSubsystem.addVisionMeasurement(measurement.pose(), measurement.timestamp(), measurement.stdDevs());
             if (VisionConstants.kVisionDiagnostics) {
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/stddev", measurement.stdDevs().get(0, 0));
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/count", measurement.diagTagCount());
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/distance", measurement.diagTagDistance());
                 SmartDashboard.putNumber("VisionDiagnostics/" + measurement.diagName() + "/speed", measurement.diagRobotSpeed());
                 SmartDashboard.putString("VisionDiagnostics/" + measurement.diagName() + "/method", measurement.diagMethod().toString());
+                ((Field2d) SmartDashboard.getData("VisionDiagnostics/" + measurement.diagName() + "/pose")).setRobotPose(measurement.pose());
             }
         });
 
@@ -154,6 +166,14 @@ public class LimelightVisionSubsystem extends SubsystemBase implements VisionDev
 
     public static void setMegaTag1Override(boolean b) {
         mt1Override = b;
+    }
+
+    public static void setDiscardMeasurements(boolean b) {
+        discardMeasurements = b;
+    }
+
+    public boolean isInitialPoseSet() {
+        return initalPoseSet;
     }
 
     public Optional<Pose2d> getBotPose2dFromReefCamera() {

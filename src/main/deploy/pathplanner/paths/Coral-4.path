@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2165340909090911,
-        "y": 4.022415143703151
+        "x": 1.3062784090909094,
+        "y": 7.1112073863636365
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2165340909090911,
-        "y": 3.1299540257786376
+        "x": 3.7908664772727283,
+        "y": 6.9865625
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Coral Station"
     },
     {
       "anchor": {
-        "x": 1.2165340909090911,
-        "y": 2.2025513739349503
+        "x": 6.539701704545454,
+        "y": 4.8975142045454545
       },
       "prevControl": {
-        "x": 1.2165340909090911,
-        "y": 3.2025513739349503
+        "x": 6.501477272727272,
+        "y": 6.413196022727273
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef Entr 4"
     }
   ],
   "rotationTargets": [],
@@ -38,17 +38,17 @@
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
-    "unlimited": true
+    "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 2.0,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "debug",
+  "folder": "Pairs",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -54.011
   },
   "useDefaultConstraints": true
 }

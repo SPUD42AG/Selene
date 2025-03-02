@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import static com.spartronics4915.frc2025.Constants.IntakeConstants.*;
+import static edu.wpi.first.units.Units.RPM;
 
 import com.spartronics4915.frc2025.Constants.IntakeConstants;
 import com.spartronics4915.frc2025.Constants.Drive.SwerveDirectories;
@@ -21,6 +22,7 @@ import com.spartronics4915.frc2025.Constants.IntakeConstants.IntakeSpeed;
 import com.spartronics4915.frc2025.util.ModeSwitchHandler.ModeSwitchInterface;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import au.grapplerobotics.LaserCan;
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import au.grapplerobotics.CanBridge;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -53,7 +56,7 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
         lc = new LaserCan(kLaserCANID);
         try {
             lc.setRangingMode(LaserCan.RangingMode.SHORT);
-            lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 4, 4));
+            // lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 4, 4));
             lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
           } catch (ConfigurationFailedException e) {
             System.out.println("Configuration failed! " + e);
@@ -74,17 +77,10 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
 
         SmartDashboard.putData("IntakeSpeed: IN", setPresetSpeedCommand(IntakeSpeed.IN));
-        SmartDashboard.putData("IntakeSpeed: NEURTRAL", setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
+        SmartDashboard.putData("IntakeSpeed: NEUTRAL", setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
         SmartDashboard.putData("IntakeSpeed: OUT", setPresetSpeedCommand(IntakeSpeed.OUT));
 
-        var lcTrigger = new Trigger(() -> {
-            LaserCan.Measurement measurement = lc.getMeasurement();
-            if (measurement == null) {
-                return false;
-            }
-
-            return measurement.distance_mm < IntakeConstants.laserCANDistance;
-        }).onTrue(setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
+        var lcTrigger = new Trigger(() -> detect()).debounce(kLaserCanDebounce).onTrue(setPresetSpeedCommand(IntakeSpeed.NEUTRAL));
 
     }
 
@@ -95,6 +91,10 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
         );
     }
 
+    private void setPercentage(double newPercentage) {
+        mMotor1.set(newPercentage);
+    }
+
 // Not sure if it works with being void, when it outputs if something is detected.
     // public void detect() {
     //     LaserCan.Measurement measurement = lc.getMeasurement();
@@ -102,18 +102,31 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
     //     SmartDashboard.putBoolean("LaserCanDetect", measurement.distance_mm<=laserCANDistance);
     // }
 
+    public boolean detect(){
+        LaserCan.Measurement measurement = lc.getMeasurement();
+        if (measurement == null) {
+            return false;
+        }
+
+        return measurement.distance_mm < IntakeConstants.laserCANDistance;
+    }
+
     public void intakeMotors (IntakeSpeed preset) {
-        setSpeed(preset.intakeSpeed);
+        // setSpeed(preset.intakeSpeed);
+        setPercentage(preset.intakePercentage);
     }
 
     public Command setSpeedCommand(double newSpeed){
-        return this.runOnce(() -> setSpeed(newSpeed));
+        return Commands.runOnce(() -> setSpeed(newSpeed));
     }
 
     public Command setPresetSpeedCommand(IntakeSpeed preset){
-        return this.runOnce(() -> intakeMotors(preset));
+        return Commands.runOnce(() -> intakeMotors(preset));
     }
 
+    public AngularVelocity getSpeed(){
+        return RPM.of(mMotor1.getEncoder().getVelocity());
+    }
     // @Override
     // public void periodic() {
     //     detect();
@@ -121,6 +134,6 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
     @Override
     public void onModeSwitch() {
-        setSpeed(0.0);
+        intakeMotors(IntakeSpeed.NEUTRAL);
     }
 }

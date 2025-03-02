@@ -11,6 +11,7 @@ import com.spartronics4915.frc2025.Constants.VisionConstants.LimelightRole;
 import com.spartronics4915.frc2025.Constants.VisionConstants.PoseEstimationMethod;
 import com.spartronics4915.frc2025.LimelightHelpers;
 import com.spartronics4915.frc2025.Robot;
+import com.spartronics4915.frc2025.LimelightHelpers.PoseEstimate;
 import com.spartronics4915.frc2025.LimelightHelpers.RawFiducial;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
 import com.spartronics4915.frc2025.util.AprilTagRegion;
@@ -44,12 +45,11 @@ public class LimelightDevice extends SubsystemBase {
         this.id = constants.id();
         this.role = constants.role();
 
-        int portOffset = (id - 11) * 10; // limelight 11 will have 5800-5809, limelight 12 will have 5810-5819, etc.
-
-        // ports are forwarded to http://roborio-4915-FRC.local and are accessed while tethered to the roborio over USB
-        for (int port = 5800; port <= 5809; port++) {
-            PortForwarder.add(port + portOffset, name + ".local", port); 
-        }
+        // // ports are forwarded to http://roborio-4915-FRC.local and are accessed while tethered to the roborio over USB
+        // int portOffset = (id - 11) * 10; // limelight 11 will have 5800-5809, limelight 12 will have 5810-5819, etc.
+        // for (int port = 5800; port <= 5809; port++) {
+        //     PortForwarder.add(port + portOffset, name + ".local", port); 
+        // }
     }
 
     public void setTagFilter(Optional<DriverStation.Alliance> alliance) {
@@ -62,7 +62,7 @@ public class LimelightDevice extends SubsystemBase {
             region = AprilTagRegion.kReef;
             break;
             case STATION:
-            region = AprilTagRegion.kStation;
+            region = AprilTagRegion.kStation.and(AprilTagRegion.kBarge);
             break;
             default:
             region = AprilTagRegion.kEmpty;
@@ -97,24 +97,25 @@ public class LimelightDevice extends SubsystemBase {
         return LimelightHelpers.getTV(name);
     }
 
-    /**
-     * Use MegaTag1 if it's within the first three seconds of auto, otherwise use MegaTag2
-     */
     public Optional<VisionMeasurement> getVisionMeasurement(SwerveSubsystem swerve) {
         if (role == LimelightRole.NOTHING) return Optional.empty();
         PoseEstimationMethod method = PoseEstimationMethod.MEGATAG_2;
-        final boolean BEFORE_MATCH = !Robot.AUTO_TIMER.hasElapsed(0.01);
-        final boolean twoOrMoreTags = LimelightHelpers.getRawFiducials(name).length >= 2;
+        final boolean BEFORE_MATCH = !Robot.AUTO_TIMER.hasElapsed(0.01) && !Robot.TELEOP_TIMER.hasElapsed(0.01);
+        final PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+        if (!LimelightHelpers.validPoseEstimate(poseEstimate)) return Optional.empty();
+        final boolean twoOrMoreTags = poseEstimate.tagCount >= 2;
+        final boolean closeEnough = poseEstimate.avgTagDist < VisionConstants.kMaxDistanceForMegaTag1;
         double robotSpeed = swerve.getSpeed();
         final boolean movingSlowEnough = robotSpeed < VisionConstants.kMaxSpeedForMegaTag1;
-        final boolean CAN_GET_GOOD_HEADING = twoOrMoreTags && movingSlowEnough;
-        if (BEFORE_MATCH || CAN_GET_GOOD_HEADING || LimelightVisionSubsystem.getMegaTag1Override()) method = PoseEstimationMethod.MEGATAG_1;
+        final boolean CAN_GET_GOOD_HEADING = twoOrMoreTags && movingSlowEnough && closeEnough;
+        if (BEFORE_MATCH && !CAN_GET_GOOD_HEADING) return Optional.empty(); //we only want the best for our inital pose
+        if (CAN_GET_GOOD_HEADING || LimelightVisionSubsystem.getMegaTag1Override()) method = PoseEstimationMethod.MEGATAG_1;
         return getVisionMeasurement(swerve, method);
     }
 
     public Optional<VisionMeasurement> getVisionMeasurement(SwerveSubsystem swerve, PoseEstimationMethod method) {
         if (role == LimelightRole.NOTHING) return Optional.empty();
-        LimelightHelpers.PoseEstimate poseEstimate;
+        PoseEstimate poseEstimate;
         Optional<Matrix<N3, N1>> stdDevs;
         switch (method) {
             case MEGATAG_1:
@@ -149,12 +150,13 @@ public class LimelightDevice extends SubsystemBase {
     }
 
     private Optional<Matrix<N3, N1>> calculateStdDevsMegaTag1(LimelightHelpers.PoseEstimate poseEstimate, SwerveSubsystem swerve) {
-        if (poseEstimate == null || poseEstimate.tagCount == 0) return Optional.empty();
+        if (!LimelightHelpers.validPoseEstimate(poseEstimate)) return Optional.empty();
         double transStdDev = StdDevConstants.MegaTag1.kInitialValue;
         
         if (poseEstimate.tagCount == 1 && poseEstimate.rawFiducials.length == 1) { //single tag TODO: why are two checks needed?
             RawFiducial singleTag = poseEstimate.rawFiducials[0];
-            if (singleTag.ambiguity > 0.7 || singleTag.distToCamera > 5) { //TODO: what does ambiguity measure?
+            if (VisionConstants.kVisionDiagnostics) SmartDashboard.putNumber("VisionDiagnostics/" + name + "/single tag pose ambiguity", singleTag.ambiguity);
+            if (singleTag.ambiguity > 0.7 || singleTag.distToCamera > 5) {
                 return Optional.empty(); //don't trust if too ambiguous or too far
             }
             transStdDev += StdDevConstants.MegaTag1.kSingleTagPunishment; //megatag1 performs much worse with only one tag
@@ -171,7 +173,7 @@ public class LimelightDevice extends SubsystemBase {
     }
 
     private Optional<Matrix<N3, N1>> calculateStdDevsMegaTag2(LimelightHelpers.PoseEstimate poseEstimate, SwerveSubsystem swerve) {
-        if (poseEstimate == null || poseEstimate.tagCount == 0) return Optional.empty();
+        if (!LimelightHelpers.validPoseEstimate(poseEstimate)) return Optional.empty();
         if (swerve.getAngularVelocity().abs(Units.DegreesPerSecond) > VisionConstants.kMaxAngularSpeed) 
             return Optional.empty(); //don't trust if turning too fast
         if (poseEstimate.avgTagDist > 8) return Optional.empty();

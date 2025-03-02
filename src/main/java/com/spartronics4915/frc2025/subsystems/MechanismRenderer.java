@@ -31,6 +31,10 @@ public class MechanismRenderer extends SubsystemBase {
     MechanismLigament2d intake;
     MechanismLigament2d intakeBB;
     
+    public static void generateRenderer(Supplier<Distance> elevatorHeightSupplier, Supplier<Angle> armAngleSupplier, Supplier<AngularVelocity> intakeSpeedSupplier, BooleanSupplier intakeTrigger, String name) {
+        new MechanismRenderer(elevatorHeightSupplier, armAngleSupplier, intakeSpeedSupplier, intakeTrigger, name);
+    }
+
     /**
      * 
      * @param elevatorHeightSupplier a supplier which returns the elevator's height from the ground
@@ -38,24 +42,24 @@ public class MechanismRenderer extends SubsystemBase {
      * @param intakeSpeedSupplier a supplier which returns the intake's angular velocity
      * 
      */
-    public MechanismRenderer(Supplier<Distance> elevatorHeightSupplier, Supplier<Angle> armAngleSupplier, Supplier<AngularVelocity> intakeSpeedSupplier, BooleanSupplier intakeTrigger) {
+    public MechanismRenderer(Supplier<Distance> elevatorHeightSupplier, Supplier<Angle> armAngleSupplier, Supplier<AngularVelocity> intakeSpeedSupplier, BooleanSupplier intakeTrigger, String name) {
         super();
         this.elevatorHeightSupplier = elevatorHeightSupplier;
         this.armAngleSupplier = armAngleSupplier;
         this.intakeSpeedSupplier = intakeSpeedSupplier;
         this.intakeTrigger = intakeTrigger;
 
-        canvas = new Mechanism2d(4,4);
-        var root = canvas.getRoot("root", 2, 0);
+        canvas = new Mechanism2d(3, 3);
+        var root = canvas.getRoot("root", 1.5, 0.735800);
         elev = new MechanismLigament2d("elevator", 
             elevatorHeightSupplier.get().in(Meters),
             90,
             5,
-            new Color8Bit(Color.kGray)
+            new Color8Bit(Color.kCoral)
         );
 
         arm = new MechanismLigament2d("arm", 
-            0.9,
+            0.321500,
             armAngleSupplier.get().in(Degrees),
             5,
             new Color8Bit(Color.kBlue)
@@ -70,14 +74,14 @@ public class MechanismRenderer extends SubsystemBase {
         elev.append(arm);
         root.append(elev);
 
-        SmartDashboard.putData("mechanisms", canvas);
+        SmartDashboard.putData(name, canvas);
 
     }
 
     @Override
     public void periodic() {
         elev.setLength(elevatorHeightSupplier.get().in(Meters));
-        arm.setAngle(armAngleSupplier.get().in(Degrees));
+        arm.setAngle(90-(armAngleSupplier.get().in(Degrees)));
         intakeBB.setColor(intakeTrigger.getAsBoolean() ? new Color8Bit(Color.kGreen) : new Color8Bit(Color.kRed));
         
         double t = MathUtil.inverseInterpolate(
