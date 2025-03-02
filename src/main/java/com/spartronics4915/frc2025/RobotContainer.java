@@ -99,7 +99,7 @@ public class RobotContainer {
     public final IntakeSubsystem intakeSubsystem;
     public final ArmSubsystem armSubsystem;
     public final ElevatorSubsystem elevatorSubsystem;
-    public final ClimberSubsystem climberSubsystem;
+    // public final ClimberSubsystem climberSubsystem;
 
     
     public final DynamicsCommandFactory dynamics;
@@ -124,7 +124,7 @@ public class RobotContainer {
         intakeSubsystem = new IntakeSubsystem();
         armSubsystem = new ArmSubsystem();
         elevatorSubsystem = new ElevatorSubsystem();
-        climberSubsystem = new ClimberSubsystem();
+        // climberSubsystem = new ClimberSubsystem();
 
         dynamics = new DynamicsCommandFactory(armSubsystem, elevatorSubsystem, intakeSubsystem);
 
@@ -161,7 +161,7 @@ public class RobotContainer {
         if (swerveSubsystem != null) {
             swerveTeleopCommand = new SwerveTeleopCommand(driverController, swerveSubsystem);
             alignmentCommandFactory = new AlignToReef(swerveSubsystem, fieldLayout);
-            variableAutoFactory = new VariableAutos(alignmentCommandFactory, dynamics);
+            variableAutoFactory = new VariableAutos(alignmentCommandFactory, dynamics, swerveSubsystem);
             if (RobotBase.isSimulation()) {
                 visionSubsystem = new SimVisionSubsystem(swerveSubsystem);
             } else {
