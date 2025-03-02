@@ -46,7 +46,7 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 | D-pad Down | (Manual) Elevator down |
 | D-pad Left | (Manual) Arm CCW |
 | D-pad Right | (Manual) Arm CW |
-| Windows | Force load preset |
+| Windows | Unstuck coral |
 | Menu | Intake |
 
 ## Debug controller
