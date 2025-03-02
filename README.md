@@ -31,10 +31,10 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 | input   | action |
 | -------- | ------- |
 | Left Stick | *None* |
-| Push Left Stick | *None* |
+| Push Left Stick | High algae preset |
 | Right Stick | *None* |
-| Push Right Stick | Outtake |
-| A | *None* |
+| Push Right Stick | Low algae preset |
+| A | Arm algae angle |
 | B | L2 scoring preset |
 | X | L3 scoring preset |
 | Y | L4 scoring preset |

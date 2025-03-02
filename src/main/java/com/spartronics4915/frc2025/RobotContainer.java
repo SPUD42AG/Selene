@@ -312,7 +312,9 @@ public class RobotContainer {
 
         operatorController.leftTrigger().onTrue(dynamics.stow());
 
-        operatorController.back().onTrue(dynamics.loadStow()); //windows button
+        operatorController.back().onTrue(
+            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT)
+        ); //windows button
 
         operatorController.y().onTrue(dynamics.operatorScore(DynaPreset.L4));
 
@@ -335,8 +337,16 @@ public class RobotContainer {
         //     )
         //     ).onFalse(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN).onlyIf(() -> !intakeSubsystem.detect()));
 
+        operatorController.leftStick().onTrue(
+            dynamics.gotoScore(DynaPreset.ALGAE_HIGH)
+        );
+
         operatorController.rightStick().onTrue(
-            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT)
+            dynamics.gotoScore(DynaPreset.ALGAE_LOW)
+        );
+
+        operatorController.a().onTrue(
+            dynamics.removeAlgaeArm()
         );
 
         operatorController.povUp().whileTrue(elevatorSubsystem.manualMode(0.002));
