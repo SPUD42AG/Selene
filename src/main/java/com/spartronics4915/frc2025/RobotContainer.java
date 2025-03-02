@@ -348,6 +348,8 @@ public class RobotContainer {
 
         //#endregion
 
+        SmartDashboard.putData("setPreset1", armSubsystem.setMechanismAngleCommand(Rotation2d.fromDegrees(270)));
+
         SmartDashboard.putData("stowLoad", dynamics.loadStow());
         SmartDashboard.putData("stowPreScore", dynamics.prescoreStow());
         SmartDashboard.putData("stow", dynamics.stow());
