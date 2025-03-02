@@ -314,6 +314,8 @@ public class RobotContainer {
 
         operatorController.back().onTrue(
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.FUNNEL_UNSTUCK)
+        ).onFalse(
+            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN)
         ); //windows button
 
         operatorController.y().onTrue(dynamics.operatorScore(DynaPreset.L4));
