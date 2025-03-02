@@ -1,13 +1,16 @@
 package com.spartronics4915.frc2025.commands;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.spartronics4915.frc2025.RobotContainer;
 import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
+import com.spartronics4915.frc2025.commands.DynamicsCommandFactory.DynaPreset;
 import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
-import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory;
-import com.spartronics4915.frc2025.subsystems.coral.DynamicsCommandFactory.DynaPreset;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,8 +20,8 @@ public class VariableAutos {
 
     public enum BranchHeight{
         L4(DynaPreset.L4),
-        L3(DynaPreset.L3);
-        // L2(DynaPreset.L2),
+        L3(DynaPreset.L3),
+        L2(DynaPreset.L2),
         ;
 
         public final DynaPreset preset;
@@ -59,8 +62,14 @@ public class VariableAutos {
     }
 
     public enum BranchSide{
-        LEFT,
-        RIGHT;
+        LEFT(new Translation2d(0.1527 - 0.00635, 0.5273 + 0.0254 - 0.00635)),
+        RIGHT(new Translation2d(0.1738, 0.5273 + 0.0254 - 0.00635));
+
+        public Translation2d tagOffset;
+        private BranchSide(Translation2d offsets) {
+            tagOffset = offsets;
+        }
+
         public BranchSide mirror(){
             switch (this) {
                 case LEFT: return RIGHT;
@@ -124,39 +133,51 @@ public class VariableAutos {
         this.dynamics = dynamics;
     }
 
+    public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height) {
+        return generateAutoCycle(branch, side, height, Seconds.of(0));
+    }
+
+    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height) {
+        return generateStartingAutoCycle(branch, side, height, Seconds.of(0));
+    }
+
     /**
      * Outputs the entire auto cycle from station to branch with mechanism movement
      */
-    public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height){
+    public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height, Time delay) {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
             pathPair.approachPath,
-            Commands.parallel(
+            Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
             ),
+            dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
-            Commands.parallel(
-                pathPair.returnPath,
-                dynamics.stow()
+            Commands.sequence(
+                dynamics.stow(),
+                Commands.waitTime(delay),
+                pathPair.returnPath
             ),
             dynamics.blockingIntake()
         );
     }
 
-    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height){
+    public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height, Time delay) {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
-            Commands.parallel(
+            Commands.sequence(
                 pathPair.autoAlign,
                 dynamics.gotoScore(height.preset)
             ),
+            dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
-            Commands.parallel(
-                pathPair.returnPath,
-                dynamics.stow()
+            Commands.sequence(
+                dynamics.stow(),
+                Commands.waitTime(delay),
+                pathPair.returnPath
             ),
             dynamics.blockingIntake()
         );
