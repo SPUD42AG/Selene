@@ -229,6 +229,7 @@ public final class Constants {
     public static final class OrientTowardsNearestPOIConstants {
         public static final Rotation2d REEF_OFFSET = Rotation2d.k180deg;
         public static final double CORAL_STATION_ANGLE = 55;
+        public static final Rotation2d BARGE_ROTATION = Rotation2d.kCCW_90deg;
         public static final Translation2d[] BARGE_RED_CAGE_POSITIONS = {
             new Translation2d(8.8, 3),
             new Translation2d(8.8, 1.9),
