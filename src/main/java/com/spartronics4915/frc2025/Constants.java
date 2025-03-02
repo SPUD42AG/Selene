@@ -232,6 +232,8 @@ public final class Constants {
 
             public static final Time kAlignmentAdjustmentTimeout = Seconds.of(0.075);
 
+            public static final LinearVelocity kStationApproachSpeed = InchesPerSecond.of(5);
+            public static final Time kStationApproachTimeout = Seconds.of(5);
 
             public static final PathConstraints kPathConstraints = new PathConstraints(1.25, 1.25, 1/2 * Math.PI, 1 * Math.PI); // The constraints for this path.
         

@@ -1,5 +1,8 @@
 package com.spartronics4915.frc2025.commands;
 
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStationApproachSpeed;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStationApproachTimeout;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.spartronics4915.frc2025.RobotContainer;
@@ -7,10 +10,12 @@ import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
 import com.spartronics4915.frc2025.commands.DynamicsCommandFactory.DynaPreset;
 import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
+import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -125,12 +130,17 @@ public class VariableAutos {
 
     private AlignToReef alignmentGenerator;
     private DynamicsCommandFactory dynamics;
+    private SwerveSubsystem swerve;
 
+    private final ChassisSpeeds reverseIntoStation;
 
-    public VariableAutos(AlignToReef alignmentGenerator, DynamicsCommandFactory dynamics) {
+    public VariableAutos(AlignToReef alignmentGenerator, DynamicsCommandFactory dynamics, SwerveSubsystem swerve) {
         super();
         this.alignmentGenerator = alignmentGenerator;
         this.dynamics = dynamics;
+        this.swerve = swerve;
+
+        reverseIntoStation = new ChassisSpeeds(kStationApproachSpeed.unaryMinus().in(MetersPerSecond), 0, 0);
     }
 
     public Command generateAutoCycle(FieldBranch branch, StationSide side, BranchHeight height) {
@@ -160,7 +170,10 @@ public class VariableAutos {
                 Commands.waitTime(delay),
                 pathPair.returnPath
             ),
-            dynamics.blockingIntake()
+            Commands.deadline(
+                dynamics.blockingIntake(),
+                Commands.run(() -> swerve.drive(reverseIntoStation)).withTimeout(kStationApproachTimeout)
+            )
         );
     }
 
@@ -182,7 +195,10 @@ public class VariableAutos {
                 Commands.waitTime(delay),
                 pathPair.returnPath
             ),
-            dynamics.blockingIntake()
+            Commands.deadline(
+                dynamics.blockingIntake(),
+                Commands.run(() -> swerve.drive(reverseIntoStation)).withTimeout(kStationApproachTimeout)
+            )
         );
     }
 
