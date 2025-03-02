@@ -52,7 +52,7 @@ public class PositionPIDCommand extends Command{
 
             var speed = mSwerve.getSpeed() < kSpeedTolerance.in(MetersPerSecond);
 
-            System.out.println(rotation + "\t" + position + "\t" + speed);
+            System.out.println("end trigger conditions R: "+ rotation + "\tP: " + position + "\tS: " + speed);
             
             return rotation && position && speed;
         });
