@@ -169,7 +169,10 @@ public class VariableAutos {
         
         return Commands.sequence(
             Commands.sequence(
-                pathPair.autoAlign,
+                Commands.parallel(
+                    pathPair.autoAlign,
+                    dynamics.stow()
+                ),
                 dynamics.gotoScore(height.preset)
             ),
             dynamics.waitUntilPreset(height.preset),
