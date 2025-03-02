@@ -269,6 +269,13 @@ public class DynamicsCommandFactory {
                        .withName("Operator Goto " + preset);
     }
 
+    public Command gotoClimb(){
+        return Commands.sequence(
+            makeSystemSafeToMove(true, false, true),
+            armPriorityMove(DynaPreset.CLIMB.setpoint)
+        ).withName("Goto Climb");
+    }
+
     public Command score(){
         return Commands.deadline(
             Commands.waitUntil(
