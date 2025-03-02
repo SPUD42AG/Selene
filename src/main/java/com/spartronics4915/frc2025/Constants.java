@@ -186,7 +186,7 @@ public final class Constants {
         public static final double kChassisRadius = Math.hypot(
                 kTrackWidth / 2, kWheelbase / 2);
 
-        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(3); //previously 5 (pathplanner max vel/acc divided by 2 as well)
+        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(5); //previously 5 (pathplanner max vel/acc divided by 2 as well)
         public static final AngularVelocity kMaxAngularSpeed = RadiansPerSecond.of(kMaxSpeed.in(MetersPerSecond) * Math.PI / kChassisRadius);
 
         public static final class AutoConstants {
