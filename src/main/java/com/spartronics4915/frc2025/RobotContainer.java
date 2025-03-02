@@ -335,6 +335,10 @@ public class RobotContainer {
         //     )
         //     ).onFalse(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN).onlyIf(() -> !intakeSubsystem.detect()));
 
+        operatorController.rightStick().onTrue(
+            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT)
+        );
+
         operatorController.povUp().whileTrue(elevatorSubsystem.manualMode(0.002));
 
         operatorController.povDown().whileTrue(elevatorSubsystem.manualMode(-0.002));
