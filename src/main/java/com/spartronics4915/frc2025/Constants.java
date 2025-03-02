@@ -334,7 +334,7 @@ public final class Constants {
         
         public static final double kDt = 0.02;
 
-        public static final Constraints kConstraints = new Constraints(3.5, 3.5); //8.0, 10
+        public static final Constraints kConstraints = new Constraints(3.5, 3.5 / 2.0); //8.0, 10
         public static final int kPeriodMs = 0;
 
         public static final double kS = 0.0;
