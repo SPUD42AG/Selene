@@ -95,7 +95,8 @@ public final class Constants {
         public enum IntakeSpeed {
             IN (-2500, -0.8),
             NEUTRAL (0, 0),
-            OUT (2500, 0.8);
+            OUT (2500, 0.8),
+            FUNNEL_UNSTUCK(1800, 0.5);
 
             public final double intakeSpeed;
             public final double intakePercentage;
