@@ -99,7 +99,7 @@ public class DynamicsCommandFactory {
     }
 
     private boolean isElevAtSetpoint(double setpoint){
-        System.out.println(Math.abs(setpoint - elevatorSubsystem.getPosition()));
+        // System.out.println(Math.abs(setpoint - elevatorSubsystem.getPosition()));
         return Math.abs(setpoint - elevatorSubsystem.getPosition()) < 2*kElevatorHeightTolerance;
     }
 
