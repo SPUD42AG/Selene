@@ -20,10 +20,10 @@ Spartronics 4915's code for the 2025 FRC season reefscape!
 | Right Trigger | Reef / coral station auto orient |
 | Left Bumper | Auto-align to left branch |
 | Right Bumper | Auto-align to right branch |
-| D-pad Up | *None* |
-| D-pad Down | *None* |
-| D-pad Left | *None* |
-| D-pad Right | *None* |
+| D-pad Up | Nudge forwards |
+| D-pad Down | Nudge backwards |
+| D-pad Left | Nudge left |
+| D-pad Right | Nudge right |
 | Windows | *None* |
 | Menu | *None* |
 
