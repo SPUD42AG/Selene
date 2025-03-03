@@ -165,11 +165,9 @@ public class VariableAutos {
             ),
             dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
-            Commands.sequence(
-                dynamics.stow(),
-                Commands.waitTime(delay),
-                pathPair.returnPath
-            ),
+            dynamics.stow(),
+            Commands.waitTime(delay),
+            pathPair.returnPath,
             Commands.deadline(
                 dynamics.blockingIntake(),
                 Commands.run(() -> swerve.drive(reverseIntoStation)).withTimeout(kStationApproachTimeout)
@@ -190,11 +188,9 @@ public class VariableAutos {
             ),
             dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
-            Commands.sequence(
-                dynamics.stow(),
-                Commands.waitTime(delay),
-                pathPair.returnPath
-            ),
+            dynamics.stow(),
+            Commands.waitTime(delay),
+            pathPair.returnPath,
             Commands.deadline(
                 dynamics.blockingIntake(),
                 Commands.run(() -> swerve.drive(reverseIntoStation)).withTimeout(kStationApproachTimeout)
