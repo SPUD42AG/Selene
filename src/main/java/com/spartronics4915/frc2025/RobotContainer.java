@@ -54,8 +54,6 @@ import java.util.Set;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -82,7 +80,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-@Logged
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(Drive.SwerveDirectories.COMP_CHASSIS);
@@ -103,7 +100,7 @@ public class RobotContainer {
     public final IntakeSubsystem intakeSubsystem;
     public final ArmSubsystem armSubsystem;
     public final ElevatorSubsystem elevatorSubsystem;
-    public final ClimberSubsystem climberSubsystem;
+    // public final ClimberSubsystem climberSubsystem;
 
     
     public final DynamicsCommandFactory dynamics;
@@ -116,10 +113,8 @@ public class RobotContainer {
     private AlignToReef alignmentCommandFactory = null;
     private VariableAutos variableAutoFactory = null;
 
-    @NotLogged
     private final SendableChooser<Command> autoChooser;
 
-    @NotLogged
     private final ComplexAutoChooser complexAutoChooser;
 
     /**
@@ -130,7 +125,7 @@ public class RobotContainer {
         intakeSubsystem = new IntakeSubsystem();
         armSubsystem = new ArmSubsystem();
         elevatorSubsystem = new ElevatorSubsystem();
-        climberSubsystem = new ClimberSubsystem();
+        // climberSubsystem = new ClimberSubsystem();
 
         dynamics = new DynamicsCommandFactory(armSubsystem, elevatorSubsystem, intakeSubsystem);
 
@@ -167,7 +162,7 @@ public class RobotContainer {
         if (swerveSubsystem != null) {
             swerveTeleopCommand = new SwerveTeleopCommand(driverController, swerveSubsystem);
             alignmentCommandFactory = new AlignToReef(swerveSubsystem, fieldLayout);
-            variableAutoFactory = new VariableAutos(alignmentCommandFactory, dynamics);
+            variableAutoFactory = new VariableAutos(alignmentCommandFactory, dynamics, swerveSubsystem);
             if (RobotBase.isSimulation()) {
                 visionSubsystem = new SimVisionSubsystem(swerveSubsystem);
             } else {
@@ -318,7 +313,11 @@ public class RobotContainer {
 
         operatorController.leftTrigger().onTrue(dynamics.stow());
 
-        operatorController.back().onTrue(dynamics.loadStow()); //windows button
+        operatorController.back().onTrue(
+            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.FUNNEL_UNSTUCK)
+        ).onFalse(
+            intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN)
+        ); //windows button
 
         operatorController.y().onTrue(dynamics.operatorScore(DynaPreset.L4));
 
@@ -340,6 +339,18 @@ public class RobotContainer {
         //         ).onlyIf(() -> !intakeSubsystem.detect())
         //     )
         //     ).onFalse(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.IN).onlyIf(() -> !intakeSubsystem.detect()));
+
+        operatorController.leftStick().onTrue(
+            dynamics.gotoScore(DynaPreset.ALGAE_HIGH)
+        );
+
+        operatorController.rightStick().onTrue(
+            dynamics.gotoScore(DynaPreset.ALGAE_LOW)
+        );
+
+        operatorController.a().onTrue(
+            dynamics.removeAlgaeArm()
+        );
 
         operatorController.povUp().whileTrue(elevatorSubsystem.manualMode(0.002));
 

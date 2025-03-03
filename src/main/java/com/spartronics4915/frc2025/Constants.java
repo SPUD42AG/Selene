@@ -95,7 +95,8 @@ public final class Constants {
         public enum IntakeSpeed {
             IN (-2500, -0.8),
             NEUTRAL (0, 0),
-            OUT (2500, 0.8);
+            OUT (2500, 0.8),
+            FUNNEL_UNSTUCK(1800, 0.5);
 
             public final double intakeSpeed;
             public final double intakePercentage;
@@ -186,7 +187,7 @@ public final class Constants {
         public static final double kChassisRadius = Math.hypot(
                 kTrackWidth / 2, kWheelbase / 2);
 
-        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(3); //previously 5 (pathplanner max vel/acc divided by 2 as well)
+        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(5); //previously 5 (pathplanner max vel/acc divided by 2 as well)
         public static final AngularVelocity kMaxAngularSpeed = RadiansPerSecond.of(kMaxSpeed.in(MetersPerSecond) * Math.PI / kChassisRadius);
 
         public static final class AutoConstants {
@@ -232,6 +233,8 @@ public final class Constants {
 
             public static final Time kAlignmentAdjustmentTimeout = Seconds.of(0.075);
 
+            public static final LinearVelocity kStationApproachSpeed = InchesPerSecond.of(5);
+            public static final Time kStationApproachTimeout = Seconds.of(5);
 
             public static final PathConstraints kPathConstraints = new PathConstraints(1.25, 1.25, 1/2 * Math.PI, 1 * Math.PI); // The constraints for this path.
         
@@ -332,7 +335,7 @@ public final class Constants {
         
         public static final double kDt = 0.02;
 
-        public static final Constraints kConstraints = new Constraints(3.5, 3.5); //8.0, 10
+        public static final Constraints kConstraints = new Constraints(3.5, 3.5 / 2.0); //8.0, 10
         public static final int kPeriodMs = 0;
 
         public static final double kS = 0.0;
@@ -412,6 +415,8 @@ public final class Constants {
         public static final double kElevatorHeightTolerance = Inches.of(1).in(Meters);
         public static final Angle kSafeArmAngle = Degrees.of(90); //TODO this is currently straight up, this might change
         public static final Angle kMoveableArmAngle = Degrees.of(276.198611); //used in cos math, so this is equivalent to ~80 degrees either side of the left horizon //TODO this is currently straight up, this might change
+
+        public static final Angle kRemoveAlgaeArmAngle = Degrees.of(11.6);
     
         public static final double kMinSafeElevHeight = 0.385; //previously 4.361// height of the elevator for when the arm is stowed and needs to move
 
