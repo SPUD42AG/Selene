@@ -362,12 +362,12 @@ public class RobotContainer {
         operatorController.povRight().whileTrue(armSubsystem.manualMode(Rotation2d.fromDegrees(0.3)));
         
         operatorController.rightBumper()
-            .whileTrue(climberSubsystem.driveWinch(0.02).withName("Move Climber Pos"))
-            .onTrue(dynamics.gotoClimb());
+            .whileTrue(climberSubsystem.driveWinch(0.5).withName("Move Climber Pos"));
+            // .onTrue(dynamics.gotoClimb());
 
         operatorController.leftBumper()
-            .whileTrue(climberSubsystem.driveWinch(-0.02).withName("Move Climber Neg"))
-            .onTrue(dynamics.gotoClimb());
+            .whileTrue(climberSubsystem.driveWinch(-0.5).withName("Move Climber Neg"));
+            // .onTrue(dynamics.gotoClimb());
 
         //#endregion
 
