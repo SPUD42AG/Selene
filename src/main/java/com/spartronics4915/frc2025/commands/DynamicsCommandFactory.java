@@ -94,7 +94,7 @@ public class DynamicsCommandFactory {
      */
     private boolean isElevSafeToMove(){
         var currAngle =  armSubsystem.getPosition();
-        return currAngle.getDegrees() < kMoveableArmAngle.in(Degrees); //TODO measure this so it's only if it's above the horizon (for climb)
+        return currAngle.getDegrees() > kMoveableArmAngle.in(Degrees); //TODO measure this so it's only if it's above the horizon (for climb)
     }
 
     private boolean isElevAtSetpoint(double setpoint){
