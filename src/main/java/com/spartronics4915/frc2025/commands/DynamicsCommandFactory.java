@@ -303,7 +303,7 @@ public class DynamicsCommandFactory {
         return Commands.deadline(
             Commands.waitUntil(
                 hasScoredTrigger
-            ).withTimeout(1.0),
+            ).withTimeout(0.5),
             intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.OUT)
         ).andThen(intakeSubsystem.setPresetSpeedCommand(IntakeSpeed.NEUTRAL))
         .withName("Score");
