@@ -212,9 +212,14 @@ public class VariableAutos {
             dynamics.gotoScore(height.preset),
             dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
-            dynamics.stow(),
-            Commands.waitTime(delay),
-            pathPair.returnPath,
+            Commands.parallel(
+                dynamics.stow(),
+                Commands.sequence(
+                    Commands.waitTime(delay),
+                    Commands.waitUntil(() -> dynamics.isSwerveMovable()),
+                    pathPair.returnPath
+                )
+            ),
             Commands.deadline(
                 dynamics.blockingIntake(),
                 Commands.run(() -> swerve.drive(reverseIntoStation)).withTimeout(kStationApproachTimeout)
