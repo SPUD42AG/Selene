@@ -93,8 +93,8 @@ public class DynamicsCommandFactory {
      * @return Whether the elevator is safe to move (based on the arm's position)
      */
     private boolean isElevSafeToMove(){
-        var currAngle =  getArmRotation();
-        return currAngle.getCos() < Math.cos(kMoveableArmAngle.in(Radians)); //TODO measure this so it's only if it's above the horizon (for climb)
+        var currAngle =  armSubsystem.getPosition();
+        return currAngle.getDegrees() < kMoveableArmAngle.in(Degrees); //TODO measure this so it's only if it's above the horizon (for climb)
     }
 
     private boolean isElevAtSetpoint(double setpoint){
@@ -276,6 +276,13 @@ public class DynamicsCommandFactory {
         return Commands.runOnce(() -> lastInputtedPreset = preset)
                        .andThen(gotoScore(preset))
                        .withName("Operator Goto " + preset);
+    }
+
+    public Command gotoClimb(){
+        return Commands.sequence(
+            makeSystemSafeToMove(true, false, true),
+            armPriorityMove(DynaPreset.CLIMB.setpoint)
+        ).withName("Goto Climb");
     }
 
     public Command score(){
