@@ -415,7 +415,7 @@ public final class Constants {
 
         public static final double dt = 0.02;
 
-        public static final Constraints constraints = new Constraints(4.0, 3.5); //12, 7.5
+        public static final Constraints constraints = new Constraints(3.0, 3.5); //12, 7.5
 
         public static final double minHeight = 0;
         public static final double maxHeight = 1.24;
