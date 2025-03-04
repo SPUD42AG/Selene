@@ -322,7 +322,7 @@ public class DynamicsCommandFactory {
             intake(),
             Commands.waitUntil(
                 () -> funnelDetect() || isCoralInArm()
-            ).withTimeout(7.5) //TODO remove for comps
+            ).withTimeout(Robot.isSimulation() ? 0.5 : 15) //TODO remove for comps
         )
         .withName("Blocking Intake");
     }
