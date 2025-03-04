@@ -1,10 +1,9 @@
 package com.spartronics4915.frc2025.commands.autos;
 
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kAutoAlginAdjustTimeout;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kTeleopAlginAdjustTimeout;
-import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kAutoAlginAdjustTimeout;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,17 +13,15 @@ import java.util.Set;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.IdealStartingState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
-import com.spartronics4915.frc2025.RobotContainer;
 import com.spartronics4915.frc2025.commands.VariableAutos.BranchSide;
 import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
-import com.spartronics4915.frc2025.Constants.VisionConstants;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
 import com.spartronics4915.frc2025.util.AprilTagRegion;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -107,6 +104,12 @@ public class AlignToReef {
 
     private final StructPublisher<Pose2d> desiredBranchPublisher = NetworkTableInstance.getDefault().getTable("logging").getStructTopic("desired branch", Pose2d.struct).publish();
 
+    private PathConstraints pathConstraints = kPathConstraints;
+
+    public void changePathConstraints(PathConstraints newPathConstraints){
+        this.pathConstraints = newPathConstraints;
+    }
+
     public Command generateCommand(FieldBranchSide side) {
         return Commands.defer(() -> {
             var branch = getClosestBranch(side, mSwerve);
@@ -143,7 +146,7 @@ public class AlignToReef {
 
         PathPlannerPath path = new PathPlannerPath(
             waypoints, 
-            kPathConstraints,
+            pathConstraints,
             new IdealStartingState(getVelocityMagnitude(mSwerve.getFieldVelocity()), mSwerve.getHeading()), 
             new GoalEndState(0.0, waypoint.getRotation())
         );

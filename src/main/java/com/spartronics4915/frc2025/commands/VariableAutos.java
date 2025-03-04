@@ -1,7 +1,9 @@
 package com.spartronics4915.frc2025.commands;
 
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStationApproachSpeed;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStationApproachTimeout;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStartingPathConstraints;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -189,6 +191,7 @@ public class VariableAutos {
 
     public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height, Time delay) {
         var pathPair = getPathPair(branch, side);
+        alignmentGenerator.changePathConstraints(kStartingPathConstraints);
         
         return Commands.sequence(
             Commands.parallel(
@@ -211,7 +214,10 @@ public class VariableAutos {
             Commands.deadline(
                 dynamics.blockingIntake(),
                 Commands.run(() -> swerve.drive(reverseIntoStation)).withTimeout(kStationApproachTimeout)
-            )
+            ),
+            Commands.runOnce(() -> {
+                alignmentGenerator.changePathConstraints(kPathConstraints);
+            })
         );
     }
 
