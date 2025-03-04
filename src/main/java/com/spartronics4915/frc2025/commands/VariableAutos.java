@@ -162,7 +162,8 @@ public class VariableAutos {
             Commands.parallel(
                 pathPair.autoAlign,
                 Commands.sequence(
-                    Commands.waitUntil(() -> alignmentGenerator.isPIDLoopRunning),
+                    dynamics.autoPrescore(),
+                    Commands.waitUntil(() -> dynamics.intakeSubsystem.detect()),
                     Commands.print("moving to height"),
                     dynamics.gotoScore(height.preset)
                 )
@@ -187,7 +188,8 @@ public class VariableAutos {
         return Commands.sequence(
             Commands.parallel(
                 Commands.parallel(
-                    pathPair.autoAlign
+                    pathPair.autoAlign,
+                    dynamics.autoPrescore()
                 ),
                 Commands.sequence(
                     Commands.waitUntil(() -> alignmentGenerator.isPIDLoopRunning),

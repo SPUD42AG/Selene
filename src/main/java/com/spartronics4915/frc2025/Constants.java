@@ -245,19 +245,19 @@ public final class Constants {
             }
 
             public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(2.0);
-            public static final Distance kPositionTolerance = Inches.of(0.75);
-            public static final LinearVelocity kSpeedTolerance = InchesPerSecond.of(2);
+            public static final Distance kPositionTolerance = Inches.of(0.5);
+            public static final LinearVelocity kSpeedTolerance = InchesPerSecond.of(1);
 
             public static final Time kEndTriggerDebounce = Seconds.of(0.04);
 
             public static final Time kTeleopAlginAdjustTimeout = Seconds.of(1);
-            public static final Time kAutoAlginAdjustTimeout = Seconds.of(0.3);
+            public static final Time kAutoAlginAdjustTimeout = Seconds.of(0.5);
 
 
             public static final LinearVelocity kStationApproachSpeed = InchesPerSecond.of(5);
             public static final Time kStationApproachTimeout = Seconds.of(5);
 
-            public static final PathConstraints kPathConstraints = new PathConstraints(1.25, 1.25, 1/2 * Math.PI, 1 * Math.PI); // The constraints for this path.
+            public static final PathConstraints kPathConstraints = new PathConstraints(2, 1.75, 1/2 * Math.PI, 1 * Math.PI); // The constraints for this path.
         
             // X = side to side, Y = away from tag
             // public static final Translation2d kTagOffset = new Translation2d(0.10, 0.55); //TODO fix based off field cad
@@ -356,7 +356,7 @@ public final class Constants {
         
         public static final double kDt = 0.02;
 
-        public static final Constraints kConstraints = new Constraints(3.5, 3.5 / 2.0); //8.0, 10
+        public static final Constraints kConstraints = new Constraints(4.5, 3.5 / 2.0); //8.0, 10
         public static final int kPeriodMs = 0;
 
         public static final double kS = 0.0;

@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class DynamicsCommandFactory {
 
-    private IntakeSubsystem intakeSubsystem;
+    public IntakeSubsystem intakeSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
     private ArmSubsystem armSubsystem;
 
@@ -60,6 +60,7 @@ public class DynamicsCommandFactory {
     public enum DynaPreset{
         LOAD(0.0, Rotation2d.fromDegrees(234.4421)),
         PRESCORE(0.0, Rotation2d.fromDegrees(kSafeArmAngle.in(Degrees))),//114.173111)),
+        AUTO_PRESCORE(kMinSafeElevHeight, Rotation2d.fromDegrees(kSafeArmAngle.in(Degrees))),//114.173111)),
         L1(0.1, Rotation2d.fromDegrees(47.900)),
         L2(0.0, Rotation2d.fromDegrees(47.900)),
         L3(Meters.of(0.23939+0.1524-0.0254).in(Meters), Rotation2d.fromDegrees(58.10311200000001)),
@@ -244,6 +245,13 @@ public class DynamicsCommandFactory {
         return Commands.sequence(
             makeSystemSafeToMove(false, false, false),
             armPriorityMove(DynaPreset.PRESCORE.setpoint) //using arm Priority allows the arm to goto the right place then move the elevator down to the needed position 
+        );
+    }
+    
+    public Command autoPrescore(){
+        return Commands.sequence(
+            makeSystemSafeToMove(false, false, false),
+            armPriorityMove(DynaPreset.AUTO_PRESCORE.setpoint) //using arm Priority allows the arm to goto the right place then move the elevator down to the needed position 
         );
     }
 
