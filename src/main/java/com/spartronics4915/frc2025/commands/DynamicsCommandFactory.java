@@ -142,6 +142,10 @@ public class DynamicsCommandFactory {
         return  measurement.distance_mm < funnelLCTriggerDist.in(Millimeter) || intakeSubsystem.detect(); // the || is here as a way to prevent us stalling at a CS when we are already holding a coral
     }
 
+    public boolean isSwerveMovable(){
+        return getElevHeight() < kSafeElevHeightForSwerve;
+    }
+
     private Command makeElevatorSafeToMove(){
         return Commands.sequence(
                 Commands.waitUntil(this::isElevSafeToMove),
