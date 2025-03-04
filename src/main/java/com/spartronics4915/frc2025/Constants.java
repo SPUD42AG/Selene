@@ -216,7 +216,25 @@ public final class Constants {
                     new Translation2d(Inches.of(12.125), Inches.of(-12.5)),
                     new Translation2d(Inches.of(-12), Inches.of(12.5)),
                     new Translation2d(Inches.of(-12.125), Inches.of(-12.4375))
-                ));
+                )),
+                COMP_CHASSIS(new RobotConfig( // FIXME replace constants with more accurate values
+                    Kilogram.of(125), 
+                    KilogramSquareMeters.of(4.86247863),
+                    new ModuleConfig(
+                        Inches.of(3.75/2.0),
+                        MetersPerSecond.of(4),
+                        1.3, //CHECKUP guess
+                        DCMotor.getNEO(1),
+                        6.75,
+                        Amps.of(40),
+                        1
+                    ),
+                    new Translation2d(Inches.of(13.5), Inches.of(11.5)),
+                    new Translation2d(Inches.of(13.625), Inches.of(-11.625)),
+                    new Translation2d(Inches.of(-13.625), Inches.of(11.5)),
+                    new Translation2d(Inches.of(-13.5), Inches.of(-10.4375))
+            ));
+;
 
                 public RobotConfig config;
     

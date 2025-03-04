@@ -75,7 +75,7 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
             swerveDrive::getRobotVelocity, 
             (speeds, FF) -> {shimPublisher.accept(speeds); drive(speeds);}, 
             Drive.AutoConstants.kDriveController, 
-            Drive.AutoConstants.PathplannerConfigs.PROGRAMMER_CHASSIS.config, 
+            Drive.AutoConstants.PathplannerConfigs.COMP_CHASSIS.config, 
             () -> {
                 Optional<Alliance> temp = DriverStation.getAlliance();
                 if(temp.isEmpty()) return false;
