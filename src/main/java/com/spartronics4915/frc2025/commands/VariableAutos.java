@@ -176,7 +176,6 @@ public class VariableAutos {
                 )
             ),
             Commands.print("end step"),
-            dynamics.gotoScore(height.preset),
             dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
             Commands.parallel(
