@@ -1,7 +1,8 @@
 package com.spartronics4915.frc2025.commands.autos;
 
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
-import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kAlignmentAdjustmentTimeout;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kTeleopAlginAdjustTimeout;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kAutoAlginAdjustTimeout;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -135,7 +136,7 @@ public class AlignToReef {
             return 
             Commands.sequence(
                 Commands.print("start position PID loop"),
-                PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout),
+                PositionPIDCommand.generateCommand(mSwerve, waypoint, kAutoAlginAdjustTimeout),
                 Commands.print("end position PID loop")
             );
         }
@@ -151,7 +152,9 @@ public class AlignToReef {
 
         return AutoBuilder.followPath(path).andThen(
             Commands.print("start position PID loop"),
-            PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout)
+            PositionPIDCommand.generateCommand(mSwerve, waypoint, (
+                DriverStation.isAutonomous() ? kAutoAlginAdjustTimeout : kTeleopAlginAdjustTimeout
+            ))
                 .beforeStarting(Commands.runOnce(() -> {isPIDLoopRunning = true;}))
                 .finallyDo(() -> {isPIDLoopRunning = false;}),
             Commands.print("end position PID loop")
