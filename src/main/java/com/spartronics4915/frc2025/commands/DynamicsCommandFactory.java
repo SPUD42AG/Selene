@@ -1,4 +1,5 @@
 package com.spartronics4915.frc2025.commands;
+import com.spartronics4915.frc2025.Robot;
 import com.spartronics4915.frc2025.Constants.IntakeConstants.IntakeSpeed;
 import com.spartronics4915.frc2025.commands.VariableAutos.BranchHeight;
 import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
@@ -7,6 +8,7 @@ import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
 
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -322,7 +324,7 @@ public class DynamicsCommandFactory {
             intake(),
             Commands.waitUntil(
                 () -> funnelDetect() || isCoralInArm()
-            ).withTimeout(Robot.isSimulation() ? 0.5 : 15) //TODO remove for comps
+            ).withTimeout(RobotBase.isSimulation() ? 0.5 : 15) //TODO remove for comps
         )
         .withName("Blocking Intake");
     }
