@@ -186,7 +186,7 @@ public class VariableAutos {
                 dynamics.blockingIntake(),
                 Commands.run(() -> swerve.drive(reverseIntoStation)).withTimeout(kStationApproachTimeout)
             )
-        );
+        ).withName("Auto cycle");
     }
 
     public Command generateStartingAutoCycle(FieldBranch branch, StationSide side, BranchHeight height, Time delay) {
@@ -218,7 +218,7 @@ public class VariableAutos {
             Commands.runOnce(() -> {
                 alignmentGenerator.changePathConstraints(kPathConstraints);
             })
-        );
+        ).withName("Starting Auto cycle");
     }
 
     public PathPair getPathPair(FieldBranch branch, StationSide side){
