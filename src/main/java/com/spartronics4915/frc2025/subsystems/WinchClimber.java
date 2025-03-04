@@ -43,6 +43,14 @@ public class WinchClimber extends SubsystemBase implements ModeSwitchInterface{
         mSpeedSetpoint = 0.0;
     }
 
+    public Command driveWinch(double speed){
+        return this.startEnd(() -> {
+            setWinchSpeed(speed);
+        }, () -> {
+            stopWinch();
+        });
+    }
+
     public Command setWinchCommand(double speed){
         return this.runOnce(() -> {
             setWinchSpeed(speed);
