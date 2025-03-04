@@ -158,11 +158,16 @@ public class VariableAutos {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
-            pathPair.approachPath,
-            Commands.parallel(
+            Commands.deadline(
+                pathPair.approachPath,
+                Commands.sequence(
+                    Commands.waitUntil(dynamics.intakeSubsystem::detect),
+                    dynamics.autoPrescore()
+                )
+            ),
+            Commands.parallel( //this is parallel so it hangs if there isn't coral in the intake
                 pathPair.autoAlign,
                 Commands.sequence(
-                    dynamics.autoPrescore(),
                     Commands.waitUntil(() -> dynamics.intakeSubsystem.detect()),
                     Commands.print("moving to height"),
                     dynamics.gotoScore(height.preset)
@@ -188,10 +193,10 @@ public class VariableAutos {
         return Commands.sequence(
             Commands.parallel(
                 Commands.parallel(
-                    pathPair.autoAlign,
-                    dynamics.autoPrescore()
+                    pathPair.autoAlign
                 ),
                 Commands.sequence(
+                    dynamics.autoPrescore(),
                     Commands.waitUntil(() -> alignmentGenerator.isPIDLoopRunning),
                     Commands.print("moving to height"),
                     dynamics.gotoScore(height.preset)
