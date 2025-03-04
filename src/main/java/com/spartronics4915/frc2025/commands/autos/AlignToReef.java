@@ -44,6 +44,8 @@ public class AlignToReef {
     public static ArrayList<Pose2d> redReefTagPoses = new ArrayList<>();
     public static ArrayList<Pose2d> allReefTagPoses = new ArrayList<>();
 
+    public boolean isPIDLoopRunning = false;
+
 
     public AlignToReef(SwerveSubsystem mSwerve, AprilTagFieldLayout field) {
         this.mSwerve = mSwerve;
@@ -149,7 +151,9 @@ public class AlignToReef {
 
         return AutoBuilder.followPath(path).andThen(
             Commands.print("start position PID loop"),
-            PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout),
+            PositionPIDCommand.generateCommand(mSwerve, waypoint, kAlignmentAdjustmentTimeout)
+                .beforeStarting(Commands.runOnce(() -> {isPIDLoopRunning = true;}))
+                .finallyDo(() -> {isPIDLoopRunning = false;}),
             Commands.print("end position PID loop")
         );
     }

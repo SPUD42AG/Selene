@@ -159,10 +159,16 @@ public class VariableAutos {
         
         return Commands.sequence(
             pathPair.approachPath,
-            Commands.sequence(
+            Commands.parallel(
                 pathPair.autoAlign,
-                dynamics.gotoScore(height.preset)
+                Commands.sequence(
+                    Commands.waitUntil(() -> alignmentGenerator.isPIDLoopRunning),
+                    Commands.print("moving to height"),
+                    dynamics.gotoScore(height.preset)
+                )
             ),
+            Commands.print("end step"),
+            dynamics.gotoScore(height.preset),
             dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
             dynamics.stow(),
@@ -179,13 +185,17 @@ public class VariableAutos {
         var pathPair = getPathPair(branch, side);
         
         return Commands.sequence(
-            Commands.sequence(
+            Commands.parallel(
                 Commands.parallel(
-                    pathPair.autoAlign,
-                    dynamics.stow()
+                    pathPair.autoAlign
                 ),
-                dynamics.gotoScore(height.preset)
+                Commands.sequence(
+                    Commands.waitUntil(() -> alignmentGenerator.isPIDLoopRunning),
+                    Commands.print("moving to height"),
+                    dynamics.gotoScore(height.preset)
+                )
             ),
+            dynamics.gotoScore(height.preset),
             dynamics.waitUntilPreset(height.preset),
             dynamics.score(),
             dynamics.stow(),
