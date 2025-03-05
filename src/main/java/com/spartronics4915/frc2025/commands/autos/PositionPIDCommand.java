@@ -31,7 +31,7 @@ public class PositionPIDCommand extends Command{
     
     public SwerveSubsystem mSwerve;
     public final Pose2d goalPose;
-    private PPHolonomicDriveController mDriveController = Drive.AutoConstants.kDriveController;
+    private PPHolonomicDriveController mDriveController = Drive.AutoConstants.kAutoAlignPIDController;
 
     private final Trigger endTrigger;
     private final Trigger endTriggerDebounced;
