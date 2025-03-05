@@ -1,6 +1,7 @@
 package com.spartronics4915.frc2025.commands.autos;
 
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kAutoAlginAdjustTimeout;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kAutoAlignPredict;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kTeleopAlginAdjustTimeout;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -206,7 +207,7 @@ public class AlignToReef {
     }
 
     public static Pose2d getClosestBranch(FieldBranchSide fieldSide, SwerveSubsystem swerve){
-        Pose2d swervePose = swerve.getPose();
+        Pose2d swervePose = swerve.predict(kAutoAlignPredict);
         
         Pose2d tag = getClosestReefAprilTag(swervePose);
         
