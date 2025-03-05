@@ -6,6 +6,7 @@ import com.spartronics4915.frc2025.subsystems.coral.ArmSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.ElevatorSubsystem;
 import com.spartronics4915.frc2025.subsystems.coral.IntakeSubsystem;
 
+import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -41,6 +42,14 @@ public class DynamicsCommandFactory {
         this.intakeSubsystem = intakeSubsystem;
 
         this.funnelLC = new LaserCan(kFunnelLaserCanID);
+
+        try {
+            funnelLC.setRangingMode(LaserCan.RangingMode.SHORT);
+            funnelLC.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 4, 4)); // prev numbers that worked(8, 8, 4, 4)
+            funnelLC.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+          } catch (ConfigurationFailedException e) {
+            System.out.println("Configuration failed! " + e);
+          }
 
         var tab = Shuffleboard.getTab("dynamicsLogging");
         tab.addBoolean("armBelowHorizon", this::isArmBelowHorizon);
