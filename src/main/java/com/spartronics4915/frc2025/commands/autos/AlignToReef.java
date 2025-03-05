@@ -153,7 +153,7 @@ public class AlignToReef {
 
         path.preventFlipping = true;
 
-        return AutoBuilder.followPath(path).andThen(
+        return (AutoBuilder.followPath(path).andThen(
             Commands.print("start position PID loop"),
             PositionPIDCommand.generateCommand(mSwerve, waypoint, (
                 DriverStation.isAutonomous() ? kAutoAlginAdjustTimeout : kTeleopAlginAdjustTimeout
@@ -161,7 +161,11 @@ public class AlignToReef {
                 .beforeStarting(Commands.runOnce(() -> {isPIDLoopRunning = true;}))
                 .finallyDo(() -> {isPIDLoopRunning = false;}),
             Commands.print("end position PID loop")
-        );
+        )).finallyDo((interupt) -> {
+            if (interupt) { //if this is false then the position pid would've X braked & called the same method
+                mSwerve.drive(new ChassisSpeeds(0,0,0));
+            }
+        });
     }
     
 
