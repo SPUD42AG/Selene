@@ -424,13 +424,19 @@ public class RobotContainer {
 
             chooser.addOption("Create auto...", variableAuto);
 
-            chooser.addOption("ReverseLeave", Autos.reverseForSeconds(swerveSubsystem, 3));
-            chooser.addOption("Drive to Reef Point", new DriveToReefPoint(swerveSubsystem, elementLocator, 11).generate());
-            chooser.addOption("M-R debug straight", new PathPlannerAuto("M-R straight debug"));
-            chooser.addOption("M-R debug curve", new PathPlannerAuto("M-R curve debug"));
-            chooser.addOption("M-R Circle", new PathPlannerAuto("Circle move debug"));
-            chooser.addOption("Reef loop debug", new PathPlannerAuto("Reef loop debug"));
+            // chooser.addOption("ReverseLeave", Autos.reverseForSeconds(swerveSubsystem, 3));
+            // chooser.addOption("Drive to Reef Point", new DriveToReefPoint(swerveSubsystem, elementLocator, 11).generate());
+            // chooser.addOption("M-R debug straight", new PathPlannerAuto("M-R straight debug"));
+            // chooser.addOption("M-R debug curve", new PathPlannerAuto("M-R curve debug"));
+            // chooser.addOption("M-R Circle", new PathPlannerAuto("Circle move debug"));
+            // chooser.addOption("Reef loop debug", new PathPlannerAuto("Reef loop debug"));
             chooser.addOption("Leave", new PathPlannerAuto("Leave Auto"));
+
+            chooser.addOption("Test Single Run", Commands.sequence(
+                    dynamics.loadStow(),
+                    dynamics.blockingIntake(),
+                    Commands.defer(complexAutoChooser::getSingleRun, Set.of(swerveSubsystem))
+            ));
 
             chooser.addOption("Align with move", Commands.sequence(
                 variableAutoFactory.generateAutoCycle(FieldBranch.A, StationSide.LEFT, BranchHeight.L4),
