@@ -432,6 +432,12 @@ public class RobotContainer {
             // chooser.addOption("Reef loop debug", new PathPlannerAuto("Reef loop debug"));
             chooser.addOption("Leave", new PathPlannerAuto("Leave Auto"));
 
+            chooser.addOption("Test Single Run", Commands.sequence(
+                    dynamics.loadStow(),
+                    dynamics.blockingIntake(),
+                    Commands.defer(complexAutoChooser::getSingleRun, Set.of(swerveSubsystem))
+            ));
+
             chooser.addOption("Align with move", Commands.sequence(
                 variableAutoFactory.generateAutoCycle(FieldBranch.A, StationSide.LEFT, BranchHeight.L4),
                 variableAutoFactory.generateAutoCycle(FieldBranch.C, StationSide.LEFT, BranchHeight.L4),
