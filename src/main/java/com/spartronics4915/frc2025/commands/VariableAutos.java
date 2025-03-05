@@ -1,23 +1,22 @@
 package com.spartronics4915.frc2025.commands;
 
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kPathConstraints;
+import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStartingPathConstraints;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStationApproachSpeed;
 import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStationApproachTimeout;
-import static com.spartronics4915.frc2025.Constants.Drive.AutoConstants.kStartingPathConstraints;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.spartronics4915.frc2025.RobotContainer;
 import com.spartronics4915.frc2025.commands.Autos.AutoPaths;
 import com.spartronics4915.frc2025.commands.DynamicsCommandFactory.DynaPreset;
-import com.spartronics4915.frc2025.commands.VariableAutos.ReefSide;
 import com.spartronics4915.frc2025.commands.autos.AlignToReef;
 import com.spartronics4915.frc2025.subsystems.SwerveSubsystem;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -69,8 +68,8 @@ public class VariableAutos {
     }
 
     public enum BranchSide{
-        LEFT(new Translation2d(0.1527 - 0.00635, 0.5273 + 0.0254 - 0.00635)),
-        RIGHT(new Translation2d(0.1738, 0.5273 + 0.0254 - 0.00635));
+        LEFT(new Translation2d(0.1311035, 0.5152845)),
+        RIGHT(new Translation2d(0.199132, 0.5154565));
 
         public Translation2d tagOffset;
         private BranchSide(Translation2d offsets) {
