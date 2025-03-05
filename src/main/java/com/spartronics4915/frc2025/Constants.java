@@ -244,7 +244,7 @@ public final class Constants {
                 }
             }
 
-            public static final Time kAutoAlignPredict = Seconds.of(0.25);
+            public static final Time kAutoAlignPredict = Seconds.of(0.0);
 
             public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(2.0);
             public static final Distance kPositionTolerance = Inches.of(0.5);
