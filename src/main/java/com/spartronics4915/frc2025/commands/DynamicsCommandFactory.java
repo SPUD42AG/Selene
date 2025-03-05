@@ -88,11 +88,11 @@ public class DynamicsCommandFactory {
     }
 
     private double getElevHeight(){
-        return elevatorSubsystem.getPosition();
+        return RobotBase.isSimulation() ? elevatorSubsystem.getDesiredPosition().in(Meters) : elevatorSubsystem.getPosition();
     }
 
     private Rotation2d getArmRotation(){
-        return armSubsystem.getPosition();
+        return RobotBase.isSimulation() ? armSubsystem.getSetpoint() : armSubsystem.getPosition();
     }
 
     //#region Composite Commands
